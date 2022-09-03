@@ -7,14 +7,12 @@
   {:buffer "buff"
    :conjure "conj"
    :nvim_lsp "lsp"
-   :vsnip "vsnp"
    :luasnip "lsnp"})
 
 (def- cmp-srcs
   [{:name :nvim_lsp}
    {:name :conjure}
    {:name :buffer}
-   {:name :vsnip}
    {:name :luasnip}])
 
 ;; Setup cmp with desired settings
@@ -28,6 +26,8 @@
             {:format (fn [entry item]
                        (set item.menu (or (. cmp-src-menu-items entry.source.name) ""))
                        item)}
+            :window {:completion (cmp.config.window.bordered)
+                     :documentation (cmp.config.window.bordered)}
             :mapping {:<C-p> (cmp.mapping.select_prev_item)
                       :<C-n> (cmp.mapping.select_next_item)
                       :<C-b> (cmp.mapping.scroll_docs (- 4))

@@ -31,8 +31,8 @@
 (lualine.setup
   {:options {:theme github-lua-theme
              :icons_enabled true
-             :section_separators ["" ""]
-             :component_separators ["" ""]}
+             :section_separators {:left "" :right ""}
+             :component_separators {:left "" :right ""}}
    :sections {:lualine_a []
               :lualine_b [[:mode {:upper true}]]
               :lualine_c [["FugitiveHead"]
@@ -40,14 +40,16 @@
                            :file_status true
                            :path 1
                            :shorting_target 40}]
-              :lualine_x [{1 :diagnostics
+              :lualine_x []
+              :lualine_y [{1 :diagnostics
                            :sections [:error :warn :info :hint]
                            :sources [:nvim_lsp]}
                           [lsp_connection]
+                          :progress
                           :location
                           :filetype]
-              :lualine_y [:encoding]
-              :lualine_z []}
+              :lualine_z [:encoding]
+              }
    :inactive_sections {:lualine_a []
                        :lualine_b []
                        :lualine_c [{1 :filename
