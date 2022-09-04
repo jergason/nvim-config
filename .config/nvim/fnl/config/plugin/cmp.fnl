@@ -4,16 +4,44 @@
              luasnip luasnip}})
 
 (def- cmp-src-menu-items
-  {:buffer "buff"
-   :conjure "conj"
-   :nvim_lsp "lsp"
-   :luasnip "lsnp"})
+  {:buffer "[Buf]"
+   :conjure "[Conj]"
+   :nvim_lsp "[LSP]"
+   :luasnip "[Snip]"})
 
 (def- cmp-srcs
   [{:name :nvim_lsp}
    {:name :conjure}
-   {:name :buffer}
-   {:name :luasnip}])
+   {:name :luasnip}
+   {:name :buffer}])
+
+; stolen from github.com/LunarVim/Neovim-from-scratch
+(def- kind-icons
+  {:Text ""
+   :Method "m"
+   :Function ""
+   :Constructor ""
+   :Field ""
+   :Variable ""
+   :Class ""
+   :Interface ""
+   :Module ""
+   :Property ""
+   :Unit ""
+   :Value ""
+   :Enum ""
+   :Keyword ""
+   :Snippet ""
+   :Color ""
+   :File ""
+   :Reference ""
+   :Folder ""
+   :EnumMember ""
+   :Constant ""
+   :Struct ""
+   :Event ""
+   :Operator ""
+   :TypeParameter ""})
 
 ;; Setup cmp with desired settings
 
@@ -25,9 +53,12 @@
 (cmp.setup {:formatting
             {:format (fn [entry item]
                        (set item.menu (or (. cmp-src-menu-items entry.source.name) ""))
-                       item)}
+                       (set item.kind (or (. kind-icons item.kind) ""))
+                       item)
+             :fields ["kind" "abbr" "menu"]}
             :window {:completion (cmp.config.window.bordered)
                      :documentation (cmp.config.window.bordered)}
+            :experimental {:ghost_text true}
             :mapping {:<C-p> (cmp.mapping.select_prev_item)
                       :<C-n> (cmp.mapping.select_next_item)
                       :<C-b> (cmp.mapping.scroll_docs (- 4))

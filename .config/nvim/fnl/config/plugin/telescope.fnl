@@ -4,9 +4,11 @@
              util config.util
              themes telescope.themes}})
 
+
 (telescope.setup {:defaults {:path_display {:shorten {:len 2 :exclude [-2 -1]}}
                              :winblend 12
-                             :dynamic_preview_title true}
+                             :prompt_prefix " "
+                             :selection_caret " "}
                   :extensions {:ui-select {1 (themes.get_dropdown {})}}
                   :pickers {:find_files {:find_command ["rg" "--files" "--iglob" "!.git" "--hidden"]}}})
 

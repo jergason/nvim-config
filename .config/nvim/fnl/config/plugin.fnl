@@ -45,6 +45,7 @@
   :williamboman/mason.nvim { :mod :mason }
   :williamboman/mason-lspconfig.nvim { :mod :mason-lspconfig }
   :neovim/nvim-lspconfig { :mod :lspconfig }
+  :jose-elias-alvarez/null-ls.nvim {}
 
   :simrat39/symbols-outline.nvim { :mod :symbols-outline }
 
@@ -53,6 +54,7 @@
 
   ;; status line
   :nvim-lualine/lualine.nvim {:mod :lualine}
+  :akinsho/bufferline.nvim {}
 
   ;; file searching
   :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
@@ -65,7 +67,6 @@
                                   :mod :telescope}
 
   ;; LUA STUFF
-
   ;; lua stdlib docs in help
   :milisims/nvim-luaref {}
   ;; . . . something?
@@ -96,6 +97,7 @@
   :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
                                 :hrsh7th/cmp-nvim-lsp
                                 :hrsh7th/cmp-path
+                                :hrsh7th/cmp-nvim-lua
                                 :PaterJason/cmp-conjure]
                      :mod :cmp}
 
@@ -107,7 +109,6 @@
   ;; seems like this goofs up copy-pasting stuff?
 
 
-  ; replaced w/ telescope file_picker
   ; :mcchrish/nnn.vim {}
 
   ;; dart stuff
@@ -115,10 +116,8 @@
 
   ;; git/github
   :airblade/vim-gitgutter {}
-
   :tpope/vim-fugitive {:mod :fugitive}
   :tpope/vim-rhubarb {}
-
   :pwntester/octo.nvim   {:requires [:nvim-lua/plenary.nvim
                                      :nvim-telescope/telescope.nvim
                                      :kyazdani42/nvim-web-devicons]

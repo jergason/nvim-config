@@ -72,12 +72,17 @@ nvim includes a built in terminal emulator. `:terminal` to open it. Hit an inser
 * `:p` - make it an absolute path
 * `:h` - strip the filename and extension to just get the directory of the currently open file
 
+## Tabs
+* `gt` - go to next tab
+* `gT` - previous tab
+* `tabn` = new tab I think?
 
 # Stuff To Look In To
 
 ## Folds
 
-## Tabs
+## Formatting
+
 
 ## Registers
 
@@ -88,3 +93,6 @@ nvim includes a built in terminal emulator. `:terminal` to open it. Hit an inser
 ## LSP integration
 Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors? Warnings? Type hint? Look up docs? Interact w/ a REPL?
 `<leader>fr` - find all references w/ telescope
+
+## Treesitter Incremental Selection
+You can use treesitter to select via AST - select next scop, parent, etc
