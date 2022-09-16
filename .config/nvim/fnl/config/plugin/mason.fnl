@@ -1,22 +1,34 @@
 (module config.plugin.mason
   {autoload {mason mason
              reg mason-registry
+             util config.util
              nvim aniseed.nvim}})
 
-(mason.setup)
+(defn foobar []
+  (nvim.echo "foobar"))
 
-(def mason-deps [:typescript-language-server :clojure-lsp :lua-language-server])
-(def installed-mason-deps (reg.get_installed_package_names))
+(mason.setup {:ui {:border "single"}})
 
-; TODO: how do I just ... run this in the REPL
-(defn includes [element list index]
-  (match (next list index)
-    (i element) true
-    i (includes element list i)))
+(def- mason-deps ["typescript-language-server"
+                  "clojure-lsp"
+                  "lua-language-server"
+                  "gopls"
+                  "eslint-lsp"
+                  "bash-language-server"
+                  "graphql-language-service-cli"
+                  "terraform-ls"
+                  "yaml-language-server"])
+(def- installed-mason-deps (reg.get_installed_package_names))
 
 (defn install-mason-deps [required-deps installed-deps]
   (each [_ dep  (pairs required-deps)]
-    (if (not (includes dep installed-deps))
+    (if (not (util.includes installed-deps dep))
       (nvim.ex.MasonInstall dep))))
 
-(install-mason-deps mason-deps installed-mason-deps)
+; can I call a lua function directly here?
+(nvim.create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps installed-mason-deps) {:desc "Install all the mason things I care about"})
+;; TODO: how do I bind this fennel function to a keypress? Just try . . . this?
+(nvim.set_keymap :n :<leader>min :MasonInstallAll {:noremap true})
+
+;(util.nnoremap 
+;(install-mason-deps mason-deps installed-mason-deps)

@@ -33,9 +33,12 @@
   :wbthomason/packer.nvim {}
   ;; nvim config and plugins in Fennel
   :Olical/aniseed {:branch :develop}
+  ;; repl tools
+  :Olical/conjure {:branch :master :mod :conjure}
 
   ;; show key mappings
-  :folke/which-key.nvim {:mod :which-key}
+  :folke/which-key.nvim {:run #(let [which-key (require :which-key)]
+                                 (which-key.setup))} ;{:mod :which-key}
 
   ;; parsing system
   :nvim-treesitter/nvim-treesitter {:run ":TSUpdate"
@@ -45,7 +48,10 @@
   :williamboman/mason.nvim { :mod :mason }
   :williamboman/mason-lspconfig.nvim { :mod :mason-lspconfig }
   :neovim/nvim-lspconfig { :mod :lspconfig }
-  :jose-elias-alvarez/null-ls.nvim {}
+  ; TODO: why won't this work? 🤔
+  :jose-elias-alvarez/null-ls.nvim {} ;{:mod :null-ls}
+  :j-hui/fidget.nvim {:run #(let [fidget (require :fidget)]
+                              (fidget.setup))}
 
   :simrat39/symbols-outline.nvim { :mod :symbols-outline }
 
@@ -54,17 +60,20 @@
 
   ;; status line
   :nvim-lualine/lualine.nvim {:mod :lualine}
-  :akinsho/bufferline.nvim {}
+  :akinsho/bufferline.nvim {:mod :bufferline}
 
-  ;; file searching
+  ; easily toggle terminal
+  :Hvassaa/sterm.nvim {:run #(let [sterm (require :sterm)]
+                               (vim.keymap.set :n :<leader>te sterm.toggle {}))}
+
+  ;; telescope
   :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
                                              :nvim-lua/popup.nvim
                                              :nvim-lua/plenary.nvim
-                                             ; for frecency
-                                             :kkharji/sqlite.lua
-                                             :nvim-telescope/telescope-frecency.nvim
                                              :kyazdani42/nvim-web-devicons]
                                   :mod :telescope}
+  ; faster finding
+  :nvim-telescope/telescope-fzf-native.nvim { :run "make" }
 
   ;; LUA STUFF
   ;; lua stdlib docs in help
@@ -72,26 +81,40 @@
   ;; . . . something?
   :folke/lua-dev.nvim {}
 
-  :kosayoda/nvim-lightbulb {:requires [:antoinemadec/FixCursorHold.nvim]
-                            :mod :lightbulb}
+  ; this seems to conflict with null-ls?
+  ;:kosayoda/nvim-lightbulb {:requires [:antoinemadec/FixCursorHold.nvim]
+  ;                          :mod :lightbulb}
 
-  :weilbith/nvim-code-action-menu {:mod :code-action}
+  :weilbith/nvim-code-action-menu {}
 
-  ;; repl tools
-  :Olical/conjure {:branch :master :mod :conjure}
+  ;plantuml
+  :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
+
+  :tyru/open-browser.vim {:mod :open-browser}
 
   ;; sexp
   :guns/vim-sexp {:mod :sexp}
   :tpope/vim-sexp-mappings-for-regular-people {}
+
+  ;tim pope vim pope
+  :tpope/vim-unimpaired {}
+  :tpope/vim-commentary {}
+  :tpope/vim-eunuch {}
+  :tpope/vim-jdaddy {}
   :tpope/vim-repeat {}
   :tpope/vim-surround {}
 
+  ; suggest better movements
+  ; this is actually kinda annoying
+  ;:danth/pathfinder.vim {}
 
   ;; org mode stuff!
   :nvim-orgmode/orgmode {:mod :orgmode}
 
   ;; snippets
-  :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip]}
+  :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
+                                :rafamadriz/friendly-snippets]
+                     :mod :luasnip}
 
   ;; autocomplete
   :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
@@ -101,17 +124,12 @@
                                 :PaterJason/cmp-conjure]
                      :mod :cmp}
 
-  :mbbill/undotree {:mod :undotree}
+  :mbbill/undotree {:run #(vim.keymap.set :n :<leader>ut :<cmd>UndotreeToggle<cr> {})} ;{:mod :undotree}
 
   :pangloss/vim-javascript {}
 
-  ;;:tpope/vim-vinegar {}
-  ;; seems like this goofs up copy-pasting stuff?
+  :tpope/vim-vinegar {}
 
-
-  ; :mcchrish/nnn.vim {}
-
-  ;; dart stuff
   :dart-lang/dart-vim-plugin {}
 
   ;; git/github
@@ -119,7 +137,6 @@
   :tpope/vim-fugitive {:mod :fugitive}
   :tpope/vim-rhubarb {}
   :pwntester/octo.nvim   {:requires [:nvim-lua/plenary.nvim
-                                     :nvim-telescope/telescope.nvim
                                      :kyazdani42/nvim-web-devicons]
                           :mod :octo}
   ;:github/copilot.vim {}

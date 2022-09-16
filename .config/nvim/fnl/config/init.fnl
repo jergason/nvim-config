@@ -9,14 +9,16 @@
 (set nvim.g.mapleader " ")
 (set nvim.g.maplocalleader " ")
 
-;use tree view for netrw
-(set nvim.g.netrw_liststyle 3)
-;begone foul banner
-(set nvim.g.netrw_banner 0)
-;random flailing to try to make copy/paste work in netrw
-(set nvim.g.netrw_keepdir 0)
-;toggle netrw, poor-mans vinegar
-(util.nnoremap :- "Explore!")
+; netrw tree view
+; seems like this disables vinegar?
+;(set nvim.g.netrw_liststyle 3)
+
+; see if this fixes tab things?
+;(set nvim.o.tabstop 2)
+;(set nvim.o.expandtab true)
+
+; enable :Cfilter for qfix list
+(nvim.ex.packadd :cfilter)
 
 ;hit enter to clear search highlights
 (nvim.set_keymap :n :<Enter> "<cmd>nohlsearch<cr>" {})
@@ -33,19 +35,41 @@
        :smartcase true
        ;shared clipboard with os
        :clipboard "unnamedplus"
+
+       ;linebreak stuff
        ;wrap, but not in the middle of a word
        :wrap true
        :linebreak true
+       ; wrappted text matches indent of above text
+       :breakindent true
+       :showbreak ">"
+
+       :showmode false
+
        ;hybrid line numbers
        :nu true
        :rnu true
        ;show whitespace
        :list true
+
+       ;add some lines below cursor
+       :scrolloff 5
+
        ;beautify whitespace
        ; TODO for some reason this crashes fennel
        ;:listchars "tab:>-,trail:\\\\u22C5,extends:\\\\u2192,preceeds:\\\\u2190"
        ;transparent floating windows
-       :winblend 12
+       :winblend 10
+
+       ; tabs
+       :autoindent true
+       :cindent true
+       :tabstop 2
+       :shiftwidth 2
+       :softtabstop 2
+       :expandtab true
+
+
        }]
   (each [option value (pairs options)]
     (core.assoc nvim.o option value)))

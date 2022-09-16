@@ -9,6 +9,10 @@
    :nvim_lsp "[LSP]"
    :luasnip "[Snip]"})
 
+; (def- cmp-srcs
+;   [[{:name :nvim_lsp} {:name :conjure} {:name :luasnip}]
+;    [{:name :buffer}]])
+
 (def- cmp-srcs
   [{:name :nvim_lsp}
    {:name :conjure}
@@ -55,10 +59,9 @@
                        (set item.menu (or (. cmp-src-menu-items entry.source.name) ""))
                        (set item.kind (or (. kind-icons item.kind) ""))
                        item)
-             :fields ["kind" "abbr" "menu"]}
+            :fields ["kind" "abbr" "menu"]}
             :window {:completion (cmp.config.window.bordered)
                      :documentation (cmp.config.window.bordered)}
-            :experimental {:ghost_text true}
             :mapping {:<C-p> (cmp.mapping.select_prev_item)
                       :<C-n> (cmp.mapping.select_next_item)
                       :<C-b> (cmp.mapping.scroll_docs (- 4))

@@ -1,6 +1,4 @@
-# What is this?
-Basic config to transform your NVIM in a powerful Clojure IDE using fennel, clojure-lsp and conjure.
-This is simplified version on my personal [dotfiles](https://github.com/rafaeldelboni/dotfiles) setup, I highly recommend you to check it out for more advanced and updated configurations.
+# Neovim Config!
 
 ## Prerequisites
 Things you need installed in your OS to use this setup
@@ -52,7 +50,7 @@ Wrapper responsible for two things:
 
 
 ### [fnl/config/plugin.fnl](https://github.com/rafaeldelboni/nvim-fennel-lsp-conjure-as-clojure-ide/blob/main/.config/nvim/fnl/config/plugin.fnl)
-Here we define the plugins we want packer to download and load for us, we define here a private function called `use`
+Here we define the plugins we want packer to download and load for us. We define here a private function called `use`
 which will search in the plugin map for the keyword `:mod` and load the namespace defined in its value.
 
 For example in the line we define that we need telescope we have this map:
