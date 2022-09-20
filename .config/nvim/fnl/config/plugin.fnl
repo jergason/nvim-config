@@ -21,6 +21,10 @@
           (let [name (. pkgs i)
                 opts (. pkgs (+ i 1))]
             (-?> (. opts :mod) (safe-require-plugin-config))
+            ; WTF, nvim goes nuts when I run this
+            ; ok, I give up, i do not know how to make neovim do this. I guess just log out the result of associating the opts?
+            ; (log "options look like this:")
+            ; (vim.pretty_print opts)
             (use (a.assoc opts 1 name)))))))
   nil)
 
@@ -37,8 +41,7 @@
   :Olical/conjure {:branch :master :mod :conjure}
 
   ;; show key mappings
-  :folke/which-key.nvim {:run #(let [which-key (require :which-key)]
-                                 (which-key.setup))} ;{:mod :which-key}
+  :folke/which-key.nvim {:mod :which-key} 
 
   ;; parsing system
   :nvim-treesitter/nvim-treesitter {:run ":TSUpdate"
@@ -49,9 +52,8 @@
   :williamboman/mason-lspconfig.nvim { :mod :mason-lspconfig }
   :neovim/nvim-lspconfig { :mod :lspconfig }
   ; TODO: why won't this work? 🤔
-  :jose-elias-alvarez/null-ls.nvim {} ;{:mod :null-ls}
-  :j-hui/fidget.nvim {:run #(let [fidget (require :fidget)]
-                              (fidget.setup))}
+  :jose-elias-alvarez/null-ls.nvim {:mod :null-ls}
+  :j-hui/fidget.nvim {:mod :fidget}
 
   :simrat39/symbols-outline.nvim { :mod :symbols-outline }
 
@@ -63,8 +65,7 @@
   :akinsho/bufferline.nvim {:mod :bufferline}
 
   ; easily toggle terminal
-  :Hvassaa/sterm.nvim {:run #(let [sterm (require :sterm)]
-                               (vim.keymap.set :n :<leader>te sterm.toggle {}))}
+  :Hvassaa/sterm.nvim {:mod :sterm}
 
   ;; telescope
   :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
@@ -80,10 +81,6 @@
   :milisims/nvim-luaref {}
   ;; . . . something?
   :folke/lua-dev.nvim {}
-
-  ; this seems to conflict with null-ls?
-  ;:kosayoda/nvim-lightbulb {:requires [:antoinemadec/FixCursorHold.nvim]
-  ;                          :mod :lightbulb}
 
   :weilbith/nvim-code-action-menu {}
 
@@ -104,11 +101,7 @@
   :tpope/vim-repeat {}
   :tpope/vim-surround {}
 
-  ; suggest better movements
-  ; this is actually kinda annoying
-  ;:danth/pathfinder.vim {}
 
-  ;; org mode stuff!
   :nvim-orgmode/orgmode {:mod :orgmode}
 
   ;; snippets
@@ -124,7 +117,7 @@
                                 :PaterJason/cmp-conjure]
                      :mod :cmp}
 
-  :mbbill/undotree {:run #(vim.keymap.set :n :<leader>ut :<cmd>UndotreeToggle<cr> {})} ;{:mod :undotree}
+  :mbbill/undotree {:mod :undotree}
 
   :pangloss/vim-javascript {}
 
@@ -141,4 +134,3 @@
                           :mod :octo}
   ;:github/copilot.vim {}
   )
-
