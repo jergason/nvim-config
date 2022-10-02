@@ -24,6 +24,7 @@
 ;;; :mod specifies namespace under plugin directory
 
 ; fnl formatting absolutely MURDERS this. Not sure how to fix it.
+
 ;; fnlfmt: skip
 (use
 
@@ -40,13 +41,14 @@
      :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
      
      ;; lsp
+     ;; most lsp-related config is in 
      :williamboman/mason.nvim {:mod :mason}
 
+     ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        :jjose-elias-alvarez/null-ls.nvim] 
-
+                                        :jjose-elias-alvarez/null-ls.nvim
+                                        :j-hui/fidget.nvim] 
                              :mod :lsp.init}
-     :j-hui/fidget.nvim {:mod :fidget}
 
      :simrat39/symbols-outline.nvim {:mod :symbols-outline}
      ;; theme
@@ -61,10 +63,10 @@
 
      ;; telescope
      :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
-                 :nvim-lua/popup.nvim
-                 :nvim-lua/plenary.nvim
-                 :kyazdani42/nvim-web-devicons]
-      :mod :telescope}
+                                                :nvim-lua/popup.nvim
+                                                :nvim-lua/plenary.nvim
+                                                :kyazdani42/nvim-web-devicons]
+                                     :mod :telescope}
      ; faster finding
      :nvim-telescope/telescope-fzf-native.nvim {:run :make}
 
