@@ -39,14 +39,12 @@
      :folke/which-key.nvim {:mod :which-key}
      ;; parsing system
      :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
-     
-     ;; lsp
-     ;; most lsp-related config is in 
-     :williamboman/mason.nvim {:mod :mason}
 
+     ;; lsp
+     :williamboman/mason.nvim {:mod :mason}
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        :jjose-elias-alvarez/null-ls.nvim
+                                        :jose-elias-alvarez/null-ls.nvim
                                         :j-hui/fidget.nvim] 
                              :mod :lsp.init}
 
