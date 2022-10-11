@@ -1,15 +1,13 @@
 (module config.plugin.symbols-outline
-  {autoload {sl symbols-outline
-             u config.util
-             nvim aniseed.nvim}})
+        {autoload {sl symbols-outline u config.util nvim aniseed.nvim}})
 
 (sl.setup)
-(u.nnoremap :sl :SymbolsOutline)
+(u.nnoremap :sol :SymbolsOutline)
 
 ; don't bind to help file types since they already implement gO
 (defn bind-symbols-outline []
-  (if  (not (= nvim.o.ft "help") )
-    (nvim.buf_set_keymap 0 :n :gO :<cmd>SymbolsOutline<cr>)))
+      (if (not (= nvim.o.ft :help))
+          (nvim.buf_set_keymap 0 :n :gO :<cmd>SymbolsOutline<cr>)))
 
 ;use gO like in help to outline stuff that isn't help text
 ; TODO: Error detected while processing BufEnter Autocommands for "*":                                                                                                                     
@@ -21,4 +19,3 @@
 ; stack traceback:                                                                                                                                                                   
 ;         [C]: at 0x0100351200 
 ;(nvim.create_autocmd :BufEnter {:pattern "*" :callback #(bind-symbols-outline)})
-
