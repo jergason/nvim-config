@@ -28,7 +28,7 @@
                                                     {:border :single})
                   :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
                                                             {:border :single})}
-       :capailities (cmplsp.update_capabilities (vim.lsp.protocol.make_client_capabilities))
+       :capailities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
        :on_attach (fn [client bufnr]
                     (do
                       (vim.keymap.set :n :gd vim.lsp.buf.definition
@@ -54,9 +54,6 @@
                       (vim.keymap.set :n :<leader>dk vim.diagnostic.goto_prev
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
-                                      {:buffer bufnr})
-                      (vim.keymap.set :v :<leader>la
-                                      vim.lsp.buf.range_code_action
                                       {:buffer bufnr})
                       ;telescope
                       (vim.keymap.set :n :<leader>ld

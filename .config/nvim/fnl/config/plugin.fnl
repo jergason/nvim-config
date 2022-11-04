@@ -23,7 +23,7 @@
 ;;; plugins managed by packer
 ;;; :mod specifies namespace under plugin directory
 
-; fnl formatting absolutely MURDERS this. Not sure how to fix it.
+; fnl formatting absolutely MURDERS this
 
 ;; fnlfmt: skip
 (use
@@ -39,6 +39,7 @@
      :folke/which-key.nvim {:mod :which-key}
      ;; parsing system
      :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
+     :nvim-treesitter/playground {}
 
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
@@ -52,7 +53,8 @@
      ;; theme
      :projekt0n/github-nvim-theme {:mod :theme}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
-     :matoruru/vim-hjkl-warning {}
+     ; this is kinda annoying
+     ;:matoruru/vim-hjkl-warning {}
 
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
