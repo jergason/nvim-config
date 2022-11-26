@@ -49,12 +49,14 @@
                                         :j-hui/fidget.nvim] 
                              :mod :lsp.init}
 
-     :simrat39/symbols-outline.nvim {:mod :symbols-outline}
+     ; https://github.com/simrat39/symbols-outline.nvim/pull/169 pr fixes showing more symbols in JSX
+     ; close when this gets merged in
+     :mxsdev/symbols-outline.nvim {:mod :symbols-outline :branch "merge-jsx-tree" }
+     ;:simrat39/symbols-outline.nvim {:mod :symbols-outline}
+
      ;; theme
      :projekt0n/github-nvim-theme {:mod :theme}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
-     ; this is kinda annoying
-     ;:matoruru/vim-hjkl-warning {}
 
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
@@ -109,6 +111,7 @@
                        :mod :cmp}
 
      :mbbill/undotree {:mod :undotree}
+     :vim-test/vim-test {:mod :vim-test}
 
      :pangloss/vim-javascript {}
      :dart-lang/dart-vim-plugin {}

@@ -22,6 +22,10 @@
 ;hit enter to clear search highlights
 (nvim.set_keymap :n :<Enter> :<cmd>nohlsearch<cr> {})
 
+; faster exiting terminal mode
+(nvim.set_keymap :t :<C-w> "<C-\\><C-n>"
+                 {:noremap true :desc "Exit terminal insert mode"})
+
 ;remove trailing whitespace
 (util.nnoremap :ws "%s/\\s\\+$//e")
 

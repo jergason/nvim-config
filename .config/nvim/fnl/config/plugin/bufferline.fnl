@@ -1,4 +1,3 @@
-(module config.plugin.bufferline
-  {autoload { bl bufferline }})
+(module config.plugin.bufferline {autoload {bl bufferline}})
 
-(bl.setup)
+(bl.setup {:options {:mode :tabs}})

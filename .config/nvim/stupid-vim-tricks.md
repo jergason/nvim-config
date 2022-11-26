@@ -10,6 +10,10 @@ Useful for prefixing a group of lines w/ a comment for example
 
 in insert mode, type `:` then you can execute a command, then return to insert mode so you don't have to go back and forth between normal and insert mode.
 
+## `g_`
+
+Motion to jump to end of the line without the newline. Useful for yanking a line without the newline.
+
 ## Treesitter Incremental Selection
 
 You can use treesitter to select via AST - select next scope, parent, etc
