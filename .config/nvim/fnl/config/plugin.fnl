@@ -33,8 +33,16 @@
      ;; nvim config and plugins in Fennel
      :Olical/aniseed {:branch :develop}
      
+     ;; clojure/lisp stuff
      ;; repl tools
      :Olical/conjure {:branch :master :mod :conjure}
+     ;; sexp
+     :guns/vim-sexp {:mod :sexp}
+     :tpope/vim-sexp-mappings-for-regular-people {}
+     :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
+                                          :tpope/vim-dispatch]}
+
+
      ;; show key mappings
      :folke/which-key.nvim {:mod :which-key}
      ;; parsing system
@@ -54,12 +62,11 @@
      :mxsdev/symbols-outline.nvim {:mod :symbols-outline :branch "merge-jsx-tree" }
      ;:simrat39/symbols-outline.nvim {:mod :symbols-outline}
 
-     ;; theme
+     ;; theme and look/feel
      :projekt0n/github-nvim-theme {:mod :theme}
-     :gennaro-tedesco/nvim-jqx {:mod :jqx}
-
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
+
      ; easily toggle terminal
      :Hvassaa/sterm.nvim {:mod :sterm}
 
@@ -82,9 +89,9 @@
 
      :tyru/open-browser.vim {:mod :open-browser}
 
-     ;; sexp
-     :guns/vim-sexp {:mod :sexp}
-     :tpope/vim-sexp-mappings-for-regular-people {}
+     ; nonsense
+     :eandrju/cellular-automaton.nvim {}
+
 
      ;tim pope vim pope
      :tpope/vim-unimpaired {}
@@ -96,6 +103,8 @@
      :tpope/vim-vinegar {}
 
      :nvim-orgmode/orgmode {:mod :orgmode}
+
+     :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
      ;; snippets
      :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
@@ -111,9 +120,11 @@
                        :mod :cmp}
 
      :mbbill/undotree {:mod :undotree}
+
      :vim-test/vim-test {:mod :vim-test}
 
      :pangloss/vim-javascript {}
+
      :dart-lang/dart-vim-plugin {}
 
      ;; git/github
@@ -122,4 +133,5 @@
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
       :mod :octo}
+     :github/copilot.vim {}
      )

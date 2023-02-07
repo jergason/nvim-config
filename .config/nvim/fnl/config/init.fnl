@@ -8,14 +8,6 @@
 (set nvim.g.mapleader " ")
 (set nvim.g.maplocalleader " ")
 
-; netrw tree view
-; seems like this disables vinegar?
-;(set nvim.g.netrw_liststyle 3)
-
-; see if this fixes tab things?
-;(set nvim.o.tabstop 2)
-;(set nvim.o.expandtab true)
-
 ; enable :Cfilter for qfix list
 (nvim.ex.packadd :cfilter)
 
@@ -28,6 +20,8 @@
 
 ;remove trailing whitespace
 (util.nnoremap :ws "%s/\\s\\+$//e")
+; I always hit this on the kinesis, just disable it
+(nvim.set_keymap :n :<F1> :<Nop> {})
 
 (let [options {;settings needed for cmp autocompletion
                :completeopt "menu,menuone,noselect"

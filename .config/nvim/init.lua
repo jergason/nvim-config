@@ -27,5 +27,6 @@ execute("helptags ALL")
 -- Enable Aniseed's automatic compilation and loading of Fennel source code.
 vim.g["aniseed#env"] = {
   module = "config.init",
-  compile = true
+  compile = true,
+  input = ""
 }

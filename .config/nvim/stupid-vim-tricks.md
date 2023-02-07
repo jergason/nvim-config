@@ -54,6 +54,10 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 
 Execute a command on each element in the qflist. For example, `:cdo s/foo/bar/ | update` would execute the replace operation and then save on each buffer in the qflist.
 
+### `:noautocmd`
+
+run a command without any autocommands. Useful to stop gitgutter from choking when I do a massive CDO command
+
 ## File Browsing
 
 ### Netrw
@@ -159,3 +163,7 @@ stack traceback:
         ...te/pack/packer/start/null-ls.nvim/lua/null-ls/client.lua:50: in function 'supports_method'
         .../packer/start/nvim-lightbulb/lua/nvim-lightbulb/init.lua:209: in function <.../packer/start/nvim-lightbulb/lua/nvim-lightbulb/init.lua:192>
 ```
+
+## Random Helptags Exploration
+
+`helptags ALL` was failing b/c of a duplicate tag error. Turned out that a help file in main was removed/renamed, and installing from source doesn't remove old runtime files, only copies over new stuff. So the tag was still being generated even if I removed the tags file (which I found out was located in the runtime/docs directory. Solution was to remove runtime files completely and reinstall from scratch.

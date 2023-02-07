@@ -80,6 +80,16 @@
          (lsp.clojure_lsp.setup setup-args)
          (lsp.tsserver.setup setup-args)
          (lsp.sumneko_lua.setup setup-args)
+         (lsp.arduino_language_server.set (merge setup-args
+                                                 {:cmd [:arduino_language_server
+                                                        :-cli-config
+                                                        :/Users/jamison/Library/Arduino15/arduino-cli.yaml
+                                                        :-fqdn
+                                                        "arduino:avr:uno"
+                                                        :-cli
+                                                        :arduino-cli
+                                                        :-clangd
+                                                        :clangd]}))
          (if (= (nvim.fn.has :nvim-0.6) 1)
              (define-signs :Diagnostic)
              (define-signs :LspDiagnostics)) ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
