@@ -8,15 +8,17 @@
 
 (mason.setup {:ui {:border :single}})
 
-(def- mason-deps [:typescript-language-server
-                  :clojure-lsp
-                  :arduino-language-server
-                  :lua-language-server
-                  :gopls
-                  :eslint-lsp
+(def- mason-deps [:arduino-language-server
                   :bash-language-server
+                  :clojure-lsp
+                  :eslint-lsp
+                  :gopls
                   :graphql-language-service-cli
+                  :joker
+                  :lua-language-server
+                  :prettier
                   :terraform-ls
+                  :typescript-language-server
                   :yaml-language-server])
 
 (def- installed-mason-deps (reg.get_installed_package_names))
@@ -30,6 +32,7 @@
 (nvim.create_user_command :MasonJergInstallAll
                           #(install-mason-deps mason-deps installed-mason-deps)
                           {:desc "Install all the mason things I care about"})
+
 ;; TODO: how do I bind this fennel function to a keypress? Just try . . . this?
 (nvim.set_keymap :n :<leader>min :MasonInstallAll {:noremap true})
 
