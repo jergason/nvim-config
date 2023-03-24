@@ -24,9 +24,11 @@ ensure("Olical", "aniseed")
 -- generate helptags for stuff that we don't install directly w/ packer, since for some reason this isn't working
 execute("helptags ALL")
 
+
+require('aniseed.env').init({module = "config.init", compile = true})
 -- Enable Aniseed's automatic compilation and loading of Fennel source code.
-vim.g["aniseed#env"] = {
-  module = "config.init",
-  compile = true,
-  input = ""
-}
+--vim.g["aniseed#env"] = {
+--  module = "config.init",
+--  compile = true,
+--  input = ""
+--}

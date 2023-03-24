@@ -23,6 +23,21 @@
 ; I always hit this on the kinesis, just disable it
 (nvim.set_keymap :n :<F1> :<Nop> {})
 
+; make config reload without spamming autocommands
+(nvim.clear_autocmds {:event :TextYankPost})
+(nvim.create_autocmd :TextYankPost
+                     {:pattern "*"
+                      :desc "Highlight yanked text"
+                      :callback #(vim.highlight.on_yank {:timeout 350
+                                                         :on_visual false
+                                                         :higroup :IncSearch})})
+
+; au TextYankPost * silent! lua vim.highlight.on_yank()
+; to your init.vim. You can customize the highlight group and the duration of the highlight via
+; au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}
+; If you want to exclude visual selections from highlighting on yank, use
+; au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
+
 (let [options {;settings needed for cmp autocompletion
                :completeopt "menu,menuone,noselect"
                ;case insensitive search
@@ -46,7 +61,7 @@
                :list true
                ;add some lines below cursor
                :scrolloff 5
-               ; new ecperimental option to make command at bottom of the window not show up unless needed
+               ; new experimental option to make command at bottom of the window not show up unless needed
                :cmdheight 0
                ;beautify whitespace
                ; TODO for some reason this crashes fennel

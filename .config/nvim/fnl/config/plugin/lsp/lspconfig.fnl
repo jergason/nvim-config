@@ -1,5 +1,6 @@
 (module config.plugin.lspconfig
         {autoload {nvim aniseed.nvim
+                   core aniseed.core
                    lsp lspconfig
                    util config.plugin.lsp.util
                    t telescope.builtin
@@ -79,11 +80,11 @@
        (let [setup-args (make-setup-args)]
          (lsp.clojure_lsp.setup setup-args)
          (lsp.tsserver.setup setup-args)
-         (lsp.lua_ls.setup (merge setup-args
+         (lsp.lua_ls.setup (core.merge setup-args
                                   {:runtime {:version :LuaJIT}
                                    :diagnostics {:globals [:vim]}
                                    :telemetry {:enable false}}))
-         (lsp.arduino_language_server.setup (merge setup-args
+         (lsp.arduino_language_server.setup (core.merge setup-args
                                                    {:cmd [:arduino_language_server
                                                           :-cli-config
                                                           :/Users/jamison/Library/Arduino15/arduino-cli.yaml

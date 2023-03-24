@@ -89,6 +89,11 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/bufferline.nvim",
     url = "https://github.com/akinsho/bufferline.nvim"
   },
+  ["cellular-automaton.nvim"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/cellular-automaton.nvim",
+    url = "https://github.com/eandrju/cellular-automaton.nvim"
+  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/cmp-buffer",
@@ -124,13 +129,17 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/conjure",
     url = "https://github.com/Olical/conjure"
   },
+  ["copilot.vim"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/copilot.vim",
+    url = "https://github.com/github/copilot.vim"
+  },
   ["dart-vim-plugin"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/dart-vim-plugin",
     url = "https://github.com/dart-lang/dart-vim-plugin"
   },
   ["fidget.nvim"] = {
-    config = { "\27LJ\2\n0\0\0\3\0\3\0\0056\0\0\0'\2\1\0B\0\2\0029\1\2\0D\1\1\0\nsetup\vfidget\frequire\0" },
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/fidget.nvim",
     url = "https://github.com/j-hui/fidget.nvim"
@@ -175,10 +184,10 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/nvim-cmp",
     url = "https://github.com/hrsh7th/nvim-cmp"
   },
-  ["nvim-code-action-menu"] = {
+  ["nvim-jqx"] = {
     loaded = true,
-    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/nvim-code-action-menu",
-    url = "https://github.com/weilbith/nvim-code-action-menu"
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/nvim-jqx",
+    url = "https://github.com/gennaro-tedesco/nvim-jqx"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
@@ -210,11 +219,6 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/open-browser.vim",
     url = "https://github.com/tyru/open-browser.vim"
   },
-  orgmode = {
-    loaded = true,
-    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/orgmode",
-    url = "https://github.com/nvim-orgmode/orgmode"
-  },
   ["packer.nvim"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/packer.nvim",
@@ -230,6 +234,11 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/plantuml-syntax",
     url = "https://github.com/aklt/plantuml-syntax"
   },
+  playground = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/playground",
+    url = "https://github.com/nvim-treesitter/playground"
+  },
   ["plenary.nvim"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/plenary.nvim",
@@ -241,7 +250,6 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-lua/popup.nvim"
   },
   ["sterm.nvim"] = {
-    config = { "\27LJ\2\nd\0\0\a\0\b\0\v6\0\0\0'\2\1\0B\0\2\0026\1\2\0009\1\3\0019\1\4\1'\3\5\0'\4\6\0009\5\a\0004\6\0\0D\1\5\0\vtoggle\15<leader>te\6n\bset\vkeymap\bvim\nsterm\frequire\0" },
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/sterm.nvim",
     url = "https://github.com/Hvassaa/sterm.nvim"
@@ -249,7 +257,7 @@ _G.packer_plugins = {
   ["symbols-outline.nvim"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/symbols-outline.nvim",
-    url = "https://github.com/simrat39/symbols-outline.nvim"
+    url = "https://github.com/mxsdev/symbols-outline.nvim"
   },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,
@@ -267,7 +275,6 @@ _G.packer_plugins = {
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
   undotree = {
-    config = { "\27LJ\2\n[\0\0\6\0\6\0\b6\0\0\0009\0\1\0009\0\2\0'\2\3\0'\3\4\0'\4\5\0004\5\0\0D\0\5\0\28<cmd>UndotreeToggle<cr>\15<leader>ut\6n\bset\vkeymap\bvim\0" },
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/undotree",
     url = "https://github.com/mbbill/undotree"
@@ -276,6 +283,16 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-commentary",
     url = "https://github.com/tpope/vim-commentary"
+  },
+  ["vim-dispatch"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-dispatch",
+    url = "https://github.com/tpope/vim-dispatch"
+  },
+  ["vim-dispatch-neovim"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-dispatch-neovim",
+    url = "https://github.com/radenling/vim-dispatch-neovim"
   },
   ["vim-eunuch"] = {
     loaded = true,
@@ -291,6 +308,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-gitgutter",
     url = "https://github.com/airblade/vim-gitgutter"
+  },
+  ["vim-jack-in"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-jack-in",
+    url = "https://github.com/clojure-vim/vim-jack-in"
   },
   ["vim-javascript"] = {
     loaded = true,
@@ -327,6 +349,11 @@ _G.packer_plugins = {
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-surround",
     url = "https://github.com/tpope/vim-surround"
   },
+  ["vim-test"] = {
+    loaded = true,
+    path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-test",
+    url = "https://github.com/vim-test/vim-test"
+  },
   ["vim-unimpaired"] = {
     loaded = true,
     path = "/Users/jamison/.local/share/nvim/site/pack/packer/start/vim-unimpaired",
@@ -345,18 +372,6 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
--- Config for: fidget.nvim
-time([[Config for fidget.nvim]], true)
-try_loadstring("\27LJ\2\n0\0\0\3\0\3\0\0056\0\0\0'\2\1\0B\0\2\0029\1\2\0D\1\1\0\nsetup\vfidget\frequire\0", "config", "fidget.nvim")
-time([[Config for fidget.nvim]], false)
--- Config for: sterm.nvim
-time([[Config for sterm.nvim]], true)
-try_loadstring("\27LJ\2\nd\0\0\a\0\b\0\v6\0\0\0'\2\1\0B\0\2\0026\1\2\0009\1\3\0019\1\4\1'\3\5\0'\4\6\0009\5\a\0004\6\0\0D\1\5\0\vtoggle\15<leader>te\6n\bset\vkeymap\bvim\nsterm\frequire\0", "config", "sterm.nvim")
-time([[Config for sterm.nvim]], false)
--- Config for: undotree
-time([[Config for undotree]], true)
-try_loadstring("\27LJ\2\n[\0\0\6\0\6\0\b6\0\0\0009\0\1\0009\0\2\0'\2\3\0'\3\4\0'\4\5\0004\5\0\0D\0\5\0\28<cmd>UndotreeToggle<cr>\15<leader>ut\6n\bset\vkeymap\bvim\0", "config", "undotree")
-time([[Config for undotree]], false)
 
 _G._packer.inside_compile = false
 if _G._packer.needs_bufread == true then

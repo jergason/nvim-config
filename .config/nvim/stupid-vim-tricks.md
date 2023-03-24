@@ -20,13 +20,15 @@ You can use treesitter to select via AST - select next scope, parent, etc
 
 ## tags
 
-`Ctrl-]` is the general jump-to-tag command. Useful for navigating help. Dunno how to integrate tags w/ language servers and other stuff. Need to look in to how to go to definition in clojure for example.
+`Ctrl-]` is the general jump-to-tag command. Useful for navigating help. Dunno how to integrate tags w/ language servers and other stuff. (UPDATE: generally, don't use tags for stuff you can use a language server for).
+Need to look in to how to go to definition in clojure for example.
 See `:help tag-stack` for more info on hopping around between tags, but `Ctrl-T` goes back, `:ta` goes forward
 Generally useful in help, but for navigating around code there are better more syntax-aware tools.
 
 ## navigating
 
 parens jump between sentences.
+curly braces jump between paragraphs
 
 ## Octo
 
@@ -38,8 +40,9 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 
 ## quickfix list
 
-`:helpg` populates the quickfist list. `:cn` jumps to the next item. `:cl` shows the whole list and lets you select one thing.
+`:helpg pattern` searching help files and populates the quickfist list with matches. Telescope seems better for this.
 
+- `:cn` jumps to the next item. `:cl` shows the whole list and lets you select one thing.
 - `c-q` populates the qf list from telecope
 - `:cfilter` lets you filter the quickfix list by a regexp
 - unimpaired binds ]q and [q to navigating in the list
@@ -142,15 +145,14 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 
 ## Formatting
 
-how to handle the annoying matching parens? What is that coming from?
-
 ## TODO
 
-- find out why js indentation is weird (doesn't seem to respect :set tabstop in init.fnl)
 - find out how to evaluate fennel code in conjure repl
 - find out how to get a clojure repl up and running
 - find out how to look up documentation for a clojure function
 - figure out snippets
+- how to handle the annoying matching parens in lisp code. What is that coming from? How to make it smarter?
+- How to filter diagnostics for just errors for example?
 
 ## null-ls
 
