@@ -47,6 +47,8 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 - `:cfilter` lets you filter the quickfix list by a regexp
 - unimpaired binds ]q and [q to navigating in the list
 - https://codeinthehole.com/tips/vim-lists/ for more interesting info on lists
+- `:colder` goes to older qflist
+- `:cnewer` to next (via [this](https://vimtricks.com/p/vimtrick-navigate-through-quickfix/))
 
 ## neovim api stuff
 
@@ -156,15 +158,7 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 
 ## null-ls
 
-```
-Error detected while processing function CursorHold_Cb[5]..CursorHold Autocommands for "*":
-Error executing lua callback: ...te/pack/packer/start/null-ls.nvim/lua/null-ls/client.lua:39: bad argument #1 to 'unpack' (table expected, got string)
-stack traceback:
-        [C]: in function 'unpack'
-        ...te/pack/packer/start/null-ls.nvim/lua/null-ls/client.lua:39: in function 'capability_is_disabled'
-        ...te/pack/packer/start/null-ls.nvim/lua/null-ls/client.lua:50: in function 'supports_method'
-        .../packer/start/nvim-lightbulb/lua/nvim-lightbulb/init.lua:209: in function <.../packer/start/nvim-lightbulb/lua/nvim-lightbulb/init.lua:192>
-```
+Sometimes I don't want to format stuff with prettier (markdown mostly). Use `:noa w` to write without triggering autocommands, which are what trigger the null-ls formatting.
 
 ## Random Helptags Exploration
 

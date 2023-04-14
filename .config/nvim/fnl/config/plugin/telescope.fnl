@@ -24,7 +24,7 @@
 (telescope.load_extension :fzf)
 
 (util.nnoremap :ff "Telescope find_files")
-(util.nnoremap :fg "Telescope live_grep")
+(util.nnoremap :fg "Telescope live_grep debounce=100")
 (util.nnoremap :fb "Telescope buffers")
 (util.nnoremap :fh "Telescope help_tags")
 (util.nnoremap :fw "Telescope grep_string")
@@ -33,6 +33,14 @@
 (util.nnoremap :th "Telescope history")
 (nvim.set_keymap :n :<C-/> "<cmd>Telescope current_buffer_fuzzy_find<cr>"
                  {:desc "fuzzy find in buffer"})
+
+(defn prompt-and-grep []
+      (vim.ui.input {:prompt "Enter a glob: " :default "*"}
+                    #(tb.live_grep {:glob_pattern $1})))
+
+; prompt for a glob, live grep within that glob
+(vim.keymap.set :n :<leader>fgg prompt-and-grep
+                {:desc "Live grep only for files matching a glob we prompt for"})
 
 ; helpers to edit files I often want to edit
 (vim.keymap.set :n :<leader>en

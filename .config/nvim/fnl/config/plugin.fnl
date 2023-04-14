@@ -63,7 +63,7 @@
      ;:simrat39/symbols-outline.nvim {:mod :symbols-outline}
 
      ;; theme and look/feel
-     :projekt0n/github-nvim-theme {:mod :theme}
+     :projekt0n/github-nvim-theme {:mod :theme :tag "v0.0.7"}
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
 
@@ -120,6 +120,7 @@
                        :mod :cmp}
 
      :mbbill/undotree {:mod :undotree}
+     :skywind3000/asyncrun.vim {}
 
      :vim-test/vim-test {:mod :vim-test}
 
