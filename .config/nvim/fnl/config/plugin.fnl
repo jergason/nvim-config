@@ -134,5 +134,5 @@
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
       :mod :octo}
-     :github/copilot.vim {}
+     ;; :github/copilot.vim {}
      )
