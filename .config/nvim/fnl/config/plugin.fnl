@@ -46,16 +46,16 @@
      ;; show key mappings
      :folke/which-key.nvim {:mod :which-key}
      ;; parsing system
-     :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
-     :nvim-treesitter/playground {}
+     ; :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
+     ; :nvim-treesitter/playground {}
 
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
      ; put lsp-related config in a special magic subdir
-     :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        :jose-elias-alvarez/null-ls.nvim
-                                        :j-hui/fidget.nvim] 
-                             :mod :lsp.init}
+     ; :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
+      ;                                  :jose-elias-alvarez/null-ls.nvim
+      ;                                  :j-hui/fidget.nvim] 
+      ;                       :mod :lsp.init}
 
      ; https://github.com/simrat39/symbols-outline.nvim/pull/169 pr fixes showing more symbols in JSX
      ; close when this gets merged in
@@ -71,13 +71,13 @@
      :Hvassaa/sterm.nvim {:mod :sterm}
 
      ;; telescope
-     :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
-                                                :nvim-lua/popup.nvim
-                                                :nvim-lua/plenary.nvim
-                                                :kyazdani42/nvim-web-devicons]
-                                     :mod :telescope}
+     ; :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
+     ;                                           :nvim-lua/popup.nvim
+     ;                                           :nvim-lua/plenary.nvim
+     ;                                           :kyazdani42/nvim-web-devicons]
+     ;                                :mod :telescope}
      ; faster finding
-     :nvim-telescope/telescope-fzf-native.nvim {:run :make}
+     ; :nvim-telescope/telescope-fzf-native.nvim {:run :make}
 
      ;; LUA STUFF
      ;; lua stdlib docs in help
@@ -90,7 +90,7 @@
      :tyru/open-browser.vim {:mod :open-browser}
 
      ; nonsense
-     :eandrju/cellular-automaton.nvim {}
+     ; :eandrju/cellular-automaton.nvim {}
 
 
      ;tim pope vim pope
@@ -102,22 +102,22 @@
      :tpope/vim-surround {}
      :tpope/vim-vinegar {}
 
-     :nvim-orgmode/orgmode {:mod :orgmode}
+     ; :nvim-orgmode/orgmode {:mod :orgmode}
 
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
      ;; snippets
-     :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
-                                  :rafamadriz/friendly-snippets]
-                       :mod :luasnip}
+     ; :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
+     ;                             :rafamadriz/friendly-snippets]
+     ;                  :mod :luasnip}
 
      ;; autocomplete
-     :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
-                                  :hrsh7th/cmp-nvim-lsp
-                                  :hrsh7th/cmp-path
-                                  :hrsh7th/cmp-nvim-lua
-                                  :PaterJason/cmp-conjure]
-                       :mod :cmp}
+     ; :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
+      ;                            :hrsh7th/cmp-nvim-lsp
+      ;                            :hrsh7th/cmp-path
+      ;                            :hrsh7th/cmp-nvim-lua
+      ;                            :PaterJason/cmp-conjure]
+      ;                 :mod :cmp}
 
      :mbbill/undotree {:mod :undotree}
      :skywind3000/asyncrun.vim {}
@@ -132,7 +132,7 @@
      :airblade/vim-gitgutter {}
      :tpope/vim-fugitive {:mod :fugitive}
      :tpope/vim-rhubarb {}
-     :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
-      :mod :octo}
+     ;:pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
+     ; :mod :octo}
      ;; :github/copilot.vim {}
      )
