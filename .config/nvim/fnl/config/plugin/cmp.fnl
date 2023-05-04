@@ -1,28 +1,16 @@
 (module config.plugin.cmp
-  {autoload {nvim aniseed.nvim
-             cmp cmp
-             luasnip luasnip}})
+        {autoload {nvim aniseed.nvim cmp cmp luasnip luasnip}})
 
 (def- cmp-src-menu-items
-  {:buffer "[Buf]"
-   :conjure "[Conj]"
-   :nvim_lsp "[LSP]"
-   :luasnip "[Snip]"})
-
-; (def- cmp-srcs
-;   [[{:name :nvim_lsp} {:name :conjure} {:name :luasnip}]
-;    [{:name :buffer}]])
+  {:buffer "[Buf]" :conjure "[Conj]" :nvim_lsp "[LSP]" :luasnip "[Snip]"})
 
 (def- cmp-srcs
-  [{:name :nvim_lsp}
-   {:name :conjure}
-   {:name :luasnip}
-   {:name :buffer}])
+  [{:name :nvim_lsp} {:name :conjure} {:name :luasnip} {:name :buffer}])
 
 ; stolen from github.com/LunarVim/Neovim-from-scratch
 (def- kind-icons
   {:Text ""
-   :Method "m"
+   :Method :m
    :Function ""
    :Constructor ""
    :Field ""
@@ -51,15 +39,20 @@
 
 (fn has-words-before []
   (let [(line col) (unpack (vim.api.nvim_win_get_cursor 0))]
-    (and (not= col 0)
-         (= (: (: (. (vim.api.nvim_buf_get_lines 0 (- line 1) line true) 1) :sub col col) :match "%s") nil))))
+    (and (not= col 0) (= (: (: (. (vim.api.nvim_buf_get_lines 0 (- line 1) line
+                                                              true)
+                                  1) :sub col
+                               col) :match "%s") nil))))
 
-(cmp.setup {:formatting
-            {:format (fn [entry item]
-                       (set item.menu (or (. cmp-src-menu-items entry.source.name) ""))
-                       (set item.kind (or (. kind-icons item.kind) ""))
-                       item)
-            :fields ["kind" "abbr" "menu"]}
+(cmp.setup {:formatting {:format (fn [entry item]
+                                   (set item.menu
+                                        (or (. cmp-src-menu-items
+                                               entry.source.name)
+                                            ""))
+                                   (set item.kind
+                                        (or (. kind-icons item.kind) ""))
+                                   item)
+                         :fields [:kind :abbr :menu]}
             :window {:completion (cmp.config.window.bordered)
                      :documentation (cmp.config.window.bordered)}
             :mapping {:<C-p> (cmp.mapping.select_prev_item)
@@ -71,17 +64,22 @@
                       :<CR> (cmp.mapping.confirm {:behavior cmp.ConfirmBehavior.Insert
                                                   :select true})
                       :<Tab> (cmp.mapping (fn [fallback]
-                                            (if
-                                              (cmp.visible) (cmp.select_next_item)
-                                              (luasnip.expand_or_jumpable) (luasnip.expand_or_jump)
-                                              (has-words-before) (cmp.complete)
-                                              :else (fallback)))
+                                            (if (cmp.visible)
+                                                (cmp.select_next_item)
+                                                (luasnip.expand_or_jumpable)
+                                                (luasnip.expand_or_jump)
+                                                (has-words-before)
+                                                (cmp.complete)
+                                                :else
+                                                (fallback)))
                                           {1 :i 2 :s})
                       :<S-Tab> (cmp.mapping (fn [fallback]
-                                              (if
-                                                (cmp.visible) (cmp.select_prev_item)
-                                                (luasnip.jumpable -1) (luasnip.jump -1)
-                                                :else (fallback)))
+                                              (if (cmp.visible)
+                                                  (cmp.select_prev_item)
+                                                  (luasnip.jumpable -1)
+                                                  (luasnip.jump -1)
+                                                  :else
+                                                  (fallback)))
                                             {1 :i 2 :s})}
             :snippet {:expand (fn [args]
                                 (luasnip.lsp_expand args.body))}
