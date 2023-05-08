@@ -4,29 +4,31 @@
                    util config.util
                    nvim aniseed.nvim}})
 
-(defn foobar [] (nvim.echo :foobar))
-
 (mason.setup {:ui {:border :single}})
 
-(def- mason-deps [:arduino-language-server
-                  :bash-language-server
-                  :clojure-lsp
-                  :eslint-lsp
-                  :gopls
-                  :graphql-language-service-cli
-                  :joker
-                  :lua-language-server
-                  :prettier
-                  :terraform-ls
-                  :typescript-language-server
-                  :yaml-language-server])
+(def- mason-deps
+  [:arduino-language-server
+   :bash-language-server
+   :clojure-lsp
+   :eslint-lsp
+   :gopls
+   :graphql-language-service-cli
+   :jdtls
+   :joker
+   :lua-language-server
+   :prettier
+   :pyright
+   :terraform-ls
+   :typescript-language-server
+   :yaml-language-server])
 
 (def- installed-mason-deps (reg.get_installed_package_names))
 
-(defn install-mason-deps [required-deps installed-deps]
-      (each [_ dep (pairs required-deps)]
-        (if (not (util.includes installed-deps dep))
-            (nvim.ex.MasonInstall dep))))
+(defn install-mason-deps
+  [required-deps installed-deps]
+  (each [_ dep (pairs required-deps)]
+    (if (not (util.includes installed-deps dep))
+        (nvim.ex.MasonInstall dep))))
 
 ; can I call a lua function directly here?
 (nvim.create_user_command :MasonJergInstallAll

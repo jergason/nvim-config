@@ -79,6 +79,8 @@
                                         :j-hui/fidget.nvim] 
                              :mod :lsp.init}
 
+     :mfussenegger/nvim-jdtls {}
+
 
      ;; autocomplete
      ;; install order: 4
@@ -145,9 +147,9 @@
      :airblade/vim-gitgutter {}
      :tpope/vim-fugitive {:mod :fugitive}
      :tpope/vim-rhubarb {}
-     ;:pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
-     ; :mod :octo}
+     :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
+                           :mod :octo}
 
      ; nonsense
-     ; :eandrju/cellular-automaton.nvim {}
+     :eandrju/cellular-automaton.nvim {}
      )

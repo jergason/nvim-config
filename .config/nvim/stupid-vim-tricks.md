@@ -155,6 +155,7 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 - figure out snippets
 - how to handle the annoying matching parens in lisp code. What is that coming from? How to make it smarter?
 - How to filter diagnostics for just errors for example?
+- look in to diagnostic signs, virtual text, etc. See https://smarttech101.com/nvim-lsp-diagnostics-keybindings-signs-virtual-texts/#severity_signs_in_nvim_lsp_diagnostics
 
 ## null-ls
 
