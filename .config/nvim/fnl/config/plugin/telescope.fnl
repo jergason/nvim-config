@@ -34,22 +34,23 @@
 (nvim.set_keymap :n :<C-/> "<cmd>Telescope current_buffer_fuzzy_find<cr>"
                  {:desc "fuzzy find in buffer"})
 
-(defn prompt-and-grep []
-      (vim.ui.input {:prompt "Enter a glob: " :default "*"}
-                    #(tb.live_grep {:glob_pattern $1})))
+(defn prompt-and-grep
+  []
+  (vim.ui.input {:prompt "Enter a glob: " :default "*"}
+                #(tb.live_grep {:glob_pattern $1})))
 
 ; prompt for a glob, live grep within that glob
 (vim.keymap.set :n :<leader>fgg prompt-and-grep
                 {:desc "Live grep only for files matching a glob we prompt for"})
 
 ; helpers to edit files I often want to edit
-(vim.keymap.set :n :<leader>en
+(vim.keymap.set :n :<leader>fn
                 #(tb.find_files {:cwd "~/.config/nvim" :path_display [:smart]})
                 {:desc "Edit neovim config"})
 
 ; TODO: make this expand file paths?
 ;(vim.keymap.set :n :<leader>ep "Telescope find_files cwd=~/.local/share/nvim/site/pack/packer/start" {:desc "Search plugin files"})
-(vim.keymap.set :n :<leader>ep
+(vim.keymap.set :n :<leader>fp
                 #(tb.find_files {:cwd "~/.local/share/nvim/site/pack/packer/start"
                                  :path_display [:smart]})
                 {:desc "Search plugin files"})
