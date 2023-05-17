@@ -133,6 +133,7 @@
 
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
+     :echasnovski/mini.starter { :mod :starter }
 
      :mbbill/undotree {:mod :undotree}
      :skywind3000/asyncrun.vim {}
