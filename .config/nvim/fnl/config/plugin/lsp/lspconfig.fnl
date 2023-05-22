@@ -8,8 +8,9 @@
 
 ; symbols to show for lsp diagnostics
 (defn- define-signs
-  [prefix]
-  (let [error (.. prefix :SignError)
+  []
+  (let [prefix :Diagnostic
+        error (.. prefix :SignError)
         warn (.. prefix :SignWarn)
         info (.. prefix :SignInfo)
         hint (.. prefix :SignHint)]
@@ -77,6 +78,7 @@
                                   "<cmd> lua require ('telescope.builtin').lsp_implementations()<cr>"
                                   {:buffer bufnr})))})
 
+;; fnlfmt: skip
 (defn- _setup
   []
   (let [setup-args (make-setup-args)]
@@ -97,8 +99,8 @@
                                                           :arduino-cli
                                                           :-clangd
                                                           :clangd]}))
-    (define-signs :Diagnostic)
-    (nvim.echo "setting formatting keybinding") ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
+    (define-signs)
+    ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
     ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work
     (vim.keymap.set :n :<leader>lf #(util.lsp-format 0))
     (vim.keymap.set :v :<leader>lf #(util.lsp-format 0))))
