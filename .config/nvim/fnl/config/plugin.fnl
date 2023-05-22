@@ -142,6 +142,9 @@
 
      :pangloss/vim-javascript {}
 
+     :hashivim/vim-terraform {}
+     :ekalinin/Dockerfile.vim {}
+
      :dart-lang/dart-vim-plugin {}
 
      ;; git/github

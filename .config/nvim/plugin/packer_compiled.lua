@@ -174,6 +174,11 @@ _G.packer_plugins = {
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
   },
+  ["mini.starter"] = {
+    loaded = true,
+    path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/mini.starter",
+    url = "https://github.com/echasnovski/mini.starter"
+  },
   ["null-ls.nvim"] = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
@@ -353,6 +358,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/vim-surround",
     url = "https://github.com/tpope/vim-surround"
+  },
+  ["vim-terraform"] = {
+    loaded = true,
+    path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/vim-terraform",
+    url = "https://github.com/hashivim/vim-terraform"
   },
   ["vim-test"] = {
     loaded = true,
