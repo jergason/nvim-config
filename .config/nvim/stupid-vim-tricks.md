@@ -69,6 +69,7 @@ run a command without any autocommands. Useful to stop gitgutter from choking wh
 
 - `%` to create a new file
 - `D` to delete a file
+- `<c-l>` to refresh dir listing
 - tree style is your friend
 - netrw makes copying/pasting files impossible?
 - Changing the style seems impossible with vim-vinegar?
@@ -140,12 +141,25 @@ nvim includes a built in terminal emulator. `:terminal` to open it. Hit an inser
 - How to figure out how to only enable autocomplete when I ask for it? It's kinda annoying having it pop up all the time without me doing anything.
 - Why are autocomplete options sometimes duplicated?
 
+## Setting Key Mappings
+
+There are a ton of different APIs for setting key mappings in neovim and aniseed. Which one to use when and why?
+
+- `vim.keymap.set`
+- `nvim_set_keymap`
+
+### `<cmd>` vs `<plug>` in mappings
+
+when do I use which one, and why? I am not sure!
+
 ## LSP integration
 
 Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors? Warnings? Type hint? Look up docs? Interact w/ a REPL?
 `<leader>fr` - find all references w/ telescope
 
 ## Formatting
+
+- use `:noa w` to write without autocommands, which disableds automatic lsp formatting, I think
 
 ## TODO
 
