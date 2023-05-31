@@ -40,6 +40,7 @@
      :projekt0n/github-nvim-theme {:mod :theme :tag "v0.0.7"}
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
+     :echasnovski/mini.starter { :mod :starter }
 
      ;; clojure/lisp stuff
      ;; repl tools
@@ -97,11 +98,7 @@
                                  :rafamadriz/friendly-snippets]
                       :mod :luasnip}
 
-     ; https://github.com/simrat39/symbols-outline.nvim/pull/169 pr fixes showing more symbols in JSX
-     ; close when this gets merged in
-     :mxsdev/symbols-outline.nvim {:mod :symbols-outline :branch "merge-jsx-tree" }
-     ;:simrat39/symbols-outline.nvim {:mod :symbols-outline}
-
+     :simrat39/symbols-outline.nvim {:mod :symbols-outline}
 
      ; easily toggle terminal
      :Hvassaa/sterm.nvim {:mod :sterm}
@@ -109,11 +106,6 @@
      ; faster finding
       :nvim-telescope/telescope-fzf-native.nvim {:run :make}
 
-     ;; LUA STUFF
-     ;; lua stdlib docs in help
-     :milisims/nvim-luaref {}
-     ;; . . . something?
-     :folke/lua-dev.nvim {}
 
      :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
 
@@ -129,23 +121,36 @@
      :tpope/vim-surround {}
      :tpope/vim-vinegar {}
 
-     ; :nvim-orgmode/orgmode {:mod :orgmode}
 
+     ; ================
+     ; Language Support
+     ; ================
+
+     ; javascript
+     :pangloss/vim-javascript {}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
-     :echasnovski/mini.starter { :mod :starter }
+     :dart-lang/dart-vim-plugin {}
+
+     ; infra/ops stuff!
+     :hashivim/vim-terraform {}
+     :ekalinin/Dockerfile.vim {}
+
+     ;; LUA STUFF
+     ;; lua stdlib docs in help
+     :milisims/nvim-luaref {}
+     ;; . . . something?
+     :folke/lua-dev.nvim {}
+
+     ; markdown
+     ; depends on node and yarn being installed already
+     :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
+
 
      :mbbill/undotree {:mod :undotree}
      :skywind3000/asyncrun.vim {}
 
      :vim-test/vim-test {:mod :vim-test}
-
-     :pangloss/vim-javascript {}
-
-     :hashivim/vim-terraform {}
-     :ekalinin/Dockerfile.vim {}
-
-     :dart-lang/dart-vim-plugin {}
 
      ;; git/github
      :airblade/vim-gitgutter {}
