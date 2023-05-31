@@ -82,13 +82,6 @@
 (defn- _setup
   []
   (let [setup-args (make-setup-args)]
-    (lsp.clojure_lsp.setup setup-args)
-    (lsp.tsserver.setup setup-args)
-    (lsp.pyright.setup setup-args)
-    (lsp.lua_ls.setup (core.merge setup-args
-                                  {:runtime {:version :LuaJIT}
-                                   :diagnostics {:globals [:vim]}
-                                   :telemetry {:enable false}}))
     (lsp.arduino_language_server.setup (core.merge setup-args
                                                    {:cmd [:arduino_language_server
                                                           :-cli-config
@@ -99,6 +92,20 @@
                                                           :arduino-cli
                                                           :-clangd
                                                           :clangd]}))
+    (lsp.bashls.setup setup-args)
+    (lsp.clangd.setup setup-args)
+    (lsp.clojure_lsp.setup setup-args)
+    (lsp.gopls.setup setup-args)
+    (lsp.graphql.setup setup-args)
+    (lsp.lua_ls.setup (core.merge setup-args
+                                  {:runtime {:version :LuaJIT}
+                                   :diagnostics {:globals [:vim]}
+                                   :telemetry {:enable false}}))
+    (lsp.pyright.setup setup-args)
+    (lsp.rust_analyzer.setup setup-args)
+    (lsp.terraformls.setup setup-args)
+    (lsp.tsserver.setup setup-args)
+    (lsp.yamlls.setup setup-args)
     (define-signs)
     ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
     ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work

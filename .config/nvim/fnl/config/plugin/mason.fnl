@@ -1,8 +1,5 @@
 (module config.plugin.mason
-        {autoload {mason mason
-                   reg mason-registry
-                   util config.util
-                   nvim aniseed.nvim}})
+        {autoload {mason mason util config.util nvim aniseed.nvim}})
 
 (mason.setup {:ui {:border :single}})
 
@@ -11,6 +8,7 @@
    :bash-language-server
    :clojure-lsp
    :eslint-lsp
+   ;; TOOD: do I need to manage this outside of Mason since it might depend on installed versions of golang?
    :gopls
    :graphql-language-service-cli
    :jdtls
@@ -22,21 +20,10 @@
    :typescript-language-server
    :yaml-language-server])
 
-(def- installed-mason-deps (reg.get_installed_package_names))
-
 (defn install-mason-deps
-  [required-deps installed-deps]
+  [required-deps]
   (each [_ dep (pairs required-deps)]
-    (if (not (util.includes installed-deps dep))
-        (nvim.ex.MasonInstall dep))))
+    (nvim.ex.MasonInstall dep)))
 
-; can I call a lua function directly here?
-(nvim.create_user_command :MasonJergInstallAll
-                          #(install-mason-deps mason-deps installed-mason-deps)
-                          {:desc "Install all the mason things I care about"})
-
-;; TODO: how do I bind this fennel function to a keypress? Just try . . . this?
-(nvim.set_keymap :n :<leader>min :MasonInstallAll {:noremap true})
-
-;(util.nnoremap 
-;(install-mason-deps mason-deps installed-mason-deps)
+(nvim.create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps)
+                          {:desc "Install or update mason deps"})
