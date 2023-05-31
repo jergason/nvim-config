@@ -23,7 +23,7 @@
 ; I always hit this on the kinesis, just disable it
 (nvim.set_keymap :n :<F1> :<Nop> {})
 
-; make config reload without spamming autocommands
+; highlight yanked text
 (nvim.clear_autocmds {:event :TextYankPost})
 (nvim.create_autocmd :TextYankPost
                      {:pattern "*"
@@ -31,12 +31,6 @@
                       :callback #(vim.highlight.on_yank {:timeout 350
                                                          :on_visual false
                                                          :higroup :IncSearch})})
-
-; au TextYankPost * silent! lua vim.highlight.on_yank()
-; to your init.vim. You can customize the highlight group and the duration of the highlight via
-; au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}
-; If you want to exclude visual selections from highlighting on yank, use
-; au TextYankPost * silent! lua vim.highlight.on_yank {on_visual=false}
 
 (let [options {;settings needed for cmp autocompletion
                :completeopt "menu,menuone,noselect"
@@ -78,5 +72,5 @@
   (each [option value (pairs options)]
     (core.assoc nvim.o option value)))
 
-;import plugin.fnl
+;import plugins, kick off plugin config
 (require :config.plugin)
