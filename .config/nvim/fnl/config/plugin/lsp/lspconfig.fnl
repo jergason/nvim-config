@@ -101,6 +101,7 @@
                                   {:runtime {:version :LuaJIT}
                                    :diagnostics {:globals [:vim]}
                                    :telemetry {:enable false}}))
+    (lsp.ocamllsp.setup setup-args)
     (lsp.pyright.setup setup-args)
     (lsp.rust_analyzer.setup setup-args)
     (lsp.terraformls.setup setup-args)
