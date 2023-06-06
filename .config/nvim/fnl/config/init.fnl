@@ -68,6 +68,8 @@
                :tabstop 2
                :shiftwidth 2
                :softtabstop 2
+               ; default is 4000, but make it shorter so gitgutter works faster
+               :updatetime 250
                :expandtab true}]
   (each [option value (pairs options)]
     (core.assoc nvim.o option value)))

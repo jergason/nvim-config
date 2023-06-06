@@ -74,6 +74,11 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
+  ["Dockerfile.vim"] = {
+    loaded = true,
+    path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/Dockerfile.vim",
+    url = "https://github.com/ekalinin/Dockerfile.vim"
+  },
   LuaSnip = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/LuaSnip",
@@ -163,6 +168,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
+  },
+  ["markdown-preview.nvim"] = {
+    loaded = true,
+    path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/markdown-preview.nvim",
+    url = "https://github.com/iamcco/markdown-preview.nvim"
   },
   ["mason-lspconfig.nvim"] = {
     loaded = true,
@@ -267,7 +277,7 @@ _G.packer_plugins = {
   ["symbols-outline.nvim"] = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/symbols-outline.nvim",
-    url = "https://github.com/mxsdev/symbols-outline.nvim"
+    url = "https://github.com/simrat39/symbols-outline.nvim"
   },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,
@@ -333,6 +343,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/vim-jdaddy",
     url = "https://github.com/tpope/vim-jdaddy"
+  },
+  ["vim-ocaml"] = {
+    loaded = true,
+    path = "/Users/jamisondance/.local/share/nvim/site/pack/packer/start/vim-ocaml",
+    url = "https://github.com/ocaml/vim-ocaml"
   },
   ["vim-repeat"] = {
     loaded = true,

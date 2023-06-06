@@ -156,7 +156,8 @@
 
      ;; git/github
      :airblade/vim-gitgutter {}
-     ;:tpope/vim-fugitive {:mod :fugitive}
+     :tpope/vim-fugitive {:mod :fugitive}
+
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
                            :mod :octo}
