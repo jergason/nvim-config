@@ -69,8 +69,14 @@
                :shiftwidth 2
                :softtabstop 2
                ; default is 4000, but make it shorter so gitgutter works faster
-               :updatetime 250
-               :expandtab true}]
+               :updatetime 500
+               :expandtab true
+               ; folding
+               ; show up to 4 columns showing all folds
+               :foldcolumn "auto:4"
+               ; what kinds of commands open folds if the cursor ends up in them
+               ; let's update to include jumps so G[number] opens the fold
+               :foldopen "block,hor,jump,mark,percent,quickfix,search,tag,undo"}]
   (each [option value (pairs options)]
     (core.assoc nvim.o option value)))
 

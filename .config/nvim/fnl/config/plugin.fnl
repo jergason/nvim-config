@@ -61,6 +61,7 @@
      ;; install order: 1
      :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
      :nvim-treesitter/playground {}
+     :nvim-treesitter/nvim-treesitter-context {}
 
      ;; telescope
      ;; install order: 2
@@ -80,7 +81,8 @@
                                         :j-hui/fidget.nvim] 
                              :mod :lsp.init}
 
-     :mfussenegger/nvim-jdtls {}
+     ; java stuff
+     ; :mfussenegger/nvim-jdtls {}
 
 
      ;; autocomplete
@@ -130,7 +132,7 @@
      :pangloss/vim-javascript {}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
-     :dart-lang/dart-vim-plugin {}
+     ; :dart-lang/dart-vim-plugin {}
 
      :ocaml/vim-ocaml {}
 

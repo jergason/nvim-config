@@ -54,6 +54,7 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 
 - `aniseed.nvim` is actually [this](https://github.com/norcalli/nvim.lua)
 - `(nvim.ex.thing arguments)` is the same as executing `:thing arguments`
+- G
 
 ## `:cdo`
 
@@ -127,6 +128,20 @@ nvim includes a built in terminal emulator. `:terminal` to open it. Hit an inser
 
 ## Folds
 
+- See `:help usr_28` for the user manual on folding.
+- `:set foldcolumn=auto:4` - this adds a column to the left of the screen showing folds. It'll be up to 4 characters wide to show nested folds.
+- `zi` toggles all folding off and on in a buffer
+- you have to create folds, and then you can open or close them or delete them.
+- `zO` opens all folds at the current cursor
+- `zo` opens a fold at the current cursor
+- `zC` closes ALL folds at the current cursor
+- `zc` closes a fold at the current cursor
+- `zm` folds more (folds one more level I guess?). This affects ALL folds in a file
+- `zr` reduces folds one level
+  These both work by setting the `foldlevel` I guess? So you can also manually set that.
+
+  One problem with setting the foldexpr - looks like it automatically creates and closes folds, so all files start folded
+
 ## Formatting
 
 - `gq` is supposed to format, but seems off, and not sure how to hook it up to stuff like prettier, etc
@@ -170,6 +185,7 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 - how to handle the annoying matching parens in lisp code. What is that coming from? How to make it smarter?
 - How to filter diagnostics for just errors for example?
 - look in to diagnostic signs, virtual text, etc. See https://smarttech101.com/nvim-lsp-diagnostics-keybindings-signs-virtual-texts/#severity_signs_in_nvim_lsp_diagnostics
+- ok, let's see how much lag there is when typing in iterm2. It seems about the same tbh? Maybe it's an autocomplete thing, can I debounce that somehow?
 
 ## null-ls
 
