@@ -74,6 +74,7 @@
      ; install order: 3
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
+     :j-hui/fidget.nvim {:tag :legacy}
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
                                         :jose-elias-alvarez/null-ls.nvim
