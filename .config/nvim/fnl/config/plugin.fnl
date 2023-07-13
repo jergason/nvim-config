@@ -37,7 +37,7 @@
      :Olical/aniseed {:branch :develop}
 
      ;; theme and look/feel
-     :projekt0n/github-nvim-theme {:mod :theme :tag "v0.0.7"}
+     :projekt0n/github-nvim-theme {:mod :theme }
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
      :echasnovski/mini.starter { :mod :starter }
