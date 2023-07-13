@@ -156,9 +156,10 @@
 
      :vim-test/vim-test {:mod :vim-test}
 
+     :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      ;; git/github
-     :airblade/vim-gitgutter {}
-     :tpope/vim-fugitive {:mod :fugitive}
+     ; :airblade/vim-gitgutter {}
+     ; :tpope/vim-fugitive {:mod :fugitive}
 
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
