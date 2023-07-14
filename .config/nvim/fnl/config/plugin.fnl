@@ -74,13 +74,18 @@
      ; install order: 3
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
-     :j-hui/fidget.nvim {:tag :legacy}
+     ;:j-hui/fidget.nvim {:tag :legacy}
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
                                         :jose-elias-alvarez/null-ls.nvim
                                         :hrsh7th/cmp-nvim-lsp
-                                        :j-hui/fidget.nvim] 
+                                        ; the 1 is to mix associative and sequential tables,
+                                        ; which fennel doesn't make easy but packer expects
+                                        { 1 :j-hui/fidget.nvim :tag :legacy }
+                                        ; try out typescript tools I guess?
+                                        :pmizio/typescript-tools.nvim]
                              :mod :lsp.init}
+
 
      ; java stuff
      ; :mfussenegger/nvim-jdtls {}
@@ -157,8 +162,8 @@
 
      :vim-test/vim-test {:mod :vim-test}
 
-     :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      ;; git/github
+     :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      ; :airblade/vim-gitgutter {}
      ; :tpope/vim-fugitive {:mod :fugitive}
 

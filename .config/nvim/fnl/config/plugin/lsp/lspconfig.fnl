@@ -4,6 +4,7 @@
                    lsp lspconfig
                    util config.plugin.lsp.util
                    t telescope.builtin
+                   tstools typescript-tools
                    cmplsp cmp_nvim_lsp}})
 
 ; symbols to show for lsp diagnostics
@@ -105,7 +106,8 @@
     (lsp.pyright.setup setup-args)
     (lsp.rust_analyzer.setup setup-args)
     (lsp.terraformls.setup setup-args)
-    (lsp.tsserver.setup setup-args)
+    ;(lsp.tsserver.setup setup-args)
+    (tstools.setup setup-args)
     (lsp.yamlls.setup setup-args)
     (define-signs)
     ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
