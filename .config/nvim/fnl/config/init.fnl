@@ -1,7 +1,8 @@
 (module config.init {autoload {core aniseed.core
                                nvim aniseed.nvim
                                util config.util
-                               str aniseed.string}})
+                               str aniseed.string
+                               c aniseed.compile}})
 
 ;generic mapping leaders configuration
 (nvim.set_keymap :n :<space> :<nop> {:noremap true})
@@ -72,6 +73,8 @@
                :updatetime 500
                :expandtab true
                ; folding
+               ; set default
+               :foldmethod :manual
                ; show up to 4 columns showing all folds
                :foldcolumn "auto:4"
                ; what kinds of commands open folds if the cursor ends up in them
@@ -80,5 +83,11 @@
   (each [option value (pairs options)]
     (core.assoc nvim.o option value)))
 
-;import plugins, kick off plugin config
+; TODO: avoid hard-coding this, can I get the path to this file somehow?
+(def fnl-ftplugin-path (vim.fs.normalize "~/.config/nvim/fnl/ftplugin"))
+(def ftplugin-path (vim.fs.normalize "~/.config/nvim/ftplugin"))
+; compile ftplugin separately since aniseed doesn't make it easy to have input and output dirs the same
+(c.glob :*.fnl fnl-ftplugin-path ftplugin-path)
+
+;;import plugins, kick off plugin config
 (require :config.plugin)

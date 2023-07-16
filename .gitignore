@@ -1,2 +1,3 @@
-.config/nvim/lua
+.config/nvim/**/*.lua
+!.confiv/nvim/init.lua
 .DS_Store

@@ -23,10 +23,9 @@
                           (use (a.assoc opts 1 name)))))))
   nil)
 
-;;; plugins managed by packer
-;;; :mod specifies namespace under plugin directory
-
-; fnl formatting absolutely MURDERS this
+; plugins managed by packer
+; :mod specifies namespace under plugin directory
+; fnl formatting absolutely MURDERS this, so turn it off
 
 ;; fnlfmt: skip
 (use
@@ -40,12 +39,12 @@
      :projekt0n/github-nvim-theme {:mod :theme }
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
-     :echasnovski/mini.starter { :mod :starter }
+     ; :echasnovski/mini.starter { :mod :starter }
 
      ;; clojure/lisp stuff
      ;; repl tools
      ;; install order: 0
-     :Olical/conjure {:branch :master :mod :conjure}
+     :Olical/conjure {:mod :conjure}
      ;; sexp
      :guns/vim-sexp {:mod :sexp}
      :tpope/vim-sexp-mappings-for-regular-people {}
