@@ -39,11 +39,9 @@
      :projekt0n/github-nvim-theme {:mod :theme }
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
-     ; :echasnovski/mini.starter { :mod :starter }
 
      ;; clojure/lisp stuff
      ;; repl tools
-     ;; install order: 0
      :Olical/conjure {:mod :conjure}
      ;; sexp
      :guns/vim-sexp {:mod :sexp}
@@ -57,30 +55,26 @@
      ;; parsing system
      ;; NOTE: this doesn't work on first install, since I guess it hasn't loaded the plugin when it tries to run :TSUpdate.
      ;; look at some way to defer this?
-     ;; install order: 1
-     :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" :mod :treesitter}
-     :nvim-treesitter/playground {}
-     :nvim-treesitter/nvim-treesitter-context {}
+     :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" 
+                                       :mod :treesitter
+                                       :requires [:nvim-treesitter/nvim-treesitter-context
+                                                  :nvim-treesitter/playground ]}
 
      ;; telescope
-     ;; install order: 2
       :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
                                                 :nvim-lua/popup.nvim
                                                 :nvim-lua/plenary.nvim
                                                 :kyazdani42/nvim-web-devicons]
                                      :mod :telescope}
 
-     ; install order: 3
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
-     ;:j-hui/fidget.nvim {:tag :legacy}
+
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
                                         :jose-elias-alvarez/null-ls.nvim
                                         :hrsh7th/cmp-nvim-lsp
-                                        ; the 1 is to mix associative and sequential tables,
-                                        ; which fennel doesn't make easy but packer expects
-                                        { 1 :j-hui/fidget.nvim :tag :legacy }
+                                        :j-hui/fidget.nvim
                                         ; try out typescript tools I guess?
                                         :pmizio/typescript-tools.nvim]
                              :mod :lsp.init}
@@ -91,7 +85,6 @@
 
 
      ;; autocomplete
-     ;; install order: 4
      :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
                                   :hrsh7th/cmp-nvim-lsp
                                   :hrsh7th/cmp-path
@@ -163,13 +156,9 @@
 
      ;; git/github
      :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
-     ; :airblade/vim-gitgutter {}
-     ; :tpope/vim-fugitive {:mod :fugitive}
+     :tpope/vim-fugitive {:mod :fugitive}
 
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
                            :mod :octo}
-
-     ; nonsense
-     :eandrju/cellular-automaton.nvim {}
      )

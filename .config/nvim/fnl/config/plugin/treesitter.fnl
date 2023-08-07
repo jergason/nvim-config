@@ -1,5 +1,5 @@
 (module config.plugin.treesitter
-        {autoload {treesitter nvim-treesitter.configs}})
+        {autoload {treesitter nvim-treesitter.configs ctx treesitter-context}})
 
 ; 300 KB
 (def max-file-size (* 1024 300))
@@ -15,10 +15,11 @@
     (and ok (> (. stats :filesize) max-file-size))))
 
 (treesitter.setup {:highlight {:enable true}
-                   :additional_vim_regex_highlighting [:org]
                    ; is this what's messing up my formatting?
                    ; :indent {:enable true }
                    :textobjects {:enable true}
                    :incremental_selection {:enable true}
                    :disable disable-for-large-fies
                    :ensure_installed :all})
+
+(ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})

@@ -2,6 +2,7 @@
         {autoload {nvim aniseed.nvim
                    telescope telescope
                    tb telescope.builtin
+                   ta telescope.actions
                    util config.util
                    themes telescope.themes}})
 
@@ -9,7 +10,9 @@
                              :winblend 12
                              :prompt_prefix " "
                              :selection_caret " "
-                             :preview {:filesize_limit 5}}
+                             :preview {:filesize_limit 5}
+                             ;:mappings {:n {[:<c-d>] ta.delete_buffer}}
+                             }
                   :extensions {:ui-select {1 (themes.get_dropdown {})}}
                   :pickers {:find_files {:find_command [:rg
                                                         :--files
