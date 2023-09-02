@@ -41,8 +41,7 @@
                   (vim.keymap.set :n :K vim.lsp.buf.hover {:buffer bufnr})
                   (vim.keymap.set :n :<leader>gd vim.lsp.buf.declaration
                                   {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>gt vim.lsp.buf.type_definition
-                                  {:buffer bufnr})
+                  ;(vim.keymap.set :n :<leader>gt vim.lsp.buf.type_definition ;                {:buffer bufnr})
                   (vim.keymap.set :n :<leader>gh vim.lsp.buf.signature_help
                                   {:buffer bufnr})
                   (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
@@ -79,7 +78,6 @@
                                   "<cmd> lua require ('telescope.builtin').lsp_implementations()<cr>"
                                   {:buffer bufnr})))})
 
-;; fnlfmt: skip
 (defn- _setup
   []
   (let [setup-args (make-setup-args)]
@@ -106,11 +104,11 @@
     (lsp.pyright.setup setup-args)
     (lsp.rust_analyzer.setup setup-args)
     (lsp.terraformls.setup setup-args)
-    ;(lsp.tsserver.setup setup-args)
-    (tstools.setup setup-args)
+    (tstools.setup (core.merge setup-args
+                               ; see if this helps with running out of memory on work codebase
+                               {:settings {:tsserver_max_memory 8192}}))
     (lsp.yamlls.setup setup-args)
-    (define-signs)
-    ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
+    (define-signs) ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
     ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work
     (vim.keymap.set :n :<leader>lf #(util.lsp-format 0))
     (vim.keymap.set :v :<leader>lf #(util.lsp-format 0))))

@@ -74,14 +74,10 @@
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
                                         :jose-elias-alvarez/null-ls.nvim
                                         :hrsh7th/cmp-nvim-lsp
-                                        :j-hui/fidget.nvim
-                                        ; try out typescript tools I guess?
+                                        { 1 :j-hui/fidget.nvim :tag :legacy }
                                         :pmizio/typescript-tools.nvim]
                              :mod :lsp.init}
 
-
-     ; java stuff
-     ; :mfussenegger/nvim-jdtls {}
 
 
      ;; autocomplete
@@ -99,6 +95,8 @@
                       :mod :luasnip}
 
      :simrat39/symbols-outline.nvim {:mod :symbols-outline}
+
+     :HiPhish/rainbow-delimiters.nvim {}
 
      ; easily toggle terminal
      :Hvassaa/sterm.nvim {:mod :sterm}
@@ -147,6 +145,8 @@
      ; markdown
      ; depends on node and yarn being installed already
      :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
+
+     :m4xshen/hardtime.nvim {:requires [:nvim-lua/plenary.nvim :MunifTanjim/nui.nvim] :mod :hardtime}
 
 
      :mbbill/undotree {:mod :undotree}

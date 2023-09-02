@@ -186,6 +186,7 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 - How to filter diagnostics for just errors for example?
 - look in to diagnostic signs, virtual text, etc. See https://smarttech101.com/nvim-lsp-diagnostics-keybindings-signs-virtual-texts/#severity_signs_in_nvim_lsp_diagnostics
 - ok, let's see how much lag there is when typing in iterm2. It seems about the same tbh? Maybe it's an autocomplete thing, can I debounce that somehow?
+- figure out why tsserver keeps running out of memory on our codebase
 
 ## null-ls
 

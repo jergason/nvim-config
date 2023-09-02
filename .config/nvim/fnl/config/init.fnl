@@ -76,7 +76,7 @@
                ; set default
                :foldmethod :manual
                ; show up to 4 columns showing all folds
-               :foldcolumn "auto:4"
+               ; :foldcolumn "auto:4"
                ; what kinds of commands open folds if the cursor ends up in them
                ; let's update to include jumps so G[number] opens the fold
                :foldopen "block,hor,jump,mark,percent,quickfix,search,tag,undo"}]
