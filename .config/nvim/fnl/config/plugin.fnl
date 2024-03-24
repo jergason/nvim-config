@@ -37,6 +37,8 @@
 
      ;; theme and look/feel
      :projekt0n/github-nvim-theme {:mod :theme }
+     :cocopon/iceberg.vim {}
+     :folke/tokyonight.nvim {}
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
 
@@ -58,7 +60,11 @@
      :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" 
                                        :mod :treesitter
                                        :requires [:nvim-treesitter/nvim-treesitter-context
-                                                  :nvim-treesitter/playground ]}
+                                                  :nvim-treesitter/playground
+                                                  :nvim-treesitter/nvim-treesitter-textobjects ]}
+
+
+
 
      ;; telescope
       :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
@@ -72,13 +78,19 @@
 
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        :jose-elias-alvarez/null-ls.nvim
+                                        ;:jose-elias-alvarez/null-ls.nvim
                                         :hrsh7th/cmp-nvim-lsp
-                                        { 1 :j-hui/fidget.nvim :tag :legacy }
+                                        :j-hui/fidget.nvim
                                         :pmizio/typescript-tools.nvim]
                              :mod :lsp.init}
 
+     ; linting for stuff that doesn't provide an LSP directly
+     :mfussenegger/nvim-lint { :mod :lint }
 
+     ; formatting for stuff that doesn't provide formatting via lsp
+     :stevearc/conform.nvim { :mod :format }
+
+     :folke/trouble.nvim { :mod :trouble }
 
      ;; autocomplete
      :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
@@ -100,6 +112,9 @@
 
      ; easily toggle terminal
      :Hvassaa/sterm.nvim {:mod :sterm}
+
+     :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
+                             :mod :ai}
 
      ; faster finding
       :nvim-telescope/telescope-fzf-native.nvim {:run :make}
@@ -128,8 +143,6 @@
      :pangloss/vim-javascript {}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
-     ; :dart-lang/dart-vim-plugin {}
-
      :ocaml/vim-ocaml {}
 
      ; infra/ops stuff!
@@ -146,7 +159,7 @@
      ; depends on node and yarn being installed already
      :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
 
-     :m4xshen/hardtime.nvim {:requires [:nvim-lua/plenary.nvim :MunifTanjim/nui.nvim] :mod :hardtime}
+     ;:m4xshen/hardtime.nvim {:requires [:nvim-lua/plenary.nvim :MunifTanjim/nui.nvim] :mod :hardtime}
 
 
      :mbbill/undotree {:mod :undotree}
@@ -157,8 +170,10 @@
      ;; git/github
      :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      :tpope/vim-fugitive {:mod :fugitive}
+     :github/copilot.vim {:mod :copilot}
 
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
                            :mod :octo}
      )
+

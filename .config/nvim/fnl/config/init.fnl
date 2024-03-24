@@ -9,6 +9,11 @@
 (set nvim.g.mapleader " ")
 (set nvim.g.maplocalleader " ")
 
+(nvim.create_autocmd :TermOpen
+                     {:pattern "*"
+                      :desc "Disable spellcheck in terminal"
+                      :command "setlocal nospell"})
+
 ; enable :Cfilter for qfix list
 (nvim.ex.packadd :cfilter)
 
@@ -63,17 +68,17 @@
                ;:listchars "tab:>-,trail:\\\\u22C5,extends:\\\\u2192,preceeds:\\\\u2190"
                ;transparent floating windows
                :winblend 10
+               ; spell checking in comments. Depends on treesitter @spell capture. See https://www.reddit.com/r/neovim/comments/125whev/dumb_question_how_to_spell_check_only_comments/ for more info on how this works.
+               :spell true
                ; tabs
                :autoindent true
                :cindent true
                :tabstop 2
                :shiftwidth 2
                :softtabstop 2
-               ; default is 4000, but make it shorter so gitgutter works faster
-               :updatetime 500
                :expandtab true
                ; folding
-               ; set default
+               ; set default, override in ftplugin
                :foldmethod :manual
                ; show up to 4 columns showing all folds
                ; :foldcolumn "auto:4"
@@ -91,3 +96,4 @@
 
 ;;import plugins, kick off plugin config
 (require :config.plugin)
+

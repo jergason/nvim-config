@@ -2,7 +2,7 @@
 
 Useful for prefixing a group of lines w/ a comment for example
 
-- `Shift-v` to enter "visual block" mode.
+- `Ctrl-v` to enter "visual block" mode.
 - `I` to enter insert mode (why not `i`? No idea)
 - `Esc` when done, wait a sec and the text will be prefixed to all the selected lines
 
@@ -29,10 +29,6 @@ Generally useful in help, but for navigating around code there are better more s
 
 parens jump between sentences.
 curly braces jump between paragraphs
-
-## Octo
-
-- `<leader>opl` list prs
 
 ## jumplist
 
@@ -183,10 +179,10 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 - find out how to look up documentation for a clojure function
 - figure out snippets
 - how to handle the annoying matching parens in lisp code. What is that coming from? How to make it smarter?
+  - update: looks like it's coming from sexpr stuff
 - How to filter diagnostics for just errors for example?
 - look in to diagnostic signs, virtual text, etc. See https://smarttech101.com/nvim-lsp-diagnostics-keybindings-signs-virtual-texts/#severity_signs_in_nvim_lsp_diagnostics
-- ok, let's see how much lag there is when typing in iterm2. It seems about the same tbh? Maybe it's an autocomplete thing, can I debounce that somehow?
-- figure out why tsserver keeps running out of memory on our codebase
+- figure out why I'm getting a "cannot parse tsconfig.eslint.json" errors
 
 ## null-ls
 
@@ -195,3 +191,8 @@ Sometimes I don't want to format stuff with prettier (markdown mostly). Use `:no
 ## Random Helptags Exploration
 
 `helptags ALL` was failing b/c of a duplicate tag error. Turned out that a help file in main was removed/renamed, and installing from source doesn't remove old runtime files, only copies over new stuff. So the tag was still being generated even if I removed the tags file (which I found out was located in the runtime/docs directory. Solution was to remove runtime files completely and reinstall from scratch.
+
+## Building neovim
+
+- `make distclean && make clean` to remove old build artifacts
+- `make CMAKE_BUILD_TYPE=RelWithDebInfo && make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=~/neovim" install` to build and install in my local dir

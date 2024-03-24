@@ -10,16 +10,19 @@
 ; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/
 ; https://www.vim.org/scripts/script.php?script_id=1506
 
-(fn disable-for-large-fies [lang buffer]
+(fn disable-for-large-files [lang buffer]
   (let [[ok stats] (pcall vim.loop.fs_stat (vim.api.nvim_buf_get_name buffer))]
     (and ok (> (. stats :filesize) max-file-size))))
 
 (treesitter.setup {:highlight {:enable true}
-                   ; is this what's messing up my formatting?
-                   ; :indent {:enable true }
-                   :textobjects {:enable true}
+                   ; config for treesitter-text-objects to enable swapping arguments in functions
+                   ; see treesitter-text-objects docs for more info
+                   :textobjects {:enable true
+                                 :swap {:enable true
+                                        :swap_next {:<leader>a "@parameter.inner"}
+                                        :swap_previous {:<leader>A "@parameter.inner"}}}
                    :incremental_selection {:enable true}
-                   :disable disable-for-large-fies
-                   :ensure_installed :all})
+                   :disable disable-for-large-files})
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
+

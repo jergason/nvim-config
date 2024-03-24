@@ -2,4 +2,5 @@
 
 (theme.setup {:options {:styles {:comments :italic} :darken {:float true}}})
 
-(nvim.ex.colorscheme :github_dark)
+(nvim.ex.colorscheme :tokyonight)
+
