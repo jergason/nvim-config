@@ -3,7 +3,9 @@
 (octo.setup)
 
 (util.nnoremap :opl "Octo pr list")
-(util.nnoremap :opcr "Octo pr create")
+(util.nnoremap :opc "Octo pr create")
+(util.nnoremap :opr "Octo review start")
 (util.nnoremap :opb "Octo pr browser")
-(util.nnoremap :opco "Octo pr checkout")
+(util.nnoremap :opo "Octo pr checkout")
 (util.nnoremap :opm "Octo merge squash")
+

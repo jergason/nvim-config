@@ -1,5 +1,63 @@
 (module config.plugin.treesitter
-        {autoload {treesitter nvim-treesitter.configs ctx treesitter-context}})
+        {autoload {treesitter nvim-treesitter.configs
+                   ctx treesitter-context
+                   nvim aniseed.nvim
+                   string aniseed.string}})
+
+; install required parsers
+(local ts-parsers [:bash
+                   :c
+                   :clojure
+                   :comment
+                   :cpp
+                   :css
+                   :csv
+                   :diff
+                   :dockerfile
+                   :elixir
+                   :elm
+                   :erlang
+                   :fennel
+                   :git_config
+                   :git_rebase
+                   :gitattributes
+                   :gitcommit
+                   :gitignore
+                   :go
+                   :graphql
+                   :hcl
+                   :html
+                   :java
+                   :javascript
+                   :jq
+                   :jsdoc
+                   :json
+                   :lua
+                   :make
+                   :markdown
+                   :markdown_inline
+                   :ocaml
+                   :ocaml_interface
+                   :promql
+                   :purescript
+                   :python
+                   :ruby
+                   :rust
+                   :scheme
+                   :sql
+                   :ssh_config
+                   :terraform
+                   :toml
+                   :tsx
+                   :typescript
+                   :vim
+                   :vimdoc
+                   :xml
+                   :yaml
+                   :zig])
+
+(nvim.create_user_command :JamisonTSUpdate
+                          (.. :TSUpdateSync " " (string.join " " ts-parsers)) {})
 
 ; 300 KB
 (def max-file-size (* 1024 300))

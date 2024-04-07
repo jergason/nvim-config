@@ -25,7 +25,7 @@
 
 ; plugins managed by packer
 ; :mod specifies namespace under plugin directory
-; fnl formatting absolutely MURDERS this, so turn it off
+; can also use :run for simple plugin setup
 
 ;; fnlfmt: skip
 (use
@@ -78,7 +78,6 @@
 
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        ;:jose-elias-alvarez/null-ls.nvim
                                         :hrsh7th/cmp-nvim-lsp
                                         :j-hui/fidget.nvim
                                         :pmizio/typescript-tools.nvim]
@@ -170,10 +169,14 @@
      ;; git/github
      :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      :tpope/vim-fugitive {:mod :fugitive}
+      ; Gitsigns toggle_current_line_blame will show inline blame
+      :lewis6991/gitsigns.nvim { 
+        :run #(let [gitsigns (require "gitsigns")] (gitsigns.setup))
+      }
      :github/copilot.vim {:mod :copilot}
 
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
                            :mod :octo}
-     )
+)
 

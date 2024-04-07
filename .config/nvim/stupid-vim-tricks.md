@@ -49,8 +49,8 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 ## neovim api stuff
 
 - `aniseed.nvim` is actually [this](https://github.com/norcalli/nvim.lua)
+- `(nvim.thing_fn arguments)` is the same as `vim.api.nvim_thing_fn(arguments)`
 - `(nvim.ex.thing arguments)` is the same as executing `:thing arguments`
-- G
 
 ## `:cdo`
 
@@ -196,3 +196,10 @@ Sometimes I don't want to format stuff with prettier (markdown mostly). Use `:no
 
 - `make distclean && make clean` to remove old build artifacts
 - `make CMAKE_BUILD_TYPE=RelWithDebInfo && make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=~/neovim" install` to build and install in my local dir
+
+## Treesitter
+
+- Use `:InspectTree` to inspect the treesitter tree
+- `:EditQuery` for the little repl thing
+- Use `(#set! injection.language "some language")` to mark a selection as a specific injected language
+- How do I use treesitter to navigate around? For example, I want to select a whole variable, including it's object. `var foo = { bar: 1 }` - how to select this even if it's on multiple lines? See https://github.com/nvim-treesitter/nvim-treesitter-textobjects for more docs and info.
