@@ -27,3 +27,4 @@
 
 (nvim.create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps)
                           {:desc "Install or update mason deps"})
+

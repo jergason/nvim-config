@@ -1,6 +1,7 @@
 (module config.plugin.treesitter
         {autoload {treesitter nvim-treesitter.configs
                    ctx treesitter-context
+                   pairs tree-pairs
                    nvim aniseed.nvim
                    string aniseed.string}})
 
@@ -83,4 +84,6 @@
                    :disable disable-for-large-files})
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
+
+(pairs.setup)
 

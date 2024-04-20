@@ -120,6 +120,19 @@ nvim includes a built in terminal emulator. `:terminal` to open it. Hit an inser
 - `:diffs` - open file in new split, current window is part of the diff too
 - `:TOHtml` - can make it easy to pretty-print and share diffs w/ folks for stuff that doesn't show up on GH
 
+ChatGPT was helpful wrt diffing things, gave this advice:
+
+4. **Enable Diff Mode**: Once both files are open side by side, you can enable the diff mode by using the `:windo diffthis` command. This will turn on the diff mode for both windows. Alternatively, you can enable diff mode for each window separately using `:diffthis` while focusing on each window.
+5. **Navigate the Diff**: You can navigate between the differences using the following commands:
+   - `]c`: Jump to the next change.
+   - `[c`: Jump to the previous change.
+6. **Adjusting the View**: If you need to scroll both windows at the same time to keep the differences aligned, you can use the following commands:
+   - `:set scrollbind`: This will scroll both windows together.
+   - `:set noscrollbind`: This will disable the synchronized scrolling.
+7. **Editing Files**: You can edit either file as you would normally in Neovim. The differences will be updated in real-time as you make changes.
+8. **Exiting Diff Mode**: When you're done with the comparison and want to exit diff mode, you can use the `:windo diffoff` command. This will turn off the diff mode for both windows.
+   Here's a quick example of the commands you would use in sequence to diff two files:
+
 # Stuff To Look In To
 
 ## Folds

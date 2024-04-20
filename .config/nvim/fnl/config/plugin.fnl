@@ -35,33 +35,26 @@
      ;; nvim config and plugins in Fennel
      :Olical/aniseed {:branch :develop}
 
-     ;; theme and look/feel
+     ; =======================
+     ; Theme/Look/Feel/Feels
+     ; =======================
      :projekt0n/github-nvim-theme {:mod :theme }
      :cocopon/iceberg.vim {}
      :folke/tokyonight.nvim {}
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
 
-     ;; clojure/lisp stuff
-     ;; repl tools
-     :Olical/conjure {:mod :conjure}
-     ;; sexp
-     :guns/vim-sexp {:mod :sexp}
-     :tpope/vim-sexp-mappings-for-regular-people {}
-     :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
-                                          :tpope/vim-dispatch]}
-
-
      ;; show key mappings
      :folke/which-key.nvim {:mod :which-key}
      ;; parsing system
      ;; NOTE: this doesn't work on first install, since I guess it hasn't loaded the plugin when it tries to run :TSUpdate.
      ;; look at some way to defer this?
-     :nvim-treesitter/nvim-treesitter {:run ":TSUpdate" 
-                                       :mod :treesitter
-                                       :requires [:nvim-treesitter/nvim-treesitter-context
-                                                  :nvim-treesitter/playground
-                                                  :nvim-treesitter/nvim-treesitter-textobjects ]}
+     :nvim-treesitter/nvim-treesitter-context {:run ":TSUpdate" 
+                                               :mod :treesitter
+                                               :requires [:nvim-treesitter/nvim-treesitter
+                                                          :nvim-treesitter/playground
+                                                          :yorickpeterse/nvim-tree-pairs
+                                                          :nvim-treesitter/nvim-treesitter-textobjects ]}
 
 
 
@@ -72,6 +65,7 @@
                                                 :nvim-lua/plenary.nvim
                                                 :kyazdani42/nvim-web-devicons]
                                      :mod :telescope}
+     :nvim-telescope/telescope-fzf-native.nvim {:run :make}
 
      ;; lsp
      :williamboman/mason.nvim {:mod :mason}
@@ -88,7 +82,6 @@
 
      ; formatting for stuff that doesn't provide formatting via lsp
      :stevearc/conform.nvim { :mod :format }
-
      :folke/trouble.nvim { :mod :trouble }
 
      ;; autocomplete
@@ -105,23 +98,6 @@
                                  :rafamadriz/friendly-snippets]
                       :mod :luasnip}
 
-     :simrat39/symbols-outline.nvim {:mod :symbols-outline}
-
-     :HiPhish/rainbow-delimiters.nvim {}
-
-     ; easily toggle terminal
-     :Hvassaa/sterm.nvim {:mod :sterm}
-
-     :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
-                             :mod :ai}
-
-     ; faster finding
-      :nvim-telescope/telescope-fzf-native.nvim {:run :make}
-
-
-     :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
-
-     :tyru/open-browser.vim {:mod :open-browser}
 
 
      ;tim pope vim pope
@@ -137,6 +113,14 @@
      ; ================
      ; Language Support
      ; ================
+     ;; clojure/lisp stuff
+     ;; repl tools
+     :Olical/conjure {:mod :conjure}
+     ;; sexp
+     :guns/vim-sexp {:mod :sexp}
+     :tpope/vim-sexp-mappings-for-regular-people {}
+     :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
+                                          :tpope/vim-dispatch]}
 
      ; javascript
      :pangloss/vim-javascript {}
@@ -148,32 +132,56 @@
      :hashivim/vim-terraform {}
      :ekalinin/Dockerfile.vim {}
 
-     ;; LUA STUFF
-     ;; lua stdlib docs in help
+     ; lua stdlib docs in help
      :milisims/nvim-luaref {}
-     ;; . . . something?
+     ; . . . something?
      :folke/lua-dev.nvim {}
 
      ; markdown
      ; depends on node and yarn being installed already
      :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
 
+     :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
+
      ;:m4xshen/hardtime.nvim {:requires [:nvim-lua/plenary.nvim :MunifTanjim/nui.nvim] :mod :hardtime}
 
 
+     ; ==============
+     ; Utility/Tools
+     ; ==============
+     :simrat39/symbols-outline.nvim {:mod :symbols-outline}
+     :HiPhish/rainbow-delimiters.nvim {}
+     ; easily toggle terminal
+     :Hvassaa/sterm.nvim {:mod :sterm}
+
+     ; =========
+     ; AI Magic
+     ; =========
+     :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
+                             :mod :ai}
+     :github/copilot.vim {:mod :copilot}
+     ; :CopilotC-Nvim/CopilotChat.nvim {:requires [:nvim-lua/plenary.nvim :github/copilot.vim]
+     ;                                  :mod :copilot-chat}
+
+     :tyru/open-browser.vim {:mod :open-browser}
      :mbbill/undotree {:mod :undotree}
      :skywind3000/asyncrun.vim {}
 
      :vim-test/vim-test {:mod :vim-test}
+     :mistricky/codesnap.nvim {:mod :codesnap :run :make}
+     ; ; requires cargo
+     ; :krivahtoo/silicon.nvim {:run "./install.sh build" :mod :silicon}
 
-     ;; git/github
+     :microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
+     :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap] }
+
+     ; ===========================
+     ; Git and Version Control
+     ; ===========================
      :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
      :tpope/vim-fugitive {:mod :fugitive}
-      ; Gitsigns toggle_current_line_blame will show inline blame
-      :lewis6991/gitsigns.nvim { 
-        :run #(let [gitsigns (require "gitsigns")] (gitsigns.setup))
-      }
-     :github/copilot.vim {:mod :copilot}
+     ; Gitsigns toggle_current_line_blame will show inline blame
+     :lewis6991/gitsigns.nvim { :mod :gitsigns } 
 
      :tpope/vim-rhubarb {}
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
