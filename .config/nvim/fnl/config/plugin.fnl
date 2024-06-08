@@ -2,6 +2,8 @@
                                  a aniseed.core
                                  packer packer}})
 
+{}
+
 (defn- safe-require-plugin-config
   [name] ; pcall is a lua thing - https://www.lua.org/pil/8.4.html. basically, handle errors thrown by requiring each plugin
   ; require is a lua API thing. See :help lua-require
@@ -60,7 +62,7 @@
 
 
      ;; telescope
-      :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
+     :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
                                                 :nvim-lua/popup.nvim
                                                 :nvim-lua/plenary.nvim
                                                 :kyazdani42/nvim-web-devicons]
@@ -97,6 +99,10 @@
      :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
                                  :rafamadriz/friendly-snippets]
                       :mod :luasnip}
+
+     ;; database stuff
+     :tpope/vim-dadbod {}
+     :kristijanhusak/vim-dadbod-ui {}
 
 
 
@@ -160,8 +166,10 @@
      :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
                              :mod :ai}
      :github/copilot.vim {:mod :copilot}
-     ; :CopilotC-Nvim/CopilotChat.nvim {:requires [:nvim-lua/plenary.nvim :github/copilot.vim]
-     ;                                  :mod :copilot-chat}
+     ;:Exafunction/codeium.vim {:mod :codeium}
+     :CopilotC-Nvim/CopilotChat.nvim {:requires [:nvim-lua/plenary.nvim 
+                                                 :github/copilot.vim]
+                                      :mod :copilot-chat}
 
      :tyru/open-browser.vim {:mod :open-browser}
      :mbbill/undotree {:mod :undotree}
@@ -173,7 +181,7 @@
      ; :krivahtoo/silicon.nvim {:run "./install.sh build" :mod :silicon}
 
      :microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
-     :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap] }
+     :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap :nvim-neotest/nvim-nio :rcarriga/nvim-dap-ui] }
 
      ; ===========================
      ; Git and Version Control
