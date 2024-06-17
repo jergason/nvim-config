@@ -75,15 +75,16 @@
      ; put lsp-related config in a special magic subdir
      :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
                                         :hrsh7th/cmp-nvim-lsp
+                                        :creativenull/efmls-configs-nvim
                                         :j-hui/fidget.nvim
                                         :pmizio/typescript-tools.nvim]
                              :mod :lsp.init}
 
      ; linting for stuff that doesn't provide an LSP directly
-     :mfussenegger/nvim-lint { :mod :lint }
+     ;:mfussenegger/nvim-lint { :mod :lint }
 
      ; formatting for stuff that doesn't provide formatting via lsp
-     :stevearc/conform.nvim { :mod :format }
+     ;:stevearc/conform.nvim { :mod :format }
      :folke/trouble.nvim { :mod :trouble }
 
      ;; autocomplete

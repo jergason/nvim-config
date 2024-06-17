@@ -7,6 +7,7 @@
   [:arduino-language-server
    :bash-language-server
    :clojure-lsp
+   :efm
    :eslint-lsp
    ;; TOOD: do I need to manage this outside of Mason since it might depend on installed versions of golang?
    :gopls
