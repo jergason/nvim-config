@@ -1,8 +1,12 @@
 (module ftplugin.utilities {autoload {nvim aniseed.nvim}})
 
-(defn js-setup []
+(defn js-setup
+  []
   ;; sticky context headers
-  (nvim.command ":TSContextEnable")
   ;; use treesitter for folding
-  (set vim.opt_local.foldmethod :expr)
-  (set vim.opt_local.foldexpr "nvim_treesitter#foldexpr()"))
+  ;(print "RUNNING FTPLUGIN FOR JS-ISH LANGUAGES")
+  (when (< (vim.api.nvim_buf_line_count 0) 30000) ; (print "GOT A SMALL FILE, SETTING STUFF UP")
+    (nvim.command ":TSContextEnable")
+    (set vim.opt_local.foldmethod :expr)
+    (set vim.opt_local.foldexpr "nvim_treesitter#foldexpr()")))
+

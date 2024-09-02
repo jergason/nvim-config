@@ -5,8 +5,7 @@
 {}
 
 (defn- safe-require-plugin-config
-  [name] ; pcall is a lua thing - https://www.lua.org/pil/8.4.html. basically, handle errors thrown by requiring each plugin
-  ; require is a lua API thing. See :help lua-require
+  [name]
   (let [(ok? val-or-err) (pcall require (.. :config.plugin. name))]
     (when (not ok?)
       (print (.. "config error: " val-or-err)))))
@@ -40,9 +39,10 @@
      ; =======================
      ; Theme/Look/Feel/Feels
      ; =======================
-     :projekt0n/github-nvim-theme {:mod :theme }
      :cocopon/iceberg.vim {}
      :folke/tokyonight.nvim {}
+     :catppuccin/nvim {:as :catppuccin}
+     :projekt0n/github-nvim-theme {:mod :theme }
      :nvim-lualine/lualine.nvim {:mod :lualine}
      :akinsho/bufferline.nvim {:mod :bufferline}
 
@@ -77,14 +77,10 @@
                                         :hrsh7th/cmp-nvim-lsp
                                         :creativenull/efmls-configs-nvim
                                         :j-hui/fidget.nvim
-                                        :pmizio/typescript-tools.nvim]
+                                        ;:pmizio/typescript-tools.nvim
+                                        ]
                              :mod :lsp.init}
 
-     ; linting for stuff that doesn't provide an LSP directly
-     ;:mfussenegger/nvim-lint { :mod :lint }
-
-     ; formatting for stuff that doesn't provide formatting via lsp
-     ;:stevearc/conform.nvim { :mod :format }
      :folke/trouble.nvim { :mod :trouble }
 
      ;; autocomplete
@@ -147,10 +143,9 @@
      ; markdown
      ; depends on node and yarn being installed already
      :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
+     :OXY2DEV/markview.nvim {:mod :markview}
 
      :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
-
-     ;:m4xshen/hardtime.nvim {:requires [:nvim-lua/plenary.nvim :MunifTanjim/nui.nvim] :mod :hardtime}
 
 
      ; ==============
@@ -159,18 +154,28 @@
      :simrat39/symbols-outline.nvim {:mod :symbols-outline}
      :HiPhish/rainbow-delimiters.nvim {}
      ; easily toggle terminal
-     :Hvassaa/sterm.nvim {:mod :sterm}
+     :akinsho/toggleterm.nvim {:mod :toggleterm}
 
      ; =========
      ; AI Magic
      ; =========
+     :yetone/avante.nvim { :run ":AvanteBuild"
+                           :requires [:stevearc/dressing.nvim
+                                      :nvim-lua/plenary.nvim
+                                      :MunifTanjim/nui.nvim
+                                      :echasnovski/mini.icons] }
+     :github/copilot.vim {}
+     :olimorris/codecompanion.nvim {
+                                    :requires [:stevearc/dressing.nvim
+                                               :nvim-lua/plenary.nvim
+                                               :nvim-treesitter/nvim-treesitter
+                                               :nvim-telescope/telescope.nvim ] }
+
      :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
+                             ; NOTE: the ai module setups up all the AI plugins. maybe this is a bad idea? but for now I find myself messing with them all together.
                              :mod :ai}
-     :github/copilot.vim {:mod :copilot}
-     ;:Exafunction/codeium.vim {:mod :codeium}
-     :CopilotC-Nvim/CopilotChat.nvim {:requires [:nvim-lua/plenary.nvim 
-                                                 :github/copilot.vim]
-                                      :mod :copilot-chat}
+
+     :Isrothy/neominimap.nvim {:mod :neominimap}
 
      :tyru/open-browser.vim {:mod :open-browser}
      :mbbill/undotree {:mod :undotree}
@@ -178,8 +183,6 @@
 
      :vim-test/vim-test {:mod :vim-test}
      :mistricky/codesnap.nvim {:mod :codesnap :run :make}
-     ; ; requires cargo
-     ; :krivahtoo/silicon.nvim {:run "./install.sh build" :mod :silicon}
 
      :microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
      :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap :nvim-neotest/nvim-nio :rcarriga/nvim-dap-ui] }

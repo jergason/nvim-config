@@ -24,6 +24,9 @@
 (nvim.set_keymap :t :<C-w> "<C-\\><C-n>"
                  {:noremap true :desc "Exit terminal insert mode"})
 
+(nvim.set_keymap :n :<leader>Y "<cmd>%y<CR>"
+                 {:desc "Yank whole buffer" :noremap true})
+
 ;remove trailing whitespace
 (util.nnoremap :ws "%s/\\s\\+$//e")
 ; I always hit this on the kinesis, just disable it
@@ -80,6 +83,8 @@
                ; folding
                ; set default, override in ftplugin
                :foldmethod :manual
+               ; open most folds when opening files
+               :foldlevel 4
                ; show up to 4 columns showing all folds
                ; :foldcolumn "auto:4"
                ; what kinds of commands open folds if the cursor ends up in them
@@ -96,4 +101,19 @@
 
 ;;import plugins, kick off plugin config
 (require :config.plugin)
+
+; post-plugin setup stuff
+(defn start-local-server []
+  (vim.cmd :tabnew)
+  (vim.cmd :vsplit)
+  (vim.cmd "wincmd h")
+  (vim.cmd "terminal pnpm app:client")
+  (vim.cmd "file term/ui.zsh")
+  (vim.cmd "wincmd l")
+  (vim.cmd "terminal pnpm app:server")
+  (vim.cmd "file term/api.zsh"))
+
+(nvim.create_user_command :StartLocalServer start-local-server {})
+(nvim.set_keymap :n :<leader>sl :<cmd>StartLocalServer<cr>
+                 {:desc "Start local droplet server"})
 

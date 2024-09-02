@@ -27,8 +27,8 @@ Generally useful in help, but for navigating around code there are better more s
 
 ## navigating
 
-parens jump between sentences.
-curly braces jump between paragraphs
+- parens jump between sentences.
+- curly braces jump between paragraphs
 
 ## jumplist
 
@@ -42,7 +42,7 @@ List of all the places motions take you, sorta? Can jump back and forth to previ
 - `c-q` populates the qf list from telecope
 - `:cfilter` lets you filter the quickfix list by a regexp
 - unimpaired binds ]q and [q to navigating in the list
-- https://codeinthehole.com/tips/vim-lists/ for more interesting info on lists
+- [here](https://codeinthehole.com/tips/vim-lists/) for more interesting info on lists
 - `:colder` goes to older qflist
 - `:cnewer` to next (via [this](https://vimtricks.com/p/vimtrick-navigate-through-quickfix/))
 
@@ -172,6 +172,8 @@ There are a ton of different APIs for setting key mappings in neovim and aniseed
 - `vim.keymap.set`
 - `nvim_set_keymap`
 
+NOW I KNOW WHY - `vim.keymap.set` is higher-level, and can take functions as a callback, where `nvim_set` can only take strings, either commands to invoke or lua functions in strings, etc.
+
 ### `<cmd>` vs `<plug>` in mappings
 
 when do I use which one, and why? I am not sure!
@@ -187,15 +189,12 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 
 ## TODO
 
-- find out how to evaluate fennel code in conjure repl
-- find out how to get a clojure repl up and running
-- find out how to look up documentation for a clojure function
-- figure out snippets
+- Figure out how to disable treesitter expressions for folding for large files
+- figure out snippets - how to wrap some code in try/catch for example
 - how to handle the annoying matching parens in lisp code. What is that coming from? How to make it smarter?
   - update: looks like it's coming from sexpr stuff
 - How to filter diagnostics for just errors for example?
 - look in to diagnostic signs, virtual text, etc. See https://smarttech101.com/nvim-lsp-diagnostics-keybindings-signs-virtual-texts/#severity_signs_in_nvim_lsp_diagnostics
-- figure out why I'm getting a "cannot parse tsconfig.eslint.json" errors
 
 ## null-ls
 

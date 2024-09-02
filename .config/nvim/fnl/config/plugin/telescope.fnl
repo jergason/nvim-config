@@ -43,7 +43,7 @@
                 #(tb.live_grep {:glob_pattern $1})))
 
 ; prompt for a glob, live grep within that glob
-(vim.keymap.set :n :<leader>fgg prompt-and-grep
+(vim.keymap.set :n :<leader>flg prompt-and-grep
                 {:desc "Live grep only for files matching a glob we prompt for"})
 
 ; helpers to edit files I often want to edit
@@ -57,3 +57,5 @@
                 #(tb.find_files {:cwd "~/.local/share/nvim/site/pack/packer/start"
                                  :path_display [:smart]})
                 {:desc "Search plugin files"})
+
+

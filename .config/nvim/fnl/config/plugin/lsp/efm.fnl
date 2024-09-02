@@ -31,6 +31,7 @@
    :javascript [prettier eslint]
    :javascriptreact [prettier eslint]
    :json [prettier jq]
+   :jsonc [prettier jq]
    :lua [luacheck]
    ; TODO: how to replicate the "injected" thing from conform?
    :markdown [prettier]

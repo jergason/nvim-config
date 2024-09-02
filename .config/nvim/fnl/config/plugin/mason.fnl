@@ -4,21 +4,20 @@
 (mason.setup {:ui {:border :single}})
 
 (def- mason-deps
-  [:arduino-language-server
-   :bash-language-server
+  [:bash-language-server
    :clojure-lsp
    :efm
    :eslint-lsp
    ;; TOOD: do I need to manage this outside of Mason since it might depend on installed versions of golang?
    :gopls
-   :graphql-language-service-cli
    :jdtls
    :joker
    :lua-language-server
    :prettier
    :pyright
    :terraform-ls
-   :typescript-language-server
+   ; :typescript-language-server
+   :vtsls
    :yaml-language-server])
 
 (defn install-mason-deps

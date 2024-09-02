@@ -61,7 +61,7 @@
                           (.. :TSUpdateSync " " (string.join " " ts-parsers)) {})
 
 ; 300 KB
-(def max-file-size (* 1024 300))
+(def max-file-size (* 1024 7))
 
 ; large file stuff to look at 
 ; https://www.reddit.com/r/neovim/comments/12n5lvl/how_do_you_deal_with_large_files/
@@ -69,19 +69,28 @@
 ; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/
 ; https://www.vim.org/scripts/script.php?script_id=1506
 
-(fn disable-for-large-files [lang buffer]
-  (let [[ok stats] (pcall vim.loop.fs_stat (vim.api.nvim_buf_get_name buffer))]
-    (and ok (> (. stats :filesize) max-file-size))))
+; local current_file = vim.api.nvim_buf_get_name(0) -- 0 refers to the current buffer
+; local file_size = vim.fn.getfsize(current_file)
+; print("File size in bytes: " .. file_size)
 
-(treesitter.setup {:highlight {:enable true}
+; disable treesitter folding for large file
+(fn is-large-file [file]
+  (> (vim.fn.getfsize file) max-file-size))
+
+(fn ts-disable-large-file [lang buffer] ; (print (vim.print "Disabling treesitter for large files, is large file is"))
+  ; (print (vim.print (vim.inspect (vim.api.nvim_buf_line_count buffer))))
+  (> (vim.api.nvim_buf_line_count buffer) 30000))
+
+(treesitter.setup {:highlight {:enable true :disable ts-disable-large-file}
                    ; config for treesitter-text-objects to enable swapping arguments in functions
                    ; see treesitter-text-objects docs for more info
                    :textobjects {:enable true
+                                 :disable ts-disable-large-file
                                  :swap {:enable true
                                         :swap_next {:<leader>a "@parameter.inner"}
                                         :swap_previous {:<leader>A "@parameter.inner"}}}
-                   :incremental_selection {:enable true}
-                   :disable disable-for-large-files})
+                   :incremental_selection {:enable true
+                                           :disable ts-disable-large-file}})
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
 
