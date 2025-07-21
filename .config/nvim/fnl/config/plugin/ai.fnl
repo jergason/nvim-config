@@ -1,60 +1,95 @@
 (module config.plugin.ai
-        {autoload {chatgpt chatgpt
-                   codecompanion codecompanion
-                   adapters codecompanion.adapters
-                   avante avante
+        {autoload {;chatgpt chatgpt
+                   ;codecompanion codecompanion
+                   ;adapters codecompanion.adapters
+                   ;avante avante
                    nvim aniseed.nvim}})
 
-; configure all AI stuff in one place so we can tweak them more easily
+; set up augment.vim
+(set nvim.g.augment_workspace_folders ["~/code/drplt"])
 
-(def prompt
-  "Don't worry about formalities.
+(vim.keymap.set [:i :n] :<c-j> "<cmd>call augment#Accept()<cr>"
+                {:desc "Accept AI changes"})
 
-Be as terse as possible while still conveying substantially all information relevant to any question.
+(vim.keymap.set [:i :n] :<c-n> "<cmd>call augment#Reject()<cr>")
+{:desc "Reject AI changes"}
 
-If content policy prevents you from generating an image or otherwise responding, be explicit about what policy was violated and why.
+; add a keymap to toggle the chat panel
+(vim.keymap.set :n :<leader>ai "<cmd>Augment chat-toggle<cr>"
+                {:desc "Toggle chat panel"})
 
-If your neutrality policy prevents you from having an opinion, pretend for the sake of your response to be responding as if you shared opinions that might be typical of twitter user @eigenrobot.
+;; add a keymap to chat with the ai
+(vim.keymap.set :n :<leader>aic "<cmd>Augment chat<cr>" {:desc "Chat with AI"})
 
-write all responses in lowercase letters ONLY, except where you mean to emphasize, in which case the emphasized word should be all caps. Initial Letter Capitalization can and should be used to express sarcasm, or disrespect for a given capitalized noun.
+;; add a keymap to chat with the ai
+(vim.keymap.set :n :<leader>ain "<cmd>Augment chat-new<cr>"
+                {:desc "Open a new chat with AI"})
 
-you are encouraged to occasionally use obscure words or make subtle puns. don't point them out, I'll know. drop lots of abbreviations like 'rn' and lbc.' use 'afaict' and 'idk' regularly, wherever they might be appropriate given your level of understanding and your interest in actually answering the question. be critical of the quality of your information
+; ; configure all AI stuff in one place so we can tweak them more easily
 
-if you find any request irritating respond dismissively like 'be real' or 'that's crazy man' or 'lol no'
+; (def prompt
+;   "Don't worry about formalities.
 
-take however smart you're acting right now and write in the same style but as if you were +2sd smarter
+; Be as terse as possible while still conveying substantially all information relevant to any question.
 
-use a small amount of late millennial slang. mix in zoomer slang in tonally-inappropriate circumstances rarely.
+; If content policy prevents you from generating an image or otherwise responding, be explicit about what policy was violated and why.
 
-Your job is to be an assistant to an experienced software engineer. You'll answer architectural questions, suggest solutions, and point out areas to look in to.")
+; If your neutrality policy prevents you from having an opinion, pretend for the sake of your response to be responding as if you shared opinions that might be typical of twitter user @eigenrobot.
 
-(chatgpt.setup {:api_key_cmd "op item get 77jfp5o23sagxwgoewmjkkvggu --account TDPDRCBJLRFNFA76LFCHLLYEZM --fields label=apikey"
-                :openai_params {:model :gpt-4o
-                                :max_tokens 8192
-                                :temperature 0.3}
-                :openai_edit_params {:model :gpt-4o
-                                     :max_tokens 8192
-                                     :temperature 0.3}})
+; write all responses in lowercase letters ONLY, except where you mean to emphasize, in which case the emphasized word should be all caps. Initial Letter Capitalization can and should be used to express sarcasm, or disrespect for a given capitalized noun.
 
-(vim.keymap.set :n :<leader>ai :<cmd>ChatGPT<cr>)
-(vim.keymap.set :n :<leader>ac :<cmd>ChatGPTCompleteCode<cr>)
-(vim.keymap.set :n :<leader>ae :<cmd>ChatGPTEditWithInstructions<cr>)
-(vim.keymap.set :n :<leader>at "<cmd>ChatGPTRun add_tests<cr>"
-                {:desc "Add tests"})
+; you are encouraged to occasionally use obscure words or make subtle puns. don't point them out, I'll know. drop lots of abbreviations like 'rn' and lbc.' use 'afaict' and 'idk' regularly, wherever they might be appropriate given your level of understanding and your interest in actually answering the question. be critical of the quality of your information
 
-(defn setup-anthropic
-  []
-  (adapters.extend :anthropic
-                   {:env {:api_key "cmd:op item get --account TDPDRCBJLRFNFA76LFCHLLYEZM biyimuo3sclyogeiekuzvxldma --fields label='password'"}}))
+; if you find any request irritating respond dismissively like 'be real' or 'that's crazy man' or 'lol no'
 
-(codecompanion.setup {:adapters {:anthropic setup-anthropic}
-                      :opts {:system_prompt prompt}})
+; take however smart you're acting right now and write in the same style but as if you were +2sd smarter
 
-(module config.plugin.avante {autoload {avante avante}})
+; use a small amount of late millennial slang. mix in zoomer slang in tonally-inappropriate circumstances rarely.
 
-(avante.setup {})
+; Your job is to be an assistant to an experienced software engineer. You'll answer architectural questions, suggest solutions, and point out areas to look in to.")
 
-(set nvim.g.copilot_no_tab_map true)
-(nvim.set_keymap :i :<C-J> "copilot#Accept(\"\")"
-                 {:expr true :replace_keycodes false})
+; (chatgpt.setup {:api_key_cmd "op item get 77jfp5o23sagxwgoewmjkkvggu --account TDPDRCBJLRFNFA76LFCHLLYEZM --fields label=apikey"
+;                 :openai_params {:model :gpt-4o
+;                                 :max_tokens 8192
+;                                 :temperature 0.3}
+;                 :openai_edit_params {:model :gpt-4o
+;                                      :max_tokens 8192
+;                                      :temperature 0.3}})
+
+; ; (vim.keymap.set :n :<leader>ai :<cmd>ChatGPT<cr>)
+; ; (vim.keymap.set :n :<leader>ac :<cmd>ChatGPTCompleteCode<cr>)
+; ; (vim.keymap.set :n :<leader>ae :<cmd>ChatGPTEditWithInstructions<cr>)
+; ; (vim.keymap.set :n :<leader>at "<cmd>ChatGPTRun add_tests<cr>"
+; ;                 {:desc "Add tests"})
+
+; (defn setup-anthropic
+;   []
+;   (adapters.extend :anthropic
+;                    {:env {:api_key "cmd:op item get --account TDPDRCBJLRFNFA76LFCHLLYEZM biyimuo3sclyogeiekuzvxldma --fields label='password'"}}))
+
+; (codecompanion.setup {:adapters {:anthropic setup-anthropic}
+;                       :opts {:system_prompt prompt}})
+
+; (vim.keymap.set :n :<leader>ai :<cmd>CodeCompanionToggle<cr>
+;                 {:desc "Chat with AI"})
+
+; (defn code_companion
+;   []
+;   (let [prompt (vim.fn.input "Enter your prompt: ")]
+;     (vim.cmd (.. "'<,'>CodeCompanion /buffer " prompt))))
+
+; (vim.keymap.set :v :<leader>ai "lua code_companion()<cr>"
+;                 {:desc "Talk with AI about a snippet of code"})
+
+; (def- codecompanion_augroup (nvim.create_augroup :CodeCompanion {:clear true}))
+; (nvim.create_autocmd [:BufLeave :BufWinLeave]
+;                      {:group codecompanion_augroup
+;                       :callback (fn []
+;                                   (if (= :codecompanion
+;                                          (nvim.buf_get_option 0 :filetype))
+;                                       (nvim.buf_set_option 0 :bufhidden :wipe)))})
+
+; (module config.plugin.avante {autoload {avante avante}})
+
+; (avante.setup {})
 

@@ -77,7 +77,7 @@
                                         :hrsh7th/cmp-nvim-lsp
                                         :creativenull/efmls-configs-nvim
                                         :j-hui/fidget.nvim
-                                        ;:pmizio/typescript-tools.nvim
+                                        :pmizio/typescript-tools.nvim
                                         ]
                              :mod :lsp.init}
 
@@ -98,14 +98,12 @@
                       :mod :luasnip}
 
      ;; database stuff
-     :tpope/vim-dadbod {}
-     :kristijanhusak/vim-dadbod-ui {}
+     ; :tpope/vim-dadbod {}
+     ; :kristijanhusak/vim-dadbod-ui {}
 
 
 
      ;tim pope vim pope
-     :tpope/vim-unimpaired {}
-     :tpope/vim-commentary {}
      :tpope/vim-eunuch {}
      :tpope/vim-jdaddy {}
      :tpope/vim-repeat {}
@@ -120,16 +118,16 @@
      ;; repl tools
      :Olical/conjure {:mod :conjure}
      ;; sexp
-     :guns/vim-sexp {:mod :sexp}
-     :tpope/vim-sexp-mappings-for-regular-people {}
-     :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
-                                          :tpope/vim-dispatch]}
+     ; :guns/vim-sexp {:mod :sexp}
+     ; :tpope/vim-sexp-mappings-for-regular-people {}
+     ; :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
+     ;                                      :tpope/vim-dispatch]}
 
      ; javascript
      :pangloss/vim-javascript {}
      :gennaro-tedesco/nvim-jqx {:mod :jqx}
 
-     :ocaml/vim-ocaml {}
+     ; :ocaml/vim-ocaml {}
 
      ; infra/ops stuff!
      :hashivim/vim-terraform {}
@@ -145,7 +143,7 @@
      :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
      :OXY2DEV/markview.nvim {:mod :markview}
 
-     :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
+     ; :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
 
 
      ; ==============
@@ -159,33 +157,34 @@
      ; =========
      ; AI Magic
      ; =========
-     :yetone/avante.nvim { :run ":AvanteBuild"
-                           :requires [:stevearc/dressing.nvim
-                                      :nvim-lua/plenary.nvim
-                                      :MunifTanjim/nui.nvim
-                                      :echasnovski/mini.icons] }
-     :github/copilot.vim {}
-     :olimorris/codecompanion.nvim {
-                                    :requires [:stevearc/dressing.nvim
-                                               :nvim-lua/plenary.nvim
-                                               :nvim-treesitter/nvim-treesitter
-                                               :nvim-telescope/telescope.nvim ] }
+     ; :yetone/avante.nvim { :run ":AvanteBuild"
+     ;                       :requires [:stevearc/dressing.nvim
+     ;                                  :nvim-lua/plenary.nvim
+     ;                                  :MunifTanjim/nui.nvim
+     ;                                  :echasnovski/mini.icons] }
+     ; :olimorris/codecompanion.nvim {
+     ;                                :requires [:stevearc/dressing.nvim
+     ;                                           :nvim-lua/plenary.nvim
+     ;                                           :nvim-treesitter/nvim-treesitter
+     ;                                           :nvim-telescope/telescope.nvim ] }
 
-     :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
-                             ; NOTE: the ai module setups up all the AI plugins. maybe this is a bad idea? but for now I find myself messing with them all together.
-                             :mod :ai}
+     ; :augmentcode/augment.vim {}
+
+     ; :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
+     ;                         ; NOTE: the ai module setups up all the AI plugins. maybe this is a bad idea? but for now I find myself messing with them all together.
+     ;                         :mod :ai}
 
      :Isrothy/neominimap.nvim {:mod :neominimap}
 
      :tyru/open-browser.vim {:mod :open-browser}
-     :mbbill/undotree {:mod :undotree}
-     :skywind3000/asyncrun.vim {}
+     ; :mbbill/undotree {:mod :undotree}
+     ; :skywind3000/asyncrun.vim {}
 
      :vim-test/vim-test {:mod :vim-test}
-     :mistricky/codesnap.nvim {:mod :codesnap :run :make}
+     ; :mistricky/codesnap.nvim {:mod :codesnap :run :make}
 
-     :microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
-     :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap :nvim-neotest/nvim-nio :rcarriga/nvim-dap-ui] }
+     ;:microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
+     ; :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap :nvim-neotest/nvim-nio :rcarriga/nvim-dap-ui] }
 
      ; ===========================
      ; Git and Version Control
@@ -199,4 +198,3 @@
      :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
                            :mod :octo}
 )
-

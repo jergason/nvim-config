@@ -5,7 +5,7 @@
 
 (defn lsp_connection
   []
-  (if (vim.tbl_isempty (vim.lsp.buf_get_clients 0)) "" ""))
+  (if (vim.tbl_isempty (vim.lsp.get_clients { :bufnr 0 })) "" ""))
 
 (def github-lua-theme
   (core.assoc (require :lualine.themes.auto) :inactive

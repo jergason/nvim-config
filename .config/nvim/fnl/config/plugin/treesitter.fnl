@@ -8,16 +8,12 @@
 ; install required parsers
 (local ts-parsers [:bash
                    :c
-                   :clojure
                    :comment
                    :cpp
                    :css
                    :csv
                    :diff
                    :dockerfile
-                   :elixir
-                   :elm
-                   :erlang
                    :fennel
                    :git_config
                    :git_rebase
@@ -28,7 +24,6 @@
                    :graphql
                    :hcl
                    :html
-                   :java
                    :javascript
                    :jq
                    :jsdoc
@@ -37,14 +32,8 @@
                    :make
                    :markdown
                    :markdown_inline
-                   :ocaml
-                   :ocaml_interface
-                   :promql
-                   :purescript
                    :python
-                   :ruby
                    :rust
-                   :scheme
                    :sql
                    :ssh_config
                    :terraform
@@ -54,8 +43,7 @@
                    :vim
                    :vimdoc
                    :xml
-                   :yaml
-                   :zig])
+                   :yaml])
 
 (nvim.create_user_command :JamisonTSUpdate
                           (.. :TSUpdateSync " " (string.join " " ts-parsers)) {})

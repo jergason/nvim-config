@@ -3,7 +3,7 @@
 (vim.keymap.set :n :<leader>no "<cmd>Neominimap on<CR>"
                 {:desc "Enable minimap globally"})
 
-(vim.keymap.set :n :<leader>nt "<cmd>Neominimap winToggle<CR>"
+(vim.keymap.set :n :<leader>nt "<cmd>Neominimap WinToggle<CR>"
                 {:desc "Toggle minimap for this window"})
 
 (set vim.g.neominimap {:auto_enable true
@@ -11,6 +11,6 @@
                        :mark {:enabled true}})
 
 (def- augroup (nvim.create_augroup :NeoMiniap {:clear true}))
-(nvim.create_autocmd :WinNew {:callback (fn [] (vim.cmd "Neominimap winOff"))
+(nvim.create_autocmd :WinNew {:callback (fn []
+                                          (vim.cmd "Neominimap WinDisable"))
                               :group augroup})
-
