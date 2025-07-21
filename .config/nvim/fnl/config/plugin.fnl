@@ -1,200 +1,199 @@
 (module config.plugin {autoload {nvim aniseed.nvim
                                  a aniseed.core
-                                 packer packer}})
+                                 lazy lazy}})
 
-{}
+; plugins managed by lazy.nvim
+; :1 is the plugin URL that gets expanded to github
+; lazy.nvim loads plugins lazily by default
 
-(defn- safe-require-plugin-config
-  [name]
-  (let [(ok? val-or-err) (pcall require (.. :config.plugin. name))]
-    (when (not ok?)
-      (print (.. "config error: " val-or-err)))))
-
-(defn- use
-  [...]
-  "Iterates through the arguments as pairs and calls packer's use function for
-  each of them. Works around Fennel not liking mixed associative and sequential
-  tables as well."
-  (let [pkgs [...]]
-    (packer.startup (fn [use]
-                      (for [i 1 (a.count pkgs) 2]
-                        (let [name (. pkgs i)
-                              opts (. pkgs (+ i 1))]
-                          (-?> (. opts :mod) (safe-require-plugin-config))
-                          (use (a.assoc opts 1 name)))))))
-  nil)
-
-; plugins managed by packer
-; :mod specifies namespace under plugin directory
-; can also use :run for simple plugin setup
-
-;; fnlfmt: skip
-(use
-
-     ;; plugin Manager
-     :wbthomason/packer.nvim {}
-     ;; nvim config and plugins in Fennel
-     :Olical/aniseed {:branch :develop}
-
+(lazy.setup [
      ; =======================
-     ; Theme/Look/Feel/Feels
+     ; Theme/Look/Feel/Feels  
      ; =======================
-     :cocopon/iceberg.vim {}
-     :folke/tokyonight.nvim {}
-     :catppuccin/nvim {:as :catppuccin}
-     :projekt0n/github-nvim-theme {:mod :theme }
-     :nvim-lualine/lualine.nvim {:mod :lualine}
-     :akinsho/bufferline.nvim {:mod :bufferline}
+     {1 "cocopon/iceberg.vim" :lazy false}
+     {1 "folke/tokyonight.nvim" :lazy false}
+     {1 "catppuccin/nvim" :name "catppuccin" :lazy false}
+     {1 "projekt0n/github-nvim-theme" 
+      :config #(require :config.plugin.theme) :lazy false}
+     {1 "nvim-lualine/lualine.nvim" 
+      :config #(require :config.plugin.lualine)}
+     {1 "akinsho/bufferline.nvim" 
+      :config #(require :config.plugin.bufferline)}
 
-     ;; show key mappings
-     :folke/which-key.nvim {:mod :which-key}
-     ;; parsing system
-     ;; NOTE: this doesn't work on first install, since I guess it hasn't loaded the plugin when it tries to run :TSUpdate.
-     ;; look at some way to defer this?
-     :nvim-treesitter/nvim-treesitter-context {:run ":TSUpdate" 
-                                               :mod :treesitter
-                                               :requires [:nvim-treesitter/nvim-treesitter
-                                                          :nvim-treesitter/playground
-                                                          :yorickpeterse/nvim-tree-pairs
-                                                          :nvim-treesitter/nvim-treesitter-textobjects ]}
+     ; show key mappings
+     {1 "folke/which-key.nvim" 
+      :config #(require :config.plugin.which-key)}
 
+     ; parsing system
+     ; NOTE: lazy.nvim handles the TSUpdate timing better
+     {1 "nvim-treesitter/nvim-treesitter-context" 
+      :build ":TSUpdate"
+      :config #(require :config.plugin.treesitter)
+      :dependencies ["nvim-treesitter/nvim-treesitter"
+                     "nvim-treesitter/playground"
+                     "yorickpeterse/nvim-tree-pairs"
+                     "nvim-treesitter/nvim-treesitter-textobjects"]}
 
+     ; telescope
+     {1 "nvim-telescope/telescope-fzf-native.nvim" :build "make"}
+     {1 "nvim-telescope/telescope.nvim" 
+      :dependencies ["nvim-telescope/telescope-ui-select.nvim"
+                     "nvim-lua/popup.nvim"
+                     "nvim-lua/plenary.nvim"
+                     "kyazdani42/nvim-web-devicons"]
+      :config #(require :config.plugin.telescope)}
 
-
-     ;; telescope
-     :nvim-telescope/telescope.nvim {:requires [:nvim-telescope/telescope-ui-select.nvim
-                                                :nvim-lua/popup.nvim
-                                                :nvim-lua/plenary.nvim
-                                                :kyazdani42/nvim-web-devicons]
-                                     :mod :telescope}
-     :nvim-telescope/telescope-fzf-native.nvim {:run :make}
-
-     ;; lsp
-     :williamboman/mason.nvim {:mod :mason}
+     ; lsp
+     {1 "williamboman/mason.nvim" 
+      :config #(require :config.plugin.mason)}
 
      ; put lsp-related config in a special magic subdir
-     :neovim/nvim-lspconfig {:requires [:williamboman/mason-lspconfig.nvim
-                                        :hrsh7th/cmp-nvim-lsp
-                                        :creativenull/efmls-configs-nvim
-                                        :j-hui/fidget.nvim
-                                        :pmizio/typescript-tools.nvim
-                                        ]
-                             :mod :lsp.init}
+     {1 "neovim/nvim-lspconfig" 
+      :dependencies ["williamboman/mason-lspconfig.nvim"
+                     "hrsh7th/cmp-nvim-lsp"
+                     "creativenull/efmls-configs-nvim"
+                     "j-hui/fidget.nvim"
+                     "pmizio/typescript-tools.nvim"]
+      :config #(require :config.plugin.lsp.init)}
 
-     :folke/trouble.nvim { :mod :trouble }
+     {1 "folke/trouble.nvim" 
+      :config #(require :config.plugin.trouble)}
 
-     ;; autocomplete
-     :hrsh7th/nvim-cmp {:requires [:hrsh7th/cmp-buffer
-                                  :hrsh7th/cmp-nvim-lsp
-                                  :hrsh7th/cmp-path
-                                  :hrsh7th/cmp-nvim-lua
-                                  :PaterJason/cmp-conjure]
-                       :mod :cmp}
+     ; autocomplete
+     {1 "hrsh7th/nvim-cmp" 
+      :dependencies ["hrsh7th/cmp-buffer"
+                     "hrsh7th/cmp-nvim-lsp"
+                     "hrsh7th/cmp-path"
+                     "hrsh7th/cmp-nvim-lua"
+                     "PaterJason/cmp-conjure"]
+      :config #(require :config.plugin.cmp)}
 
+     ; snippets
+     {1 "L3MON4D3/LuaSnip" 
+      :dependencies ["saadparwaiz1/cmp_luasnip"
+                     "rafamadriz/friendly-snippets"]
+      :config #(require :config.plugin.luasnip)}
 
-     ;; snippets
-     :L3MON4D3/LuaSnip {:requires [:saadparwaiz1/cmp_luasnip
-                                 :rafamadriz/friendly-snippets]
-                      :mod :luasnip}
+     ; database stuff
+     ; "tpope/vim-dadbod"
+     ; "kristijanhusak/vim-dadbod-ui"
 
-     ;; database stuff
-     ; :tpope/vim-dadbod {}
-     ; :kristijanhusak/vim-dadbod-ui {}
-
-
-
-     ;tim pope vim pope
-     :tpope/vim-eunuch {}
-     :tpope/vim-jdaddy {}
-     :tpope/vim-repeat {}
-     :tpope/vim-surround {}
-     :tpope/vim-vinegar {}
-
+     ; tim pope vim pope
+     "tpope/vim-eunuch"
+     "tpope/vim-jdaddy"
+     "tpope/vim-repeat"
+     "tpope/vim-surround"
+     "tpope/vim-vinegar"
 
      ; ================
      ; Language Support
      ; ================
-     ;; clojure/lisp stuff
-     ;; repl tools
-     :Olical/conjure {:mod :conjure}
-     ;; sexp
-     ; :guns/vim-sexp {:mod :sexp}
-     ; :tpope/vim-sexp-mappings-for-regular-people {}
-     ; :clojure-vim/vim-jack-in {:requires [:radenling/vim-dispatch-neovim
-     ;                                      :tpope/vim-dispatch]}
+     ; clojure/lisp stuff
+     ; repl tools
+     {1 "Olical/conjure" 
+      :config #(require :config.plugin.conjure)}
+
+     ; sexp
+     ; {1 "guns/vim-sexp" :config #(require :config.plugin.sexp)}
+     ; "tpope/vim-sexp-mappings-for-regular-people"
+     ; {1 "clojure-vim/vim-jack-in" 
+     ;  :dependencies ["radenling/vim-dispatch-neovim"
+     ;                 "tpope/vim-dispatch"]}
 
      ; javascript
-     :pangloss/vim-javascript {}
-     :gennaro-tedesco/nvim-jqx {:mod :jqx}
+     "pangloss/vim-javascript"
+     {1 "gennaro-tedesco/nvim-jqx" 
+      :config #(require :config.plugin.jqx)}
 
-     ; :ocaml/vim-ocaml {}
+     ; "ocaml/vim-ocaml"
 
      ; infra/ops stuff!
-     :hashivim/vim-terraform {}
-     :ekalinin/Dockerfile.vim {}
+     "hashivim/vim-terraform"
+     "ekalinin/Dockerfile.vim"
 
      ; lua stdlib docs in help
-     :milisims/nvim-luaref {}
+     "milisims/nvim-luaref"
      ; . . . something?
-     :folke/lua-dev.nvim {}
+     "folke/lua-dev.nvim"
 
      ; markdown
      ; depends on node and yarn being installed already
-     :iamcco/markdown-preview.nvim { :run "cd app && yarn install" :mod :markdown-preview }
-     :OXY2DEV/markview.nvim {:mod :markview}
+     {1 "iamcco/markdown-preview.nvim" 
+      :build "cd app && yarn install" 
+      :config #(require :config.plugin.markdown-preview)}
+     {1 "OXY2DEV/markview.nvim" 
+      :config #(require :config.plugin.markview)}
 
-     ; :aklt/plantuml-syntax {:requires [:weirongxu/plantuml-previewer.vim]}
-
+     ; {1 "aklt/plantuml-syntax" 
+     ;  :dependencies ["weirongxu/plantuml-previewer.vim"]}
 
      ; ==============
      ; Utility/Tools
      ; ==============
-     :simrat39/symbols-outline.nvim {:mod :symbols-outline}
-     :HiPhish/rainbow-delimiters.nvim {}
+     {1 "simrat39/symbols-outline.nvim" 
+      :config #(require :config.plugin.symbols-outline)}
+     "HiPhish/rainbow-delimiters.nvim"
      ; easily toggle terminal
-     :akinsho/toggleterm.nvim {:mod :toggleterm}
+     {1 "akinsho/toggleterm.nvim" 
+      :config #(require :config.plugin.toggleterm)}
 
      ; =========
      ; AI Magic
      ; =========
-     ; :yetone/avante.nvim { :run ":AvanteBuild"
-     ;                       :requires [:stevearc/dressing.nvim
-     ;                                  :nvim-lua/plenary.nvim
-     ;                                  :MunifTanjim/nui.nvim
-     ;                                  :echasnovski/mini.icons] }
-     ; :olimorris/codecompanion.nvim {
-     ;                                :requires [:stevearc/dressing.nvim
-     ;                                           :nvim-lua/plenary.nvim
-     ;                                           :nvim-treesitter/nvim-treesitter
-     ;                                           :nvim-telescope/telescope.nvim ] }
+     ; {1 "yetone/avante.nvim" 
+     ;  :build ":AvanteBuild"
+     ;  :dependencies ["stevearc/dressing.nvim"
+     ;                 "nvim-lua/plenary.nvim"
+     ;                 "MunifTanjim/nui.nvim"
+     ;                 "echasnovski/mini.icons"]}
+     ; {1 "olimorris/codecompanion.nvim" 
+     ;  :dependencies ["stevearc/dressing.nvim"
+     ;                 "nvim-lua/plenary.nvim"
+     ;                 "nvim-treesitter/nvim-treesitter"
+     ;                 "nvim-telescope/telescope.nvim"]}
 
-     ; :augmentcode/augment.vim {}
+     ; "augmentcode/augment.vim"
 
-     ; :jackMort/ChatGPT.nvim {:requires [:MunifTanjim/nui.nvim]
-     ;                         ; NOTE: the ai module setups up all the AI plugins. maybe this is a bad idea? but for now I find myself messing with them all together.
-     ;                         :mod :ai}
+     ; {1 "jackMort/ChatGPT.nvim" 
+     ;  :dependencies ["MunifTanjim/nui.nvim"]
+     ;  ; NOTE: the ai module setups up all the AI plugins. maybe this is a bad idea? but for now I find myself messing with them all together.
+     ;  :config #(require :config.plugin.ai)}
 
-     :Isrothy/neominimap.nvim {:mod :neominimap}
+     {1 "Isrothy/neominimap.nvim" 
+      :config #(require :config.plugin.neominimap)}
 
-     :tyru/open-browser.vim {:mod :open-browser}
-     ; :mbbill/undotree {:mod :undotree}
-     ; :skywind3000/asyncrun.vim {}
+     {1 "tyru/open-browser.vim" 
+      :config #(require :config.plugin.open-browser)}
+     ; {1 "mbbill/undotree" :config #(require :config.plugin.undotree)}
+     ; "skywind3000/asyncrun.vim"
 
-     :vim-test/vim-test {:mod :vim-test}
-     ; :mistricky/codesnap.nvim {:mod :codesnap :run :make}
+     {1 "vim-test/vim-test" 
+      :config #(require :config.plugin.vim-test)}
+     ; {1 "mistricky/codesnap.nvim" 
+     ;  :config #(require :config.plugin.codesnap) 
+     ;  :build "make"}
 
-     ;:microsoft/vscode-js-debug {:opt true :run "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out" }
-     ; :mxsdev/nvim-dap-vscode-js { :mod :dap :requires [:mfussenegger/nvim-dap :nvim-neotest/nvim-nio :rcarriga/nvim-dap-ui] }
+     ; {1 "microsoft/vscode-js-debug" 
+     ;  :lazy true 
+     ;  :build "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"}
+     ; {1 "mxsdev/nvim-dap-vscode-js" 
+     ;  :config #(require :config.plugin.dap) 
+     ;  :dependencies ["mfussenegger/nvim-dap" "nvim-neotest/nvim-nio" "rcarriga/nvim-dap-ui"]}
 
      ; ===========================
      ; Git and Version Control
      ; ===========================
-     :NeogitOrg/neogit {:mod :neogit :requires [:nvim-lua/plenary.nvim]}
-     :tpope/vim-fugitive {:mod :fugitive}
+     {1 "NeogitOrg/neogit" 
+      :config #(require :config.plugin.neogit) 
+      :dependencies ["nvim-lua/plenary.nvim"]}
+     {1 "tpope/vim-fugitive" 
+      :config #(require :config.plugin.fugitive)}
      ; Gitsigns toggle_current_line_blame will show inline blame
-     :lewis6991/gitsigns.nvim { :mod :gitsigns } 
+     {1 "lewis6991/gitsigns.nvim" 
+      :config #(require :config.plugin.gitsigns)}
 
-     :tpope/vim-rhubarb {}
-     :pwntester/octo.nvim {:requires [:nvim-lua/plenary.nvim :kyazdani42/nvim-web-devicons]
-                           :mod :octo}
-)
+     "tpope/vim-rhubarb"
+     {1 "pwntester/octo.nvim" 
+      :dependencies ["nvim-lua/plenary.nvim" "kyazdani42/nvim-web-devicons"]
+      :config #(require :config.plugin.octo)}
+])

@@ -1,34 +1,32 @@
 -- Entrypoint for my Neovim configuration!
--- We simply bootstrap packer and Aniseed here.
+-- We bootstrap lazy.nvim and aniseed independently.
 -- It's then up to Aniseed to compile and load fnl/config/init.fnl
 
 local execute = vim.api.nvim_command
 local fn = vim.fn
 
-local pack_path = fn.stdpath("data") .. "/site/pack"
-local fmt = string.format
-
-function ensure (user, repo)
-  -- Ensures a given github.com/USER/REPO is cloned in the pack/packer/start directory.
-  local install_path = fmt("%s/packer/start/%s", pack_path, repo, repo)
-  if fn.empty(fn.glob(install_path)) > 0 then
-    execute(fmt("!git clone https://github.com/%s/%s %s", user, repo, install_path))
-    execute(fmt("packadd %s", repo))
-  end
+-- Bootstrap lazy.nvim
+local lazypath = fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
--- Bootstrap essential plugins required for installing and loading the rest.
-ensure("wbthomason", "packer.nvim")
-ensure("Olical", "aniseed")
+-- Bootstrap aniseed (to its own directory)
+local aniseed_path = fn.stdpath("data") .. "/aniseed"
+if fn.empty(fn.glob(aniseed_path)) > 0 then
+  execute(string.format("!git clone --branch develop https://github.com/Olical/aniseed %s", aniseed_path))
+end
+vim.opt.rtp:prepend(aniseed_path)
 
--- generate helptags for stuff that we don't install directly w/ packer, since for some reason this isn't working
+-- generate helptags for stuff that we don't install directly w/ lazy
 execute("helptags ALL")
 
-
 require('aniseed.env').init({module = "config.init", compile = true})
--- Enable Aniseed's automatic compilation and loading of Fennel source code.
---vim.g["aniseed#env"] = {
---  module = "config.init",
---  compile = true,
---  input = ""
---}
