@@ -5,46 +5,29 @@
 
 (defn lsp_connection
   []
-  (if (vim.tbl_isempty (vim.lsp.get_clients { :bufnr 0 })) "" ""))
+  (if (vim.tbl_isempty (vim.lsp.get_clients {:bufnr 0}))
+      ["LSP ❌"]
+      ["LSP ✅" :lsp_status]))
 
-(def github-lua-theme
-  (core.assoc (require :lualine.themes.auto) :inactive
-              {:a {:bg "#19181e" :fg "#a4a3a6"}
-               :b {:bg "#19181e" :fg "#a4a3a6"}
-               :c {:bg "#19181e" :fg "#a4a3a6"}} :normal
-              {:a {:bg "#131217" :fg "#24292e"}
-               :b {:bg "#131217" :fg "#3b8eea"}
-               :c {:bg "#19181e" :fg "#d1d5da"}} :command
-              {:a {:bg "#131217" :fg "#24292e"}
-               :b {:bg "#131217" :fg "#ccbed8"}
-               :c {:bg "#19181e" :fg "#d1d5da"}} :visual
-              {:a {:bg "#131217" :fg "#24292e"}
-               :b {:bg "#131217" :fg "#ced4b1"}
-               :c {:bg "#19181e" :fg "#d1d5da"}} :replace
-              {:a {:bg "#131217" :fg "#24292e"}
-               :b {:bg "#131217" :fg "#d1b6bd"}
-               :c {:bg "#19181e" :fg "#d1d5da"}} :insert
-              {:a {:bg "#131217" :fg "#24292e"}
-               :b {:bg "#131217" :fg "#a8d1c9"}
-               :c {:bg "#19181e" :fg "#d1d5da"}}))
-
-(lualine.setup {:options {;:theme github-lua-theme
-                          :theme :tokyonight
+(lualine.setup {:options {:theme :tokyonight
                           :icons_enabled true
                           :section_separators {:left "" :right ""}
                           :component_separators {:left "" :right ""}}
-                :sections {:lualine_a []
-                           :lualine_b [[:mode {:upper true}]]
-                           :lualine_c [[:FugitiveHead]
+                :sections {:lualine_a [:mode {:upper true}]
+                           :lualine_b [[:FugitiveHead]
                                        {1 :filename
                                         :file_status true
                                         :path 1
                                         :shorting_target 40}]
+                           :lualine_c [{1 :buffers
+                                        :mode 3
+                                        :max_length 40
+                                        :hide_filename_extension true}]
                            :lualine_x []
                            :lualine_y [{1 :diagnostics
                                         :sections [:error :warn :info :hint]
                                         :sources [:nvim_lsp]}
-                                       [lsp_connection]
+                                       (lsp_connection)
                                        :progress
                                        :location
                                        :filetype]
@@ -57,4 +40,3 @@
                                     :lualine_x []
                                     :lualine_y []
                                     :lualine_z []}})
-

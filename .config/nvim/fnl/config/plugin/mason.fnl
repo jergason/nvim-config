@@ -5,16 +5,16 @@
 
 (def- mason-deps
   [:bash-language-server
-   :clojure-lsp
+   :clangd
    :efm
    :eslint-lsp
    ;; TOOD: do I need to manage this outside of Mason since it might depend on installed versions of golang?
    :gopls
-   :jdtls
-   :joker
    :lua-language-server
-   :prettier
+   :ocaml-lsp
    :pyright
+   :prettier
+   :rust_analyzer
    :terraform-ls
    ; :typescript-language-server
    :vtsls
@@ -27,4 +27,3 @@
 
 (nvim.create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps)
                           {:desc "Install or update mason deps"})
-

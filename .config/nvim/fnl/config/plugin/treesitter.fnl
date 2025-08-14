@@ -24,6 +24,7 @@
                    :graphql
                    :hcl
                    :html
+                   :ini
                    :javascript
                    :jq
                    :jsdoc
@@ -32,6 +33,7 @@
                    :make
                    :markdown
                    :markdown_inline
+                   :mermaid
                    :python
                    :rust
                    :sql
@@ -47,6 +49,9 @@
 
 (nvim.create_user_command :JamisonTSUpdate
                           (.. :TSUpdateSync " " (string.join " " ts-parsers)) {})
+
+(nvim.create_user_command :JamisonTSInstall
+                          (.. :TSInstall " " (string.join " " ts-parsers)) {})
 
 ; 300 KB
 (def max-file-size (* 1024 7))
@@ -83,4 +88,3 @@
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
 
 (pairs.setup)
-

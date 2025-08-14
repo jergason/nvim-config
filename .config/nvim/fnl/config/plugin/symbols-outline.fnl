@@ -5,9 +5,10 @@
 (u.nnoremap :sol :SymbolsOutline)
 
 ; don't bind to help file types since they already implement gO
-(defn bind-symbols-outline []
-      (if (not (= nvim.o.ft :help))
-          (nvim.buf_set_keymap 0 :n :gO :<cmd>SymbolsOutline<cr>)))
+(defn bind-symbols-outline
+  []
+  (if (not (= nvim.o.ft :help))
+      (nvim.buf_set_keymap 0 :n :gO :<cmd>SymbolsOutline<cr>)))
 
 ;use gO like in help to outline stuff that isn't help text
 ; TODO: Error detected while processing BufEnter Autocommands for "*":                                                                                                                     

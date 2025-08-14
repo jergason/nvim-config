@@ -1,6 +1,6 @@
 (module config.plugin.lsp.efm
         {require {eslint efmls-configs.linters.eslint
-                  jq efmls-configs.linters.jq
+                  eslint-fmt efmls-configs.formatters.eslint
                   luacheck efmls-configs.linters.luacheck
                   shellcheck efmls-configs.linters.shellcheck
                   fnlfmt efmls-configs.formatters.fnlfmt
@@ -9,6 +9,8 @@
                   terraform_fmt efmls-configs.formatters.terraform_fmt}
          autoload {core aniseed.core lsp lspconfig}})
 
+; efm is used for formatting on save
+; sometimes it doesn't work and i don't know why ;_;
 ; https://github.com/creativenull/efmls-configs-nvim/tree/main?tab=readme-ov-file#format-on-save
 (def- formatting-group-name :LspFormatting)
 (defn- make-format-augroup []
@@ -56,4 +58,3 @@
         (make-format-augroup)
         (create-formatting-autocmd)
         (set is-loaded true))))
-

@@ -1,11 +1,10 @@
-(module config.plugin.cmp
-        {autoload {nvim aniseed.nvim cmp cmp luasnip luasnip}})
+(module config.plugin.cmp {autoload {nvim aniseed.nvim cmp cmp}})
 
 (def- cmp-src-menu-items
-  {:buffer "[Buf]" :conjure "[Conj]" :nvim_lsp "[LSP]" :luasnip "[Snip]"})
+  {:buffer "[Buf]" :conjure "[Conj]" :nvim_lsp "[LSP]"})
 
 (def- cmp-srcs
-  [{:name :nvim_lsp} {:name :conjure} {:name :luasnip} {:name :buffer}])
+  [{:name :nvim_lsp} {:name :conjure} {:name :buffer}])
 
 ; stolen from github.com/LunarVim/Neovim-from-scratch
 (def- kind-icons
@@ -66,8 +65,6 @@
                       :<Tab> (cmp.mapping (fn [fallback]
                                             (if (cmp.visible)
                                                 (cmp.select_next_item)
-                                                (luasnip.expand_or_jumpable)
-                                                (luasnip.expand_or_jump)
                                                 (has-words-before)
                                                 (cmp.complete)
                                                 :else
@@ -76,11 +73,7 @@
                       :<S-Tab> (cmp.mapping (fn [fallback]
                                               (if (cmp.visible)
                                                   (cmp.select_prev_item)
-                                                  (luasnip.jumpable -1)
-                                                  (luasnip.jump -1)
                                                   :else
                                                   (fallback)))
                                             {1 :i 2 :s})}
-            :snippet {:expand (fn [args]
-                                (luasnip.lsp_expand args.body))}
             :sources cmp-srcs})

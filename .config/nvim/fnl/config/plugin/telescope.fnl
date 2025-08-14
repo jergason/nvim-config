@@ -54,8 +54,6 @@
 ; TODO: make this expand file paths?
 ;(vim.keymap.set :n :<leader>ep "Telescope find_files cwd=~/.local/share/nvim/site/pack/packer/start" {:desc "Search plugin files"})
 (vim.keymap.set :n :<leader>fp
-                #(tb.find_files {:cwd "~/.local/share/nvim/site/pack/packer/start"
+                #(tb.find_files {:cwd "~/.local/share/nvim/lazy"
                                  :path_display [:smart]})
                 {:desc "Search plugin files"})
-
-

@@ -37,9 +37,9 @@
 (nvim.create_autocmd :TextYankPost
                      {:pattern "*"
                       :desc "Highlight yanked text"
-                      :callback #(vim.highlight.on_yank {:timeout 350
-                                                         :on_visual false
-                                                         :higroup :IncSearch})})
+                      :callback #(vim.hl.on_yank {:timeout 350
+                                                  :on_visual false
+                                                  :higroup :IncSearch})})
 
 (let [options {;settings needed for cmp autocompletion
                :completeopt "menu,menuone,noselect"
@@ -60,6 +60,9 @@
                ;hybrid line numbers
                :nu true
                :rnu true
+               ; set title of window to cwd
+               :title true
+               :titlestring (vim.fn.getcwd)
                ;show whitespace
                :list true
                ;add some lines below cursor
@@ -72,7 +75,7 @@
                ;transparent floating windows
                :winblend 10
                ; spell checking in comments. Depends on treesitter @spell capture. See https://www.reddit.com/r/neovim/comments/125whev/dumb_question_how_to_spell_check_only_comments/ for more info on how this works.
-               :spell true
+               ; :spell true
                ; tabs
                :autoindent true
                :cindent true
@@ -116,4 +119,3 @@
 (nvim.create_user_command :StartLocalServer start-local-server {})
 (nvim.set_keymap :n :<leader>sl :<cmd>StartLocalServer<cr>
                  {:desc "Start local droplet server"})
-

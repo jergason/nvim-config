@@ -22,7 +22,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Bootstrap aniseed (to its own directory)
 local aniseed_path = fn.stdpath("data") .. "/aniseed"
 if fn.empty(fn.glob(aniseed_path)) > 0 then
-  execute(string.format("!git clone --branch develop https://github.com/Olical/aniseed %s", aniseed_path))
+  execute(string.format("!git clone https://github.com/Olical/aniseed %s", aniseed_path))
 end
 vim.opt.rtp:prepend(aniseed_path)
 
