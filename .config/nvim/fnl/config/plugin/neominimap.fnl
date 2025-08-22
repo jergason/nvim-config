@@ -6,7 +6,7 @@
 (vim.keymap.set :n :<leader>nt "<cmd>Neominimap BufToggle<CR>"
                 {:desc "Toggle minimap for the current buffer"})
 
-(set vim.g.neominimap {:auto_enable true
+(set vim.g.neominimap {:auto_enable false
                        :exclude_filetypes [:help :text :netrw]
                        :mini_diff {:enabled true}
                        :mark {:enabled true}

@@ -30,14 +30,20 @@
               :textDocument/hover (vim.lsp.with vim.lsp.handlers.hover
                                     {:border :single})
               :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
-                                            {:border :single})}
+                                            {:border :double})}
    :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
    :on_attach (fn [client bufnr]
                 (do
+                  ; override built-in K to add border and make it not focusable
+                  (vim.keymap.set :n :K
+                                  #(vim.lsp.buf.hover {:border :double
+                                                       :focusable false})
+                                  {:buffer bufnr
+                                   :desc "LSP: Hover"
+                                   :noremap true
+                                   :silent true})
                   (vim.keymap.set :n :gd vim.lsp.buf.definition
                                   {:desc "Go to definition" :buffer bufnr})
-                  (vim.keymap.set :n :<leader>gd vim.lsp.buf.declaration
-                                  {:buffer bufnr})
                   (vim.keymap.set :n :<leader>gh vim.lsp.buf.signature_help
                                   {:buffer bufnr})
                   (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
@@ -60,18 +66,6 @@
                                   {:buffer bufnr})
                   (vim.keymap.set :n :<leader>lr
                                   ":lua require('telescope.builtin').lsp_references()<cr>"
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>ds
-                                  "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>"
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>ic
-                                  "<cmd>lua require('telescope.builtin').lsp_incoming_calls()<cr>"
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>oc
-                                  "<cmd> lua require('telescope.builtin').lsp_outgoing_calls()<cr>"
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>li
-                                  "<cmd> lua require ('telescope.builtin').lsp_implementations()<cr>"
                                   {:buffer bufnr})))})
 
 (defn- _setup
@@ -85,19 +79,10 @@
                                  :telemetry {:enable false}})) ; (lsp.ocamllsp.setup setup-args) ; (lsp.pyright.setup setup-args) ; (lsp.rust_analyzer.setup setup-args) ; (lsp.terraformls.setup setup-args)
     (vim.lsp.config :vtsls
                     (core.merge setup-args
-                                {:settings {:typescript {:tsserver {:maxTsServerMemory 8192
-                                                                    :nodePath "node --max-old-space-size=8192"}}}}))
-    (vim.lsp.enable [:bashls
-                     :clangd
-                     :gopls
-                     :lua_ls
-                     :terraformls
-                     :vtsls
-                     :yamlls]) ; hrrm, old commented-out stuff ; (tstools.setup (core.merge setup-args ;                            ; see if this helps with running out of memory on work codebase
-    ;                            {:settings {:tsserver_max_memory 8192}})) ; (lsp.yamlls.setup setup-args) ; (define-signs) ; top-level keybinding for formatting so we can format stuff that only has null-ls and not other LSP
-    ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work
-    (vim.keymap.set :n :<leader>lf #(util.lsp-format 0))
-    (vim.keymap.set :v :<leader>lf #(util.lsp-format 0))))
+                                {:settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}})))
+  (vim.lsp.enable [:bashls :clangd :gopls :lua_ls :terraformls :vtsls :yamlls]) ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work
+  (vim.keymap.set :n :<leader>lf #(util.lsp-format 0))
+  (vim.keymap.set :v :<leader>lf #(util.lsp-format 0)))
 
 (var is-loaded false)
 (defn setup
