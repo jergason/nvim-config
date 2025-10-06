@@ -32,6 +32,9 @@
 ; I always hit this on the kinesis, just disable it
 (nvim.set_keymap :n :<F1> :<Nop> {})
 
+(vim.keymap.set :n :<leader>yf #(vim.fn.setreg "+" (vim.fn.expand "%"))
+                {:desc "Yank file path"})
+
 ; highlight yanked text
 (nvim.clear_autocmds {:event :TextYankPost})
 (nvim.create_autocmd :TextYankPost
@@ -83,6 +86,8 @@
                :shiftwidth 2
                :softtabstop 2
                :expandtab true
+               ; begone "HIT ENTER" prompt
+               :messagesopt "wait:1500,history:500"
                ; folding
                ; set default, override in ftplugin
                :foldmethod :manual
