@@ -96,7 +96,7 @@
              :MeanderingProgrammer/render-markdown.nvim
              ; depends on node and yarn being installed already
              {1 :iamcco/markdown-preview.nvim
-              :build "cd app && yarn install"
+              :build "cd app && npm install && git restore ."
               :cmd [:MarkdownPreviewToggle
                     :MarkdownPreview
                     :MarkdownPreviewStop]
