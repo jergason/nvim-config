@@ -15,6 +15,10 @@
                   {:buffer bufnum :noremap true :desc "Gitsigns: unstage hunk"})
   (vim.keymap.set :n (make-mapping :x) (fn [] (gitsigns.reset_hunk))
                   {:buffer bufnum :noremap true :desc "Gitsigns: reset hunk"})
+  (vim.keymap.set :n (make-mapping :d) (fn [] (gitsigns.diffthis))
+                  {:buffer bufnum
+                   :noremap true
+                   :desc "Gitsigns: open diff inline"}) ; navigating hunks
   (vim.keymap.set :n (make-mapping :j) (fn [] (gitsigns.next_hunk))
                   {:buffer bufnum
                    :noremap true

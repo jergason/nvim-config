@@ -25,10 +25,11 @@
 
 (telescope.load_extension :ui-select)
 (telescope.load_extension :fzf)
+(telescope.load_extension :hbac)
 
 (util.nnoremap :ff "Telescope find_files")
 (util.nnoremap :fg "Telescope live_grep debounce=100")
-(util.nnoremap :fb "Telescope buffers")
+(util.nnoremap :fb "Telescope hbac buffers")
 (util.nnoremap :fh "Telescope help_tags")
 (util.nnoremap :fw "Telescope grep_string")
 (util.nnoremap :fd "Telescope diagnostics")

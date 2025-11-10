@@ -113,6 +113,8 @@
              ; easily toggle terminal
              {1 :akinsho/toggleterm.nvim
               :config #(require :config.plugin.toggleterm)}
+             ; clean up old buffers so lsp doesn't explode
+             {1 :axkirillov/hbac.nvim :config true}
              ; =========
              ; AI Magic
              ; =========
@@ -123,7 +125,6 @@
              ; ============
              ; Other Config
              ; ============
-             {1 :chrisgrieser/nvim-early-retirement}
              {1 :Isrothy/neominimap.nvim
               :config #(require :config.plugin.neominimap)}
              {1 :tyru/open-browser.vim
