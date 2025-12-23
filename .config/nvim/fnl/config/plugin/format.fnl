@@ -1,4 +1,4 @@
-(module config.plugin.format {autoload {conform conform}})
+(local conform (require :conform))
 
 (conform.setup {:formatters_by_ft {:fennel [:fnlfmt]
                                    :go [:gofmt]

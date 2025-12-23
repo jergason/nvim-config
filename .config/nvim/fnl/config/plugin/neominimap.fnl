@@ -1,5 +1,3 @@
-(module config.plugin.neominimap {autoload {nvim aniseed.nvim}})
-
 (vim.keymap.set :n :<leader>no "<cmd>Neominimap Enable<CR>"
                 {:desc "Enable minimap globally"})
 
@@ -12,7 +10,7 @@
                        :mark {:enabled true}
                        :window_border :double})
 
-(def- augroup (nvim.create_augroup :NeoMiniap {:clear true}))
-(nvim.create_autocmd :WinNew {:callback (fn []
-                                          (vim.cmd "Neominimap WinDisable"))
-                              :group augroup})
+(local augroup (vim.api.nvim_create_augroup :NeoMiniap {:clear true}))
+(vim.api.nvim_create_autocmd :WinNew {:callback (fn []
+                                                  (vim.cmd "Neominimap WinDisable"))
+                                      :group augroup})

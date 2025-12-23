@@ -1,13 +1,8 @@
-(module config.plugin.lsp.lspconfig
-        {autoload {nvim aniseed.nvim
-                   core aniseed.core
-                   util config.plugin.lsp.util
-                   t telescope.builtin
-                   tstools typescript-tools
-                   cmplsp cmp_nvim_lsp}})
+(local t (require :telescope.builtin))
+(local cmplsp (require :cmp_nvim_lsp))
 
 ; symbols to show for lsp diagnostics
-; (defn- define-signs
+; (fn define-signs
 ;   []
 ;   (let [prefix :Diagnostic
 ;         error (.. prefix :SignError)
@@ -21,8 +16,7 @@
 ;     (vim.fn.sign_define hint {:text "?" :texthl hint})))
 
 ; server features
-(defn- make-setup-args
-  []
+(fn make-setup-args []
   "return a map of on_attach, handlers, capabilities to pass to `vim.lsp.config` calls"
   {:handlers {:textDocument/publishDiagnostics (vim.lsp.with vim.lsp.diagnostic.on_publish_diagnostics
                                                  {:severity_sort true
@@ -68,26 +62,30 @@
                                   ":lua require('telescope.builtin').lsp_references()<cr>"
                                   {:buffer bufnr})))})
 
-(defn- _setup
-  []
+(fn lsp-format [bufnr]
+  (vim.lsp.buf.format {:filter (fn [client] (= client.name :efm))}))
+
+(fn _setup []
   (let [setup-args (make-setup-args)]
-    (vim.lsp.config "*" setup-args) ; (lsp.bashls.setup setup-args) ; (lsp.clangd.setup setup-args) ; (lsp.gopls.setup setup-args) ; (lsp.graphql.setup setup-args)
+    (vim.lsp.config "*" setup-args)
     (vim.lsp.config :lua_ls
-                    (core.merge setup-args
-                                {:runtime {:version :LuaJIT}
-                                 :diagnostics {:globals [:vim]}
-                                 :telemetry {:enable false}})) ; (lsp.ocamllsp.setup setup-args) ; (lsp.pyright.setup setup-args) ; (lsp.rust_analyzer.setup setup-args) ; (lsp.terraformls.setup setup-args)
+                    (vim.tbl_deep_extend :force setup-args
+                                         {:runtime {:version :LuaJIT}
+                                          :diagnostics {:globals [:vim]}
+                                          :telemetry {:enable false}}))
     (vim.lsp.config :vtsls
-                    (core.merge setup-args
-                                {:settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}})))
-  (vim.lsp.enable [:bashls :clangd :gopls :lua_ls :terraformls :vtsls :yamlls]) ; TODO: this manual keybinding works but the autoformat stuff doesn't appear to work
-  (vim.keymap.set :n :<leader>lf #(util.lsp-format 0))
-  (vim.keymap.set :v :<leader>lf #(util.lsp-format 0)))
+                    (vim.tbl_deep_extend :force setup-args
+                                         {:settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}})))
+  (vim.lsp.enable [:bashls :clangd :gopls :lua_ls :terraformls :vtsls :yamlls])
+  (vim.keymap.set :n :<leader>lf #(lsp-format 0))
+  (vim.keymap.set :v :<leader>lf #(lsp-format 0)))
 
 (var is-loaded false)
-(defn setup
-  []
+
+(fn setup []
   (if (not is-loaded)
       (do
         (_setup)
         (set is-loaded true))))
+
+{: setup : make-setup-args}

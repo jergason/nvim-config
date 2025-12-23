@@ -1,7 +1,6 @@
-(module config.plugin.lsp.init
-        {autoload {efm config.plugin.lsp.efm
-                   lspconfig config.plugin.lsp.lspconfig
-                   fidget fidget}})
+(local efm (require :config.plugin.lsp.efm))
+(local lspconfig (require :config.plugin.lsp.lspconfig))
+(local fidget (require :fidget))
 
 (efm.setup)
 (lspconfig.setup)

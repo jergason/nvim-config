@@ -1,18 +1,14 @@
-(module config.plugin.lualine
-        {autoload {core aniseed.core
-                   lualine lualine
-                   lsp config.plugin.lspconfig}})
+(local lualine (require :lualine))
 
-(defn lsp_connection
-  []
+(fn lsp_connection []
   (if (vim.tbl_isempty (vim.lsp.get_clients {:bufnr 0}))
       ["LSP ❌"]
       ["LSP ✅" :lsp_status]))
 
 (lualine.setup {:options {:theme :tokyonight
                           :icons_enabled true
-                          :section_separators {:left "" :right ""}
-                          :component_separators {:left "" :right ""}}
+                          :section_separators {:left "" :right ""}
+                          :component_separators {:left "" :right ""}}
                 :sections {:lualine_a [:mode {:upper true}]
                            :lualine_b [[:FugitiveHead]
                                        {1 :filename

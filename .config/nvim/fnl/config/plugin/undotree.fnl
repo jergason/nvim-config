@@ -1,4 +1,3 @@
-(module config.plugin.undotree {autoload {util config.util}})
+(local util (require :config.util))
 
 (util.nnoremap :ut :UndotreeToggle)
-

@@ -1,3 +1,3 @@
-(module config.plugin.bufferline {autoload {bl bufferline}})
+(local bl (require :bufferline))
 
 (bl.setup {:options {:mode :tabs}})

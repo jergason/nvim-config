@@ -1,12 +1,11 @@
-(module config.plugin.gitsigns {autoload {gitsigns gitsigns nvim aniseed.nvim}})
+(local gitsigns (require :gitsigns))
 
-(def prefix :<leader>gs)
+(local prefix :<leader>gs)
 
 ; make it easy to change the prefix later
-(defn make-mapping [str] (.. prefix str))
+(fn make-mapping [str] (.. prefix str))
 
-(defn set-keymaps
-  [bufnum]
+(fn set-keymaps [bufnum]
   (vim.keymap.set :n (make-mapping :q) (fn [] (gitsigns.setqflist 0))
                   {:buffer bufnum :noremap true :desc "Gitsigns: set qflist"})
   (vim.keymap.set :n (make-mapping :s) (fn [] (gitsigns.stage_hunk))

@@ -1,11 +1,12 @@
-(module config.plugin {autoload {nvim aniseed.nvim a aniseed.core lazy lazy}})
+(local lazy (require :lazy))
 
 ; plugins managed by lazy.nvim
 ; :1 is the plugin URL that gets expanded to github
 ; lazy.nvim loads plugins lazily by default
 
-(lazy.setup [; =======================
-             ; Theme/Look/Feel/Feels  
+(lazy.setup [{1 :Olical/nfnl :ft :fennel}
+             ; =======================
+             ; Theme/Look/Feel/Feels
              ; =======================
              ;{1 :cocopon/iceberg.vim :lazy false}
              {1 :folke/tokyonight.nvim :lazy false}
@@ -67,14 +68,14 @@
              ; ================
              ; Language Support
              ; ================
-             ; 
+             ;
              ; ------------------
              ; clojure/lisp stuff
              ; ------------------
              {1 :Olical/conjure :config #(require :config.plugin.conjure)}
              {1 :guns/vim-sexp :config #(require :config.plugin.sexp)}
              ; "tpope/vim-sexp-mappings-for-regular-people"
-             ; {1 "clojure-vim/vim-jack-in" 
+             ; {1 "clojure-vim/vim-jack-in"
              ;  :dependencies ["radenling/vim-dispatch-neovim"
              ;                 "tpope/vim-dispatch"]}
              ; -----------
@@ -131,11 +132,11 @@
               :config #(require :config.plugin.open-browser)}
              ; {1 "mbbill/undotree" :config #(require :config.plugin.undotree)}
              ; "skywind3000/asyncrun.vim"
-             ; {1 "microsoft/vscode-js-debug" 
-             ;  :lazy true 
+             ; {1 "microsoft/vscode-js-debug"
+             ;  :lazy true
              ;  :build "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"}
-             ; {1 "mxsdev/nvim-dap-vscode-js" 
-             ;  :config #(require :config.plugin.dap) 
+             ; {1 "mxsdev/nvim-dap-vscode-js"
+             ;  :config #(require :config.plugin.dap)
              ;  :dependencies ["mfussenegger/nvim-dap" "nvim-neotest/nvim-nio" "rcarriga/nvim-dap-ui"]}
              ; ===========================
              ; Git and Version Control

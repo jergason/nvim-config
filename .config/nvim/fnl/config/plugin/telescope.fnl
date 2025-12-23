@@ -1,15 +1,13 @@
-(module config.plugin.telescope
-        {autoload {nvim aniseed.nvim
-                   telescope telescope
-                   tb telescope.builtin
-                   ta telescope.actions
-                   util config.util
-                   themes telescope.themes}})
+(local telescope (require :telescope))
+(local tb (require :telescope.builtin))
+(local ta (require :telescope.actions))
+(local util (require :config.util))
+(local themes (require :telescope.themes))
 
 (telescope.setup {:defaults {:path_display {:shorten {:len 3 :exclude [-2 -1]}}
                              :winblend 12
-                             :prompt_prefix " "
-                             :selection_caret " "
+                             :prompt_prefix " "
+                             :selection_caret " "
                              :preview {:filesize_limit 5}
                              ;:mappings {:n {[:<c-d>] ta.delete_buffer}}
                              }
@@ -35,11 +33,10 @@
 (util.nnoremap :fd "Telescope diagnostics")
 (util.nnoremap :fc "Telescope commands")
 (util.nnoremap :th "Telescope history")
-(nvim.set_keymap :n :<C-/> "<cmd>Telescope current_buffer_fuzzy_find<cr>"
-                 {:desc "fuzzy find in buffer"})
+(vim.keymap.set :n :<C-/> "<cmd>Telescope current_buffer_fuzzy_find<cr>"
+                {:desc "fuzzy find in buffer"})
 
-(defn prompt-and-grep
-  []
+(fn prompt-and-grep []
   (vim.ui.input {:prompt "Enter a glob: " :default "*"}
                 #(tb.live_grep {:glob_pattern $1})))
 

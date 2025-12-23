@@ -1,9 +1,6 @@
-(module config.plugin.treesitter
-        {autoload {treesitter nvim-treesitter.configs
-                   ctx treesitter-context
-                   pairs tree-pairs
-                   nvim aniseed.nvim
-                   string aniseed.string}})
+(local treesitter (require :nvim-treesitter.configs))
+(local ctx (require :treesitter-context))
+(local pairs (require :tree-pairs))
 
 ; install required parsers
 (local ts-parsers [:bash
@@ -47,16 +44,16 @@
                    :xml
                    :yaml])
 
-(nvim.create_user_command :JamisonTSUpdate
-                          (.. :TSUpdateSync " " (string.join " " ts-parsers)) {})
+(vim.api.nvim_create_user_command :JamisonTSUpdate
+                                  (.. :TSUpdateSync " " (table.concat ts-parsers " ")) {})
 
-(nvim.create_user_command :JamisonTSInstall
-                          (.. :TSInstall " " (string.join " " ts-parsers)) {})
+(vim.api.nvim_create_user_command :JamisonTSInstall
+                                  (.. :TSInstall " " (table.concat ts-parsers " ")) {})
 
 ; 300 KB
-(def max-file-size (* 1024 7))
+(local max-file-size (* 1024 7))
 
-; large file stuff to look at 
+; large file stuff to look at
 ; https://www.reddit.com/r/neovim/comments/12n5lvl/how_do_you_deal_with_large_files/
 ; https://github.com/nvim-treesitter/nvim-treesitter/pull/3570/files
 ; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/

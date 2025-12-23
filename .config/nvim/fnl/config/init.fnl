@@ -1,48 +1,44 @@
-(module config.init {autoload {core aniseed.core
-                               nvim aniseed.nvim
-                               util config.util
-                               str aniseed.string
-                               c aniseed.compile}})
+(local util (require :config.util))
 
 ;generic mapping leaders configuration
-(nvim.set_keymap :n :<space> :<nop> {:noremap true})
-(set nvim.g.mapleader " ")
-(set nvim.g.maplocalleader " ")
+(vim.api.nvim_set_keymap :n :<space> :<nop> {:noremap true})
+(set vim.g.mapleader " ")
+(set vim.g.maplocalleader " ")
 
-(nvim.create_autocmd :TermOpen
-                     {:pattern "*"
-                      :desc "Disable spellcheck in terminal"
-                      :command "setlocal nospell"})
+(vim.api.nvim_create_autocmd :TermOpen
+                             {:pattern "*"
+                              :desc "Disable spellcheck in terminal"
+                              :command "setlocal nospell"})
 
 ; enable :Cfilter for qfix list
-(nvim.ex.packadd :cfilter)
+(vim.cmd "packadd cfilter")
 
 ;hit enter to clear search highlights
-(nvim.set_keymap :n :<Enter> :<cmd>nohlsearch<cr> {})
+(vim.api.nvim_set_keymap :n :<Enter> :<cmd>nohlsearch<cr> {})
 
 ; faster exiting terminal mode
-(nvim.set_keymap :t :<C-w> "<C-\\><C-n>"
-                 {:noremap true :desc "Exit terminal insert mode"})
+(vim.api.nvim_set_keymap :t :<C-w> "<C-\\><C-n>"
+                         {:noremap true :desc "Exit terminal insert mode"})
 
-(nvim.set_keymap :n :<leader>Y "<cmd>%y<CR>"
-                 {:desc "Yank whole buffer" :noremap true})
+(vim.api.nvim_set_keymap :n :<leader>Y "<cmd>%y<CR>"
+                         {:desc "Yank whole buffer" :noremap true})
 
 ;remove trailing whitespace
 (util.nnoremap :ws "%s/\\s\\+$//e")
 ; I always hit this on the kinesis, just disable it
-(nvim.set_keymap :n :<F1> :<Nop> {})
+(vim.api.nvim_set_keymap :n :<F1> :<Nop> {})
 
 (vim.keymap.set :n :<leader>yf #(vim.fn.setreg "+" (vim.fn.expand "%"))
                 {:desc "Yank file path"})
 
 ; highlight yanked text
-(nvim.clear_autocmds {:event :TextYankPost})
-(nvim.create_autocmd :TextYankPost
-                     {:pattern "*"
-                      :desc "Highlight yanked text"
-                      :callback #(vim.hl.on_yank {:timeout 350
-                                                  :on_visual false
-                                                  :higroup :IncSearch})})
+(vim.api.nvim_clear_autocmds {:event :TextYankPost})
+(vim.api.nvim_create_autocmd :TextYankPost
+                             {:pattern "*"
+                              :desc "Highlight yanked text"
+                              :callback #(vim.hl.on_yank {:timeout 350
+                                                          :on_visual false
+                                                          :higroup :IncSearch})})
 
 (let [options {;settings needed for cmp autocompletion
                :completeopt "menu,menuone,noselect"
@@ -87,7 +83,7 @@
                :softtabstop 2
                :expandtab true
                ; begone "HIT ENTER" prompt
-               :messagesopt "wait:1500,history:500"
+               :messagesopt "hit-enter,history:500"
                ; folding
                ; set default, override in ftplugin
                :foldmethod :manual
@@ -99,19 +95,13 @@
                ; let's update to include jumps so G[number] opens the fold
                :foldopen "block,hor,jump,mark,percent,quickfix,search,tag,undo"}]
   (each [option value (pairs options)]
-    (core.assoc nvim.o option value)))
-
-; TODO: avoid hard-coding this, can I get the path to this file somehow?
-(def fnl-ftplugin-path (vim.fs.normalize "~/.config/nvim/fnl/ftplugin"))
-(def ftplugin-path (vim.fs.normalize "~/.config/nvim/ftplugin"))
-; compile ftplugin separately since aniseed doesn't make it easy to have input and output dirs the same
-(c.glob :*.fnl fnl-ftplugin-path ftplugin-path)
+    (tset vim.o option value)))
 
 ;;import plugins, kick off plugin config
 (require :config.plugin)
 
 ; post-plugin setup stuff
-(defn start-local-server []
+(fn start-local-server []
   (vim.cmd :tabnew)
   (vim.cmd :vsplit)
   (vim.cmd "wincmd h")
@@ -121,6 +111,6 @@
   (vim.cmd "terminal pnpm app:server")
   (vim.cmd "file term/api.zsh"))
 
-(nvim.create_user_command :StartLocalServer start-local-server {})
-(nvim.set_keymap :n :<leader>sl :<cmd>StartLocalServer<cr>
-                 {:desc "Start local droplet server"})
+(vim.api.nvim_create_user_command :StartLocalServer start-local-server {})
+(vim.api.nvim_set_keymap :n :<leader>sl :<cmd>StartLocalServer<cr>
+                         {:desc "Start local droplet server"})

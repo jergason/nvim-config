@@ -1,3 +1,3 @@
-(module ftplugin.typescript {autoload {u ftplugin.utilities}})
+(local u (require :ftplugin.utilities))
 
 (u.js-setup)

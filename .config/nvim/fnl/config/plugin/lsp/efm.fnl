@@ -1,39 +1,37 @@
-(module config.plugin.lsp.efm
-        {require {eslint efmls-configs.linters.eslint
-                  eslint-fmt efmls-configs.formatters.eslint
-                  luacheck efmls-configs.linters.luacheck
-                  shellcheck efmls-configs.linters.shellcheck
-                  fnlfmt efmls-configs.formatters.fnlfmt
-                  gofmt efmls-configs.formatters.gofmt
-                  prettier efmls-configs.formatters.prettier
-                  terraform_fmt efmls-configs.formatters.terraform_fmt}
-         autoload {core aniseed.core lsp lspconfig}})
+(local eslint (require :efmls-configs.linters.eslint))
+(local eslint-fmt (require :efmls-configs.formatters.eslint))
+(local luacheck (require :efmls-configs.linters.luacheck))
+(local shellcheck (require :efmls-configs.linters.shellcheck))
+(local fnlfmt (require :efmls-configs.formatters.fnlfmt))
+(local gofmt (require :efmls-configs.formatters.gofmt))
+(local prettier (require :efmls-configs.formatters.prettier))
+(local terraform_fmt (require :efmls-configs.formatters.terraform_fmt))
+(local lspconfig-setup (require :config.plugin.lsp.lspconfig))
 
 ; efm is used for formatting on save
 ; sometimes it doesn't work and i don't know why ;_;
 ; https://github.com/creativenull/efmls-configs-nvim/tree/main?tab=readme-ov-file#format-on-save
-(def- formatting-group-name :LspFormatting)
-(defn- make-format-augroup []
+(local formatting-group-name :LspFormatting)
+
+(fn make-format-augroup []
   (vim.api.nvim_create_augroup formatting-group-name {}))
 
-(defn- lsp-format
-  []
+(fn lsp-format []
   (vim.lsp.buf.format {:filter (fn [client] (= client.name :efm))}))
 
-(defn- create-formatting-autocmd
-  []
+(fn create-formatting-autocmd []
   (vim.api.nvim_clear_autocmds {:group formatting-group-name})
   (vim.api.nvim_create_autocmd :BufWritePre
                                {:group formatting-group-name
                                 :callback #(lsp-format)}))
 
-(def- languages
+(local languages
   {:fennel [fnlfmt]
    :go [gofmt]
    :javascript [prettier eslint]
    :javascriptreact [prettier eslint]
-   :json [prettier jq]
-   :jsonc [prettier jq]
+   :json [prettier]
+   :jsonc [prettier]
    :lua [luacheck]
    ; TODO: how to replicate the "injected" thing from conform?
    :markdown [prettier]
@@ -42,19 +40,24 @@
    :typescriptreact [prettier eslint]
    :sh [shellcheck]})
 
-(defn- _setup
-  []
-  (lsp.efm.setup {:filetypes (core.keys languages)
-                  :settings {:rootMarkers [:.git/] : languages :logLevel 10}
-                  :init_options {:documentFormatting true
-                                 :documentRangeFormatting true}}))
+(fn _setup []
+  (local setup-args (lspconfig-setup.make-setup-args))
+  (vim.lsp.config :efm
+                  (vim.tbl_deep_extend :force setup-args
+                                       {:filetypes (vim.tbl_keys languages)
+                                        :settings {:rootMarkers [:.git/] : languages :logLevel 10}
+                                        :init_options {:documentFormatting true
+                                                       :documentRangeFormatting true}}))
+  (vim.lsp.enable :efm))
 
 (var is-loaded false)
-(defn setup
-  []
+
+(fn setup []
   (if (not is-loaded)
       (do
         (_setup)
         (make-format-augroup)
         (create-formatting-autocmd)
         (set is-loaded true))))
+
+{: setup}

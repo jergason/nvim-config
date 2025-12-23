@@ -1,4 +1,5 @@
-(module config.plugin.octo {autoload {octo octo util config.util}})
+(local octo (require :octo))
+(local util (require :config.util))
 
 (octo.setup)
 
@@ -8,4 +9,3 @@
 (util.nnoremap :opb "Octo pr browser")
 (util.nnoremap :opo "Octo pr checkout")
 (util.nnoremap :opm "Octo merge squash")
-

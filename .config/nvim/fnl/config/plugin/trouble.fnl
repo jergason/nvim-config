@@ -1,4 +1,4 @@
-(module config.plugin.trouble {autoload {trouble trouble}})
+(local trouble (require :trouble))
 
 (trouble.setup)
 (vim.keymap.set :n :<leader>xx "<cmd>Trouble diagnostics toggle<cr>"
@@ -16,5 +16,4 @@
 ;vim.keymap.set("n", "<leader>xd", function() require("trouble").open("document_diagnostics") end)
 ;vim.keymap.set("n", "<leader>xq", function() require("trouble").open("quickfix") end)
 ;vim.keymap.set("n", "<leader>xl", function() require("trouble").open("loclist") end)
-;vim.keymap.set("n", "gR", function() require("trouble").open("lsp_references") end) 
-
+;vim.keymap.set("n", "gR", function() require("trouble").open("lsp_references") end)

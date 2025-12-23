@@ -1,6 +1,5 @@
-(module config.plugin.theme {autoload {theme github-theme nvim aniseed.nvim}})
+(local theme (require :github-theme))
 
 (theme.setup {:options {:styles {:comments :italic} :darken {:float true}}})
 
-(nvim.ex.colorscheme :tokyonight)
-
+(vim.cmd "colorscheme tokyonight")

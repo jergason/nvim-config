@@ -1,9 +1,9 @@
-(module config.plugin.mason
-        {autoload {mason mason util config.util nvim aniseed.nvim}})
+(local mason (require :mason))
+(local util (require :config.util))
 
 (mason.setup {:ui {:border :single}})
 
-(def- mason-deps
+(local mason-deps
   [:bash-language-server
    :clangd
    :efm
@@ -20,10 +20,9 @@
    :vtsls
    :yaml-language-server])
 
-(defn install-mason-deps
-  [required-deps]
+(fn install-mason-deps [required-deps]
   (each [_ dep (pairs required-deps)]
-    (nvim.ex.MasonInstall dep)))
+    (vim.cmd (.. "MasonInstall " dep))))
 
-(nvim.create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps)
-                          {:desc "Install or update mason deps"})
+(vim.api.nvim_create_user_command :MasonJergInstallAll #(install-mason-deps mason-deps)
+                                  {:desc "Install or update mason deps"})

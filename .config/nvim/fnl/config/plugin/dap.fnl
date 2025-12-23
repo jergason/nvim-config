@@ -1,10 +1,9 @@
-(module config.plugin.dap
-        {autoload {nvim aniseed.nvim
-                   dap dap
-                   dapui dapui
-                   dapjs dap-vscode-js
-                   utils dap.utils
-                   vscode dap.ext.vscode}})
+(local nvim (require :nfnl.nvim))
+(local dap (require :dap))
+(local dapui (require :dapui))
+(local dapjs (require :dap-vscode-js))
+(local utils (require :dap.utils))
+(local vscode (require :dap.ext.vscode))
 
 (local languages [:javascript :typescript :javascriptreact :typescriptreact])
 
@@ -63,4 +62,3 @@
                 {:desc "Evaluate an expression in dap-ui"})
 
 ; override with .vscode/launch.json file
-

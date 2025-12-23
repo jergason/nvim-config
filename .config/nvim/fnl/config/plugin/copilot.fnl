@@ -1,5 +1,3 @@
-(module config.plugin.copilot)
-
 ; Argument to Accept is the fallback if there is no suggestion
 ; Here we provide an empty string so that nothing is inserted
 (vim.keymap.set :i :<C-J> "copilot#Accept(\"\")"

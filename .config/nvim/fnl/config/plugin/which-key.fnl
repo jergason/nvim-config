@@ -1,4 +1,3 @@
-(module config.plugin.which-key {autoload {which-key which-key}})
+(local which-key (require :which-key))
 
 (which-key.setup)
-

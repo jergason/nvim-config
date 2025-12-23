@@ -1,38 +1,38 @@
-(module config.plugin.cmp {autoload {nvim aniseed.nvim cmp cmp}})
+(local cmp (require :cmp))
 
-(def- cmp-src-menu-items
+(local cmp-src-menu-items
   {:buffer "[Buf]" :conjure "[Conj]" :nvim_lsp "[LSP]"})
 
-(def- cmp-srcs
+(local cmp-srcs
   [{:name :nvim_lsp} {:name :conjure} {:name :buffer}])
 
 ; stolen from github.com/LunarVim/Neovim-from-scratch
-(def- kind-icons
-  {:Text ""
+(local kind-icons
+  {:Text ""
    :Method :m
-   :Function ""
-   :Constructor ""
-   :Field ""
-   :Variable ""
-   :Class ""
-   :Interface ""
-   :Module ""
-   :Property ""
-   :Unit ""
-   :Value ""
-   :Enum ""
-   :Keyword ""
-   :Snippet ""
-   :Color ""
-   :File ""
-   :Reference ""
-   :Folder ""
-   :EnumMember ""
-   :Constant ""
-   :Struct ""
-   :Event ""
-   :Operator ""
-   :TypeParameter ""})
+   :Function ""
+   :Constructor ""
+   :Field ""
+   :Variable ""
+   :Class ""
+   :Interface ""
+   :Module ""
+   :Property ""
+   :Unit ""
+   :Value ""
+   :Enum ""
+   :Keyword ""
+   :Snippet ""
+   :Color ""
+   :File ""
+   :Reference ""
+   :Folder ""
+   :EnumMember ""
+   :Constant ""
+   :Struct ""
+   :Event ""
+   :Operator ""
+   :TypeParameter ""})
 
 ;; Setup cmp with desired settings
 

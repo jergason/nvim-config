@@ -1,4 +1,3 @@
-(module config.plugin.neogit {autoload {neogit neogit}})
+(local neogit (require :neogit))
 
 (neogit.setup {:disable_commit_confirmation true})
-

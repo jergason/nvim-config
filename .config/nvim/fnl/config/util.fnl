@@ -1,13 +1,7 @@
-(module config.util
-  {autoload {nvim aniseed.nvim
-             core aniseed.core}})
+(fn nnoremap [from to]
+  (vim.api.nvim_set_keymap :n (.. :<leader> from) (.. :<cmd> to :<cr>) {:noremap true}))
 
-(defn nnoremap [from to]
-  (nvim.set_keymap :n (.. "<leader>" from) (.. "<cmd>" to "<cr>") {:noremap true}))
+(fn vnoremap [from to]
+  (vim.api.nvim_set_keymap :v (.. :<leader> from) (.. :<cmd> to :<cr>) {:noremap true}))
 
-(defn vnoremap [from to]
-  nvim.set_keymap :v (.. "<leader>" from) (.. "<cmd>" to "<cr>") {:noremap true})
-
-(defn includes [collection element]
-  "return true if collection includes element, nil otherwise"
-  (core.some #(= $1 element)))
+{: nnoremap : vnoremap}

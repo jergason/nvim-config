@@ -1,4 +1,4 @@
-(module config.plugin.fugitive {autoload {util config.util}})
+(local util (require :config.util))
 
 (util.nnoremap :gx :GBrowse)
 (util.nnoremap :gb "Git blame")
