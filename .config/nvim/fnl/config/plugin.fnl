@@ -126,8 +126,8 @@
              ; ============
              ; Other Config
              ; ============
-             {1 :Isrothy/neominimap.nvim
-              :config #(require :config.plugin.neominimap)}
+             ; {1 :Isrothy/neominimap.nvim
+             ;  :config #(require :config.plugin.neominimap)}
              {1 :tyru/open-browser.vim
               :config #(require :config.plugin.open-browser)}
              ; {1 "mbbill/undotree" :config #(require :config.plugin.undotree)}

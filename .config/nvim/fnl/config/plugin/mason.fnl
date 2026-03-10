@@ -12,6 +12,8 @@
    :gopls
    :lua-language-server
    :ocaml-lsp
+   :oxfmt
+   :oxlint
    :pyright
    :prettier
    :rust_analyzer

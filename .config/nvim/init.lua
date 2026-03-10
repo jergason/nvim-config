@@ -26,12 +26,12 @@ if fn.empty(fn.glob(nfnl_path)) > 0 then
 end
 vim.opt.rtp:prepend(nfnl_path)
 
--- Add fnl directory to lua path so require('config.init') finds fnl/config/init.lua
+-- Add compiled Lua output directory to package path
 local config_path = fn.stdpath("config")
-package.path = config_path .. "/fnl/?.lua;" .. config_path .. "/fnl/?/init.lua;" .. package.path
+package.path = config_path .. "/lua/?.lua;" .. config_path .. "/lua/?/init.lua;" .. package.path
 
 -- generate helptags for stuff that we don't install directly w/ lazy
 execute("helptags ALL")
 
--- Load config (nfnl compiles .fnl -> .lua, we require the lua)
+-- Load config from compiled Lua output
 require('config.init')

@@ -1,5 +1,28 @@
 (local t (require :telescope.builtin))
 (local cmplsp (require :cmp_nvim_lsp))
+(local lspconfig-util (require :lspconfig.util))
+
+(fn find-oxlint-config [bufnr]
+  (let [fname (vim.api.nvim_buf_get_name bufnr)]
+    (if (not= fname "")
+        (let [root-markers (lspconfig-util.insert_package_json [:.oxlintrc.json :oxlint.config.ts]
+                                                                :oxlint
+                                                                fname)]
+          (. (vim.fs.find root-markers
+                          {:path fname
+                           :upward true
+                           :type :file
+                           :limit 1})
+             1))
+        nil)))
+
+(fn project-uses-oxlint? [bufnr]
+  (not= nil (find-oxlint-config bufnr)))
+
+(fn oxlint-root-dir [bufnr on-dir]
+  (let [config-file (find-oxlint-config bufnr)]
+    (if config-file
+        (on-dir (vim.fs.dirname config-file)))))
 
 ; symbols to show for lsp diagnostics
 ; (fn define-signs
@@ -27,46 +50,152 @@
                                             {:border :double})}
    :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
    :on_attach (fn [client bufnr]
-                (do
-                  ; override built-in K to add border and make it not focusable
-                  (vim.keymap.set :n :K
-                                  #(vim.lsp.buf.hover {:border :double
-                                                       :focusable false})
-                                  {:buffer bufnr
-                                   :desc "LSP: Hover"
-                                   :noremap true
-                                   :silent true})
-                  (vim.keymap.set :n :gd vim.lsp.buf.definition
-                                  {:desc "Go to definition" :buffer bufnr})
-                  (vim.keymap.set :n :<leader>gh vim.lsp.buf.signature_help
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>le vim.diagnostic.open_float
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>lq vim.diagnostic.setqflist
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>lf vim.lsp.buf.format
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>dj vim.diagnostic.goto_next
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>dk vim.diagnostic.goto_prev
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
-                                  {:buffer bufnr})
-                  ;telescope
-                  (vim.keymap.set :n :<leader>ld
-                                  ":lua require('telescope.builtin').diagnostics()<cr>"
-                                  {:buffer bufnr})
-                  (vim.keymap.set :n :<leader>lr
-                                  ":lua require('telescope.builtin').lsp_references()<cr>"
-                                  {:buffer bufnr})))})
+                (if (and (= client.name :eslint)
+                         (project-uses-oxlint? bufnr))
+                    (vim.lsp.stop_client client.id true)
+                    (do
+                      ; override built-in K to add border and make it not focusable
+                      (vim.keymap.set :n :K
+                                      #(vim.lsp.buf.hover {:border :double
+                                                           :focusable false})
+                                      {:buffer bufnr
+                                       :desc "LSP: Hover"
+                                       :noremap true
+                                       :silent true})
+                      (vim.keymap.set :n :gd vim.lsp.buf.definition
+                                      {:desc "Go to definition" :buffer bufnr})
+                      (vim.keymap.set :n :<leader>gh vim.lsp.buf.signature_help
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>le vim.diagnostic.open_float
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>lq vim.diagnostic.setqflist
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>lf vim.lsp.buf.format
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>dj vim.diagnostic.goto_next
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>dk vim.diagnostic.goto_prev
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
+                                      {:buffer bufnr})
+                      ;telescope
+                      (vim.keymap.set :n :<leader>ld
+                                      ":lua require('telescope.builtin').diagnostics()<cr>"
+                                      {:buffer bufnr})
+                      (vim.keymap.set :n :<leader>lr
+                                      ":lua require('telescope.builtin').lsp_references()<cr>"
+                                      {:buffer bufnr}))))})
 
 (fn lsp-format [bufnr]
-  (vim.lsp.buf.format {:filter (fn [client] (= client.name :efm))}))
+  (vim.lsp.buf.format {:filter (fn [client]
+                                 (or (= client.name :efm)
+                                     (= client.name :efm_prettier)
+                                     (= client.name :efm_oxfmt)))}))
+
+(fn read-json-file [path]
+  (if (= 1 (vim.fn.filereadable path))
+      (let [result [(pcall vim.json.decode (table.concat (vim.fn.readfile path) "\n"))]]
+        (if (. result 1)
+            (. result 2)
+            nil))
+      nil))
+
+(fn parse-major-version [version]
+  (if version
+      (tonumber (string.match (tostring version) "^(%d+)"))
+      nil))
+
+(fn normalize-typescript-spec [spec]
+  (if spec
+      (let [s (vim.trim (tostring spec))
+            s (string.gsub s "^workspace:" "")
+            s (string.gsub s "^npm:typescript@" "")
+            s (string.gsub s "^npm:@typescript/native%-preview@" "")
+            s (string.gsub s "^v" "")]
+        s)
+      nil))
+
+(fn typescript-spec-uses-tsgo? [spec]
+  (if spec
+      (let [s (normalize-typescript-spec spec)
+            direct-major (tonumber (string.match s "^[~^]?([0-9]+)"))
+            gte-major (tonumber (string.match s ">=%s*([0-9]+)"))
+            gt-major (tonumber (string.match s ">%s*([0-9]+)"))]
+        (or (and direct-major (>= direct-major 7))
+            (and gte-major (>= gte-major 7))
+            (and gt-major (>= gt-major 6))))
+      false))
+
+(fn package-dependency-spec [package-json dependency-key]
+  (or (vim.tbl_get package-json dependency-key "typescript")
+      (vim.tbl_get package-json dependency-key "@typescript/native-preview")))
+
+(fn package-typescript-spec [package-json]
+  (if package-json
+      (or (package-dependency-spec package-json :dependencies)
+          (package-dependency-spec package-json :devDependencies)
+          (package-dependency-spec package-json :peerDependencies)
+          (package-dependency-spec package-json :optionalDependencies))
+      nil))
+
+(fn package-uses-tsgo? [dir]
+  (if dir
+      (let [installed-typescript (or (read-json-file (.. dir "/node_modules/typescript/package.json"))
+                                     (read-json-file (.. dir "/node_modules/@typescript/native-preview/package.json")))
+            installed-version (if installed-typescript
+                                  (vim.tbl_get installed-typescript :version)
+                                  nil)
+            installed-major (parse-major-version installed-version)]
+        (if installed-major
+            (>= installed-major 7)
+            (let [package-json (read-json-file (.. dir "/package.json"))
+                  declared-spec (package-typescript-spec package-json)]
+              (typescript-spec-uses-tsgo? declared-spec))))
+      false))
+
+(fn project-uses-tsgo? [bufnr root]
+  (let [package-root (vim.fs.root bufnr [:package.json])]
+    (or (package-uses-tsgo? package-root)
+        (package-uses-tsgo? root))))
+
+(fn default-ts-root-dir [bufnr on-dir]
+  (let [root-markers ["package-lock.json" "yarn.lock" "pnpm-lock.yaml" "bun.lockb" "bun.lock"]
+        root-markers (if (= 1 (vim.fn.has "nvim-0.11.3"))
+                         [root-markers [".git"]]
+                         (vim.list_extend root-markers [".git"]))]
+    (if (vim.fs.root bufnr ["deno.json" "deno.jsonc" "deno.lock"])
+        nil
+        (let [project-root (vim.fs.root bufnr root-markers)]
+          (on-dir (if project-root project-root (vim.fn.getcwd)))))))
+
+(fn conditional-root-dir [base-root-dir use-tsgo?]
+  (fn [bufnr on-dir]
+    (if base-root-dir
+        (base-root-dir bufnr
+                       (fn [root]
+                         (if (= use-tsgo? (project-uses-tsgo? bufnr root))
+                             (on-dir root)))))))
+
+(fn conditional-eslint-root-dir [base-root-dir]
+  (fn [bufnr on-dir]
+    (if (project-uses-oxlint? bufnr)
+        nil
+        (if base-root-dir
+            (base-root-dir bufnr on-dir)))))
 
 (fn _setup []
-  (let [setup-args (make-setup-args)]
+  (let [setup-args (make-setup-args)
+        ts-base-root-dir (or (vim.tbl_get vim.lsp.config :tsgo :root_dir)
+                             (vim.tbl_get vim.lsp.config :vtsls :root_dir)
+                             default-ts-root-dir)
+        eslint-base-root-dir (vim.tbl_get vim.lsp.config :eslint :root_dir)
+        eslint-root-dir (conditional-eslint-root-dir eslint-base-root-dir)
+        tsgo-root-dir (conditional-root-dir ts-base-root-dir
+                                            true)
+        vtsls-root-dir (conditional-root-dir ts-base-root-dir
+                                             false)]
     (vim.lsp.config "*" setup-args)
     (vim.lsp.config :lua_ls
                     (vim.tbl_deep_extend :force setup-args
@@ -75,8 +204,18 @@
                                           :telemetry {:enable false}}))
     (vim.lsp.config :vtsls
                     (vim.tbl_deep_extend :force setup-args
-                                         {:settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}})))
-  (vim.lsp.enable [:bashls :clangd :gopls :lua_ls :terraformls :vtsls :yamlls])
+                                         {:root_dir vtsls-root-dir
+                                          :settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}}))
+    (vim.lsp.config :tsgo
+                    (vim.tbl_deep_extend :force setup-args
+                                         {:root_dir tsgo-root-dir}))
+    (vim.lsp.config :eslint
+                    {:root_dir eslint-root-dir})
+    (vim.lsp.config :oxlint
+                    (vim.tbl_deep_extend :force setup-args
+                                         {:cmd [:oxlint "--lsp"]
+                                          :root_dir oxlint-root-dir})))
+  (vim.lsp.enable [:bashls :clangd :eslint :gopls :lua_ls :terraformls :tsgo :vtsls :yamlls :oxlint])
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
   (vim.keymap.set :v :<leader>lf #(lsp-format 0)))
 
