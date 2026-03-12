@@ -28,8 +28,6 @@
               :config #(require :config.plugin.treesitter)
               :dependencies [:nvim-treesitter/nvim-treesitter
                              :nvim-treesitter/playground
-                             ; {1 :OXY2DEV/markview.nvim
-                             ;  :config #(require :config.plugin.markview)}
                              :yorickpeterse/nvim-tree-pairs
                              :nvim-treesitter/nvim-treesitter-textobjects]}
              ; telescope
