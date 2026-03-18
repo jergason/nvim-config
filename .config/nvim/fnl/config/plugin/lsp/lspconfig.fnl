@@ -48,12 +48,13 @@
                                     {:border :single})
               :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
                                             {:border :double})}
-   :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
-   :on_attach (fn [client bufnr]
-                (if (and (= client.name :eslint)
-                         (project-uses-oxlint? bufnr))
-                    (vim.lsp.stop_client client.id true)
-                    (do
+    :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
+    :flags {:exit_timeout 1000}
+    :on_attach (fn [client bufnr]
+                 (if (and (= client.name :eslint)
+                          (project-uses-oxlint? bufnr))
+                     (vim.lsp.stop_client client.id true)
+                     (do
                       ; override built-in K to add border and make it not focusable
                       (vim.keymap.set :n :K
                                       #(vim.lsp.buf.hover {:border :double
@@ -161,14 +162,18 @@
         (package-uses-tsgo? root))))
 
 (fn default-ts-root-dir [bufnr on-dir]
-  (let [root-markers ["package-lock.json" "yarn.lock" "pnpm-lock.yaml" "bun.lockb" "bun.lock"]
+  (let [root-markers ["package-lock.json" "yarn.lock" "pnpm-lock.yaml" "bun.lockb" "bun.lock" "package.json"]
         root-markers (if (= 1 (vim.fn.has "nvim-0.11.3"))
                          [root-markers [".git"]]
                          (vim.list_extend root-markers [".git"]))]
     (if (vim.fs.root bufnr ["deno.json" "deno.jsonc" "deno.lock"])
         nil
-        (let [project-root (vim.fs.root bufnr root-markers)]
-          (on-dir (if project-root project-root (vim.fn.getcwd)))))))
+        (let [project-root (vim.fs.root bufnr root-markers)
+              fname (vim.api.nvim_buf_get_name bufnr)
+              fallback-root (if (not= fname "")
+                                (vim.fs.dirname fname)
+                                (vim.fn.getcwd))]
+          (on-dir (if project-root project-root fallback-root))))))
 
 (fn conditional-root-dir [base-root-dir use-tsgo?]
   (fn [bufnr on-dir]

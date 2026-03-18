@@ -124,6 +124,7 @@
              ; ============
              ; Other Config
              ; ============
+             ; too noisy, can't get it to respect my settings to start off
              ; {1 :Isrothy/neominimap.nvim
              ;  :config #(require :config.plugin.neominimap)}
              {1 :tyru/open-browser.vim
