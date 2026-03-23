@@ -24,20 +24,6 @@
     (if config-file
         (on-dir (vim.fs.dirname config-file)))))
 
-; symbols to show for lsp diagnostics
-; (fn define-signs
-;   []
-;   (let [prefix :Diagnostic
-;         error (.. prefix :SignError)
-;         warn (.. prefix :SignWarn)
-;         info (.. prefix :SignInfo)
-;         hint (.. prefix :SignHint)]
-;     (vim.diagnostics.config {:signs {} })
-;     (vim.fn.sign_define error {:text :x :texthl error})
-;     (vim.fn.sign_define warn {:text "!" :texthl warn})
-;     (vim.fn.sign_define info {:text :i :texthl info})
-;     (vim.fn.sign_define hint {:text "?" :texthl hint})))
-
 ; server features
 (fn make-setup-args []
   "return a map of on_attach, handlers, capabilities to pass to `vim.lsp.config` calls"
@@ -49,8 +35,10 @@
               :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
                                             {:border :double})}
     :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
-    :flags {:exit_timeout 1000}
     :on_attach (fn [client bufnr]
+                 ; set exit_timeout so neovim's built-in exit handler force-kills
+                 ; after 500ms instead of waiting forever (tsgo hangs for 20+s)
+                 (tset client :flags :exit_timeout 500)
                  (if (and (= client.name :eslint)
                           (project-uses-oxlint? bufnr))
                      (vim.lsp.stop_client client.id true)
@@ -222,7 +210,43 @@
                                           :root_dir oxlint-root-dir})))
   (vim.lsp.enable [:bashls :clangd :eslint :gopls :lua_ls :terraformls :tsgo :vtsls :yamlls :oxlint])
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
-  (vim.keymap.set :v :<leader>lf #(lsp-format 0)))
+  (vim.keymap.set :v :<leader>lf #(lsp-format 0))
+  ; neovim's exit hangs because TransportRun:terminate() sends SIGTERM
+  ; (tsgo takes 20+s to die) and the built-in VimLeavePre handler's
+  ; force-kill logic is broken. fix: SIGKILL + replace exit handler.
+  (let [transport (require :vim.lsp._transport)]
+    (set transport.TransportRun.terminate
+         (fn [self]
+           (when self.sysobj
+             (self.sysobj:kill 9)))))
+  ; delete built-in VimLeavePre handler and replace with fast one
+  (let [autocmds (vim.api.nvim_get_autocmds {:event :VimLeavePre})]
+    (each [_ ac (ipairs autocmds)]
+      (when (= ac.desc "vim.lsp: exit handler")
+        (vim.api.nvim_del_autocmd ac.id))))
+  (vim.api.nvim_create_autocmd :VimLeavePre
+                               {:desc "fast lsp exit"
+                                :callback (fn []
+                                            (let [pid (vim.fn.getpid)]
+                                              ; collect child process groups BEFORE killing
+                                              (local pgids {})
+                                              (let [h (io.popen (string.format
+                                                                  "ps -o pgid= -p $(pgrep -P %d 2>/dev/null | tr '\\n' ',') 2>/dev/null"
+                                                                  pid))]
+                                                (when h
+                                                  (each [line (h:lines)]
+                                                    (let [pgid (line:match "(%d+)")]
+                                                      (when (and pgid (not= pgid (tostring pid)))
+                                                        (tset pgids pgid true))))
+                                                  (h:close)))
+                                              ; SIGKILL all RPC transports
+                                              (each [_ client (ipairs (vim.lsp.get_clients))]
+                                                (pcall #(client.rpc.terminate)))
+                                              ; SIGKILL all collected process groups
+                                              (each [pgid _ (pairs pgids)]
+                                                (os.execute (string.format "kill -9 -%s 2>/dev/null" pgid)))
+                                              ; spin event loop to process exit events
+                                              (vim.wait 500 #(= (length (vim.lsp.get_clients)) 0) 25)))}))
 
 (var is-loaded false)
 
