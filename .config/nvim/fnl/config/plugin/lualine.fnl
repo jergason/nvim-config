@@ -10,11 +10,15 @@
                           :section_separators {:left "" :right ""}
                           :component_separators {:left "" :right ""}}
                 :sections {:lualine_a [:mode {:upper true}]
-                           :lualine_b [[:FugitiveHead]
-                                       {1 :filename
+                           :lualine_b [{1 :filename
                                         :file_status true
                                         :path 1
-                                        :shorting_target 40}]
+                                        :shorting_target 40}
+                                       {1 :FugitiveHead
+                                        :fmt #(if (> (length $1) 220)
+                                                  (.. (string.sub $1 1 17)
+                                                      "…")
+                                                  $1)}]
                            :lualine_c [{1 :buffers
                                         :mode 3
                                         :max_length 40

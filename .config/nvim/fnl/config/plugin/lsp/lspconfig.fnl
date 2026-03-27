@@ -5,14 +5,11 @@
 (fn find-oxlint-config [bufnr]
   (let [fname (vim.api.nvim_buf_get_name bufnr)]
     (if (not= fname "")
-        (let [root-markers (lspconfig-util.insert_package_json [:.oxlintrc.json :oxlint.config.ts]
-                                                                :oxlint
-                                                                fname)]
+        (let [root-markers (lspconfig-util.insert_package_json [:.oxlintrc.json
+                                                                :oxlint.config.ts]
+                                                               :oxlint fname)]
           (. (vim.fs.find root-markers
-                          {:path fname
-                           :upward true
-                           :type :file
-                           :limit 1})
+                          {:path fname :upward true :type :file :limit 1})
              1))
         nil)))
 
@@ -34,15 +31,12 @@
                                     {:border :single})
               :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
                                             {:border :double})}
-    :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
-    :on_attach (fn [client bufnr]
-                 ; set exit_timeout so neovim's built-in exit handler force-kills
-                 ; after 500ms instead of waiting forever (tsgo hangs for 20+s)
-                 (tset client :flags :exit_timeout 500)
-                 (if (and (= client.name :eslint)
-                          (project-uses-oxlint? bufnr))
-                     (vim.lsp.stop_client client.id true)
-                     (do
+   :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
+   :flags {:exit_timeout 500}
+   :on_attach (fn [client bufnr]
+                (if (and (= client.name :eslint) (project-uses-oxlint? bufnr))
+                    (vim.lsp.stop_client client.id true)
+                    (do
                       ; override built-in K to add border and make it not focusable
                       (vim.keymap.set :n :K
                                       #(vim.lsp.buf.hover {:border :double
@@ -85,7 +79,8 @@
 
 (fn read-json-file [path]
   (if (= 1 (vim.fn.filereadable path))
-      (let [result [(pcall vim.json.decode (table.concat (vim.fn.readfile path) "\n"))]]
+      (let [result [(pcall vim.json.decode
+                           (table.concat (vim.fn.readfile path) "\n"))]]
         (if (. result 1)
             (. result 2)
             nil))
@@ -102,7 +97,7 @@
             s (string.gsub s "^workspace:" "")
             s (string.gsub s "^npm:typescript@" "")
             s (string.gsub s "^npm:@typescript/native%-preview@" "")
-            s (string.gsub s "^v" "")]
+            s (string.gsub s :^v "")]
         s)
       nil))
 
@@ -113,12 +108,11 @@
             gte-major (tonumber (string.match s ">=%s*([0-9]+)"))
             gt-major (tonumber (string.match s ">%s*([0-9]+)"))]
         (or (and direct-major (>= direct-major 7))
-            (and gte-major (>= gte-major 7))
-            (and gt-major (>= gt-major 6))))
+            (and gte-major (>= gte-major 7)) (and gt-major (>= gt-major 6))))
       false))
 
 (fn package-dependency-spec [package-json dependency-key]
-  (or (vim.tbl_get package-json dependency-key "typescript")
+  (or (vim.tbl_get package-json dependency-key :typescript)
       (vim.tbl_get package-json dependency-key "@typescript/native-preview")))
 
 (fn package-typescript-spec [package-json]
@@ -131,30 +125,36 @@
 
 (fn package-uses-tsgo? [dir]
   (if dir
-      (let [installed-typescript (or (read-json-file (.. dir "/node_modules/typescript/package.json"))
-                                     (read-json-file (.. dir "/node_modules/@typescript/native-preview/package.json")))
+      (let [installed-typescript (or (read-json-file (.. dir
+                                                         :/node_modules/typescript/package.json))
+                                     (read-json-file (.. dir
+                                                         "/node_modules/@typescript/native-preview/package.json")))
             installed-version (if installed-typescript
                                   (vim.tbl_get installed-typescript :version)
                                   nil)
             installed-major (parse-major-version installed-version)]
         (if installed-major
             (>= installed-major 7)
-            (let [package-json (read-json-file (.. dir "/package.json"))
+            (let [package-json (read-json-file (.. dir :/package.json))
                   declared-spec (package-typescript-spec package-json)]
               (typescript-spec-uses-tsgo? declared-spec))))
       false))
 
 (fn project-uses-tsgo? [bufnr root]
   (let [package-root (vim.fs.root bufnr [:package.json])]
-    (or (package-uses-tsgo? package-root)
-        (package-uses-tsgo? root))))
+    (or (package-uses-tsgo? package-root) (package-uses-tsgo? root))))
 
 (fn default-ts-root-dir [bufnr on-dir]
-  (let [root-markers ["package-lock.json" "yarn.lock" "pnpm-lock.yaml" "bun.lockb" "bun.lock" "package.json"]
-        root-markers (if (= 1 (vim.fn.has "nvim-0.11.3"))
-                         [root-markers [".git"]]
-                         (vim.list_extend root-markers [".git"]))]
-    (if (vim.fs.root bufnr ["deno.json" "deno.jsonc" "deno.lock"])
+  (let [root-markers [:package-lock.json
+                      :yarn.lock
+                      :pnpm-lock.yaml
+                      :bun.lockb
+                      :bun.lock
+                      :package.json]
+        root-markers (if (= 1 (vim.fn.has :nvim-0.11.3))
+                         [root-markers [:.git]]
+                         (vim.list_extend root-markers [:.git]))]
+    (if (vim.fs.root bufnr [:deno.json :deno.jsonc :deno.lock])
         nil
         (let [project-root (vim.fs.root bufnr root-markers)
               fname (vim.api.nvim_buf_get_name bufnr)
@@ -166,10 +166,9 @@
 (fn conditional-root-dir [base-root-dir use-tsgo?]
   (fn [bufnr on-dir]
     (if base-root-dir
-        (base-root-dir bufnr
-                       (fn [root]
-                         (if (= use-tsgo? (project-uses-tsgo? bufnr root))
-                             (on-dir root)))))))
+        (base-root-dir bufnr (fn [root]
+                               (if (= use-tsgo? (project-uses-tsgo? bufnr root))
+                                   (on-dir root)))))))
 
 (fn conditional-eslint-root-dir [base-root-dir]
   (fn [bufnr on-dir]
@@ -185,10 +184,8 @@
                              default-ts-root-dir)
         eslint-base-root-dir (vim.tbl_get vim.lsp.config :eslint :root_dir)
         eslint-root-dir (conditional-eslint-root-dir eslint-base-root-dir)
-        tsgo-root-dir (conditional-root-dir ts-base-root-dir
-                                            true)
-        vtsls-root-dir (conditional-root-dir ts-base-root-dir
-                                             false)]
+        tsgo-root-dir (conditional-root-dir ts-base-root-dir true)
+        vtsls-root-dir (conditional-root-dir ts-base-root-dir false)]
     (vim.lsp.config "*" setup-args)
     (vim.lsp.config :lua_ls
                     (vim.tbl_deep_extend :force setup-args
@@ -202,51 +199,52 @@
     (vim.lsp.config :tsgo
                     (vim.tbl_deep_extend :force setup-args
                                          {:root_dir tsgo-root-dir}))
-    (vim.lsp.config :eslint
-                    {:root_dir eslint-root-dir})
+    (vim.lsp.config :eslint {:root_dir eslint-root-dir})
     (vim.lsp.config :oxlint
                     (vim.tbl_deep_extend :force setup-args
-                                         {:cmd [:oxlint "--lsp"]
+                                         {:cmd [:oxlint :--lsp]
                                           :root_dir oxlint-root-dir})))
-  (vim.lsp.enable [:bashls :clangd :eslint :gopls :lua_ls :terraformls :tsgo :vtsls :yamlls :oxlint])
+  (vim.lsp.enable [:bashls
+                   :clangd
+                   :eslint
+                   :gopls
+                   :lua_ls
+                   :terraformls
+                   :tsgo
+                   :vtsls
+                   :yamlls
+                   :oxlint])
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
-  (vim.keymap.set :v :<leader>lf #(lsp-format 0))
-  ; neovim's exit hangs because TransportRun:terminate() sends SIGTERM
-  ; (tsgo takes 20+s to die) and the built-in VimLeavePre handler's
-  ; force-kill logic is broken. fix: SIGKILL + replace exit handler.
-  (let [transport (require :vim.lsp._transport)]
-    (set transport.TransportRun.terminate
-         (fn [self]
-           (when self.sysobj
-             (self.sysobj:kill 9)))))
-  ; delete built-in VimLeavePre handler and replace with fast one
+  (vim.keymap.set :v :<leader>lf #(lsp-format 0)) ; replace neovim's built-in VimLeavePre handler. the built-in one sends ; shutdown → SIGTERM, but eslint ignores SIGTERM and hangs the exit. ; ours does: graceful shutdown → wait → SIGKILL.
   (let [autocmds (vim.api.nvim_get_autocmds {:event :VimLeavePre})]
     (each [_ ac (ipairs autocmds)]
       (when (= ac.desc "vim.lsp: exit handler")
         (vim.api.nvim_del_autocmd ac.id))))
   (vim.api.nvim_create_autocmd :VimLeavePre
-                               {:desc "fast lsp exit"
-                                :callback (fn []
-                                            (let [pid (vim.fn.getpid)]
-                                              ; collect child process groups BEFORE killing
-                                              (local pgids {})
-                                              (let [h (io.popen (string.format
-                                                                  "ps -o pgid= -p $(pgrep -P %d 2>/dev/null | tr '\\n' ',') 2>/dev/null"
-                                                                  pid))]
-                                                (when h
-                                                  (each [line (h:lines)]
-                                                    (let [pgid (line:match "(%d+)")]
-                                                      (when (and pgid (not= pgid (tostring pid)))
-                                                        (tset pgids pgid true))))
-                                                  (h:close)))
-                                              ; SIGKILL all RPC transports
-                                              (each [_ client (ipairs (vim.lsp.get_clients))]
-                                                (pcall #(client.rpc.terminate)))
-                                              ; SIGKILL all collected process groups
-                                              (each [pgid _ (pairs pgids)]
-                                                (os.execute (string.format "kill -9 -%s 2>/dev/null" pgid)))
-                                              ; spin event loop to process exit events
-                                              (vim.wait 500 #(= (length (vim.lsp.get_clients)) 0) 25)))}))
+                               {:desc "lsp: fast exit"
+                                :callback (fn [] ; send graceful shutdown to all clients
+                                            (each [_ client (ipairs (vim.lsp.get_clients))]
+                                              (pcall #(client:stop)))
+                                            ; wait up to 500ms for graceful exit
+                                            (vim.wait 500
+                                                      #(= (length (vim.lsp.get_clients))
+                                                          0)
+                                                      50)
+                                            ; SIGKILL anything still alive
+                                            (let [remaining (vim.lsp.get_clients)]
+                                              (when (> (length remaining) 0)
+                                                (let [transport (require :vim.lsp._transport)]
+                                                  (set transport.TransportRun.terminate
+                                                       (fn [self]
+                                                         (when self.sysobj
+                                                           (self.sysobj:kill 9)))))
+                                                (each [_ client (ipairs remaining)]
+                                                  (pcall #(client.rpc.terminate)))
+                                                ; let event loop process the kills
+                                                (vim.wait 100
+                                                          #(= (length (vim.lsp.get_clients))
+                                                              0)
+                                                          25))))}))
 
 (var is-loaded false)
 

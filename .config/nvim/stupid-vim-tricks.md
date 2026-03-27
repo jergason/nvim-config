@@ -207,7 +207,7 @@ Sometimes I don't want to format stuff with prettier (markdown mostly). Use `:no
 ## Building neovim
 
 - `make distclean && make clean` to remove old build artifacts
-- `make CMAKE_BUILD_TYPE=RelWithDebInfo && make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=~/neovim" install` to build and install in my local dir
+- `make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/neovim" install` to build and install in my local dir
 
 ## Treesitter
 
