@@ -1,6 +1,7 @@
-(local treesitter (require :nvim-treesitter.configs))
+(local treesitter (require :nvim-treesitter))
 (local ctx (require :treesitter-context))
 (local pairs (require :tree-pairs))
+(local ts-swap (require :nvim-treesitter-textobjects.swap))
 
 ; install required parsers
 (local ts-parsers [:bash
@@ -45,13 +46,18 @@
                    :yaml])
 
 (vim.api.nvim_create_user_command :JamisonTSUpdate
-                                  (.. :TSUpdateSync " " (table.concat ts-parsers " ")) {})
+                                  (fn []
+                                    (let [task (treesitter.update ts-parsers
+                                                                  {:summary true})]
+                                      (task:wait 300000)))
+                                  {})
 
 (vim.api.nvim_create_user_command :JamisonTSInstall
-                                  (.. :TSInstall " " (table.concat ts-parsers " ")) {})
-
-; 300 KB
-(local max-file-size (* 1024 7))
+                                  (fn []
+                                    (let [task (treesitter.install ts-parsers
+                                                                   {:summary true})]
+                                      (task:wait 300000)))
+                                  {})
 
 ; large file stuff to look at
 ; https://www.reddit.com/r/neovim/comments/12n5lvl/how_do_you_deal_with_large_files/
@@ -59,28 +65,32 @@
 ; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/
 ; https://www.vim.org/scripts/script.php?script_id=1506
 
-; local current_file = vim.api.nvim_buf_get_name(0) -- 0 refers to the current buffer
-; local file_size = vim.fn.getfsize(current_file)
-; print("File size in bytes: " .. file_size)
-
-; disable treesitter folding for large file
-(fn is-large-file [file]
-  (> (vim.fn.getfsize file) max-file-size))
-
 (fn ts-disable-large-file [lang buffer] ; (print (vim.print "Disabling treesitter for large files, is large file is"))
   ; (print (vim.print (vim.inspect (vim.api.nvim_buf_line_count buffer))))
   (> (vim.api.nvim_buf_line_count buffer) 30000))
 
-(treesitter.setup {:highlight {:enable true :disable ts-disable-large-file}
-                   ; config for treesitter-text-objects to enable swapping arguments in functions
-                   ; see treesitter-text-objects docs for more info
-                   :textobjects {:enable true
-                                 :disable ts-disable-large-file
-                                 :swap {:enable true
-                                        :swap_next {:<leader>a "@parameter.inner"}
-                                        :swap_previous {:<leader>A "@parameter.inner"}}}
-                   :incremental_selection {:enable true
-                                           :disable ts-disable-large-file}})
+(vim.api.nvim_create_autocmd :FileType
+                             {:pattern "*"
+                              :desc "Enable treesitter highlighting"
+                              :callback (fn [args]
+                                          (let [buf args.buf
+                                                buftype (vim.api.nvim_get_option_value :buftype
+                                                                                        {:buf buf})]
+                                            (when (and (= buftype "")
+                                                       (not (ts-disable-large-file nil
+                                                                                   buf)))
+                                              (pcall vim.treesitter.start
+                                                     buf))))})
+
+(vim.keymap.set :n :<leader>a
+                (fn []
+                  (when (not (ts-disable-large-file nil 0))
+                    (ts-swap.swap_next "@parameter.inner"))))
+
+(vim.keymap.set :n :<leader>A
+                (fn []
+                  (when (not (ts-disable-large-file nil 0))
+                    (ts-swap.swap_previous "@parameter.inner"))))
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
 

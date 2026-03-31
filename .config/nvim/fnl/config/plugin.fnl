@@ -22,14 +22,15 @@
              {1 :folke/which-key.nvim
               :config #(require :config.plugin.which-key)}
              ; parsing system
-             {1 :nvim-treesitter/nvim-treesitter-context
-              :build ":TSUpdate"
-              :lazy false
-              :config #(require :config.plugin.treesitter)
-              :dependencies [:nvim-treesitter/nvim-treesitter
-                             :nvim-treesitter/playground
-                             :yorickpeterse/nvim-tree-pairs
-                             :nvim-treesitter/nvim-treesitter-textobjects]}
+              {1 :nvim-treesitter/nvim-treesitter-context
+               :build ":TSUpdate"
+               :lazy false
+               :config #(require :config.plugin.treesitter)
+               :dependencies [{1 :nvim-treesitter/nvim-treesitter
+                               :branch :main}
+                              :yorickpeterse/nvim-tree-pairs
+                              {1 :nvim-treesitter/nvim-treesitter-textobjects
+                               :branch :main}]}
              ; telescope
              {1 :nvim-telescope/telescope.nvim
               :dependencies [:nvim-telescope/telescope-ui-select.nvim
@@ -92,7 +93,8 @@
              ; . . . something?
              :folke/lua-dev.nvim
              ; markdown
-             :MeanderingProgrammer/render-markdown.nvim
+              {1 :MeanderingProgrammer/render-markdown.nvim
+               :config #(require :config.plugin.render-markdown)}
              ; depends on node and yarn being installed already
              {1 :iamcco/markdown-preview.nvim
               :build "cd app && npm install && git restore ."

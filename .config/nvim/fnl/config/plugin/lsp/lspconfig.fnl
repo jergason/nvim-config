@@ -23,20 +23,16 @@
 
 ; server features
 (fn make-setup-args []
-  "return a map of on_attach, handlers, capabilities to pass to `vim.lsp.config` calls"
-  {:handlers {:textDocument/publishDiagnostics (vim.lsp.with vim.lsp.diagnostic.on_publish_diagnostics
-                                                 {:severity_sort true
-                                                  :virtual_text false})
-              :textDocument/hover (vim.lsp.with vim.lsp.handlers.hover
-                                    {:border :single})
-              :textDocument/signatureHelp (vim.lsp.with vim.lsp.handlers.signature_help
-                                            {:border :double})}
-   :capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
+  "return a map of on_attach, capabilities, flags to pass to `vim.lsp.config` calls"
+  {:capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
    :flags {:exit_timeout 500}
    :on_attach (fn [client bufnr]
                 (if (and (= client.name :eslint) (project-uses-oxlint? bufnr))
                     (vim.lsp.stop_client client.id true)
                     (do
+                      (vim.diagnostic.config {:severity_sort true
+                                              :virtual_text false}
+                                             (vim.lsp.diagnostic.get_namespace client.id))
                       ; override built-in K to add border and make it not focusable
                       (vim.keymap.set :n :K
                                       #(vim.lsp.buf.hover {:border :double
@@ -47,7 +43,8 @@
                                        :silent true})
                       (vim.keymap.set :n :gd vim.lsp.buf.definition
                                       {:desc "Go to definition" :buffer bufnr})
-                      (vim.keymap.set :n :<leader>gh vim.lsp.buf.signature_help
+                      (vim.keymap.set :n :<leader>gh
+                                      #(vim.lsp.buf.signature_help {:border :double})
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
                                       {:buffer bufnr})
@@ -215,7 +212,10 @@
                    :yamlls
                    :oxlint])
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
-  (vim.keymap.set :v :<leader>lf #(lsp-format 0)) ; replace neovim's built-in VimLeavePre handler. the built-in one sends ; shutdown → SIGTERM, but eslint ignores SIGTERM and hangs the exit. ; ours does: graceful shutdown → wait → SIGKILL.
+  (vim.keymap.set :v :<leader>lf #(lsp-format 0))
+  ;; replace neovim's built-in VimLeavePre handler. the built-in one sends
+  ;; shutdown → SIGTERM, but eslint ignores SIGTERM and hangs the exit.
+  ;; ours does: graceful shutdown → wait → SIGKILL.
   (let [autocmds (vim.api.nvim_get_autocmds {:event :VimLeavePre})]
     (each [_ ac (ipairs autocmds)]
       (when (= ac.desc "vim.lsp: exit handler")

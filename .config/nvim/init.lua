@@ -31,7 +31,15 @@ local config_path = fn.stdpath("config")
 package.path = config_path .. "/lua/?.lua;" .. config_path .. "/lua/?/init.lua;" .. package.path
 
 -- generate helptags for stuff that we don't install directly w/ lazy
-execute("helptags ALL")
+local function safe_helptags(dir)
+  if fn.isdirectory(dir) == 1 then
+    pcall(vim.cmd.helptags, dir)
+  end
+end
+
+safe_helptags(config_path .. "/doc")
+safe_helptags(lazypath .. "/doc")
+safe_helptags(nfnl_path .. "/doc")
 
 -- Load config from compiled Lua output
 require('config.init')
