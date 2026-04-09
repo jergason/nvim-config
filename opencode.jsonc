@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "external_directory": {
+      // clankers read here all the time when debugging
+      "~/.local/share/nvim/**": "allow",
+      // let us read neovim data stuff in case we're debugging
+      "~/neovim/**": "allow",
+    },
+    "edit": {
+      // make sure we can't write to it though
+      "~/neovim/**": "deny",
+    },
+  },
+}
