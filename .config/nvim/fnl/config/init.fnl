@@ -97,6 +97,23 @@
   (each [option value (pairs options)]
     (tset vim.o option value)))
 
+(local custom-ftplugins [:fennel
+                         :gitconfig
+                         :javascript
+                         :markdown
+                         :neogitstatus
+                         :outline
+                         :qf
+                         :typescript])
+
+(vim.api.nvim_create_autocmd :FileType
+                             {:pattern custom-ftplugins
+                              :desc "Load custom Fennel ftplugins"
+                              :callback (fn [args]
+                                          (let [module (.. "ftplugin." args.match)]
+                                            (tset package.loaded module nil)
+                                            (require module)))})
+
 ;;import plugins, kick off plugin config
 (require :config.plugin)
 
