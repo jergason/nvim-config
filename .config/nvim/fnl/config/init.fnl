@@ -1,4 +1,5 @@
 (local util (require :config.util))
+(local picker (require :config.picker))
 
 ;generic mapping leaders configuration
 (vim.api.nvim_set_keymap :n :<space> :<nop> {:noremap true})
@@ -116,6 +117,7 @@
 
 ;;import plugins, kick off plugin config
 (require :config.plugin)
+(picker.setup)
 
 ; post-plugin setup stuff
 (fn start-local-server []

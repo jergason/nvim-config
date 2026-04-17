@@ -1,4 +1,4 @@
-(local t (require :telescope.builtin))
+(local picker (require :config.picker))
 (local cmplsp (require :cmp_nvim_lsp))
 (local lspconfig-util (require :lspconfig.util))
 
@@ -29,20 +29,25 @@
    :on_attach (fn [client bufnr]
                 (if (and (= client.name :eslint) (project-uses-oxlint? bufnr))
                     (vim.lsp.stop_client client.id true)
-                    (do
-                      (vim.diagnostic.config {:severity_sort true
-                                              :virtual_text false}
-                                             (vim.lsp.diagnostic.get_namespace client.id))
-                      ; override built-in K to add border and make it not focusable
-                      (vim.keymap.set :n :K
-                                      #(vim.lsp.buf.hover {:border :double
-                                                           :focusable false})
-                                      {:buffer bufnr
-                                       :desc "LSP: Hover"
-                                       :noremap true
-                                       :silent true})
-                      (vim.keymap.set :n :gd vim.lsp.buf.definition
-                                      {:desc "Go to definition" :buffer bufnr})
+                     (do
+                       (vim.diagnostic.config {:severity_sort true
+                                               :virtual_text false}
+                                              (vim.lsp.diagnostic.get_namespace client.id))
+                      (let [filetype (vim.api.nvim_get_option_value :filetype
+                                                                     {:buf bufnr})]
+                        ; fennel has its own hybrid doc/definition mappings in ftplugin
+                        (if (not= filetype :fennel)
+                            (do
+                              (vim.keymap.set :n :K
+                                              #(vim.lsp.buf.hover {:border :double
+                                                                   :focusable false})
+                                              {:buffer bufnr
+                                               :desc "LSP: Hover"
+                                               :noremap true
+                                               :silent true})
+                              (vim.keymap.set :n :gd vim.lsp.buf.definition
+                                              {:desc "Go to definition"
+                                               :buffer bufnr}))))
                       (vim.keymap.set :n :<leader>gh
                                       #(vim.lsp.buf.signature_help {:border :double})
                                       {:buffer bufnr})
@@ -60,12 +65,12 @@
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
                                       {:buffer bufnr})
-                      ;telescope
+                      ; picker backend
                       (vim.keymap.set :n :<leader>ld
-                                      ":lua require('telescope.builtin').diagnostics()<cr>"
+                                      picker.diagnostics
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lr
-                                      ":lua require('telescope.builtin').lsp_references()<cr>"
+                                      picker.references
                                       {:buffer bufnr}))))})
 
 (fn lsp-format [bufnr]
@@ -73,6 +78,21 @@
                                  (or (= client.name :efm)
                                      (= client.name :efm_prettier)
                                      (= client.name :efm_oxfmt)))}))
+
+(fn open-lsp-log [opts]
+  (let [path (vim.lsp.log.get_filename)
+        mods (or opts.mods "")]
+    (if (or (= nil path) (= path ""))
+        (vim.notify "No LSP log file is available"
+                    vim.log.levels.ERROR)
+        (vim.cmd (.. mods
+                      (if (= mods "")
+                          "edit "
+                          " edit ")
+                      (vim.fn.fnameescape path))))))
+
+(fn open-lsp-info []
+  (vim.cmd "checkhealth vim.lsp"))
 
 (fn read-json-file [path]
   (if (= 1 (vim.fn.filereadable path))
@@ -196,21 +216,35 @@
     (vim.lsp.config :tsgo
                     (vim.tbl_deep_extend :force setup-args
                                          {:root_dir tsgo-root-dir}))
+    (vim.lsp.config :fennel_ls
+                    (vim.tbl_deep_extend :force setup-args
+                                         {:settings {:fennel {:diagnostics {:globals [:vim]}}}}))
     (vim.lsp.config :eslint {:root_dir eslint-root-dir})
     (vim.lsp.config :oxlint
                     (vim.tbl_deep_extend :force setup-args
                                          {:cmd [:oxlint :--lsp]
                                           :root_dir oxlint-root-dir})))
   (vim.lsp.enable [:bashls
-                   :clangd
-                   :eslint
-                   :gopls
-                   :lua_ls
+                    :clangd
+                    :eslint
+                    :fennel_ls
+                    :gopls
+                    :lua_ls
                    :terraformls
                    :tsgo
                    :vtsls
                    :yamlls
                    :oxlint])
+  (vim.api.nvim_create_user_command :LspLog
+                                    open-lsp-log
+                                    {:desc "Open LSP log"
+                                     :nargs 0
+                                     :bar true})
+  (vim.api.nvim_create_user_command :LspInfo
+                                    open-lsp-info
+                                    {:desc "Show LSP info"
+                                     :nargs 0
+                                     :bar true})
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
   (vim.keymap.set :v :<leader>lf #(lsp-format 0))
   ;; replace neovim's built-in VimLeavePre handler. the built-in one sends

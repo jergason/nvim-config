@@ -1,7 +1,13 @@
 (local octo (require :octo))
 (local util (require :config.util))
+(local picker (require :config.picker))
 
-(octo.setup)
+(fn octo-picker-provider []
+  (if (= (picker.current-backend) "snacks")
+      "snacks"
+      "fzf-lua"))
+
+(octo.setup {:picker (octo-picker-provider)})
 
 (util.nnoremap :opl "Octo pr list")
 (util.nnoremap :opc "Octo pr create")

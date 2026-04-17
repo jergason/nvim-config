@@ -30,15 +30,16 @@
                              :yorickpeterse/nvim-tree-pairs
                              {1 :nvim-treesitter/nvim-treesitter-textobjects
                               :branch :main}]}
-             ; telescope
-             {1 :nvim-telescope/telescope.nvim
-              :dependencies [:nvim-telescope/telescope-ui-select.nvim
-                             :nvim-lua/popup.nvim
-                             {1 :nvim-telescope/telescope-fzf-native.nvim
-                              :build :make}
-                             :nvim-lua/plenary.nvim
-                             :kyazdani42/nvim-web-devicons]
-              :config #(require :config.plugin.telescope)}
+             ; picker backends (telescope replacement)
+             {1 :ibhagwan/fzf-lua
+              :dependencies [:kyazdani42/nvim-web-devicons]}
+             :nvim-mini/mini.nvim
+             :folke/snacks.nvim
+             {1 :dmtrKovalenko/fff.nvim
+              :build #(let [download (require :fff.download)]
+                        (download.download_or_build_binary))
+              :opts {:debug {:enabled true :show_scores true}}
+              :lazy false}
              ; lsp
              {1 :williamboman/mason.nvim
               :config #(require :config.plugin.mason)}
