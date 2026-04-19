@@ -1,4 +1,4 @@
-(local backend-order [:fzf-lua :mini.pick :snacks :fff])
+(local backend-order [:fff :mini.pick])
 (local default-backend :fff)
 (local fallback-backend :mini.pick)
 

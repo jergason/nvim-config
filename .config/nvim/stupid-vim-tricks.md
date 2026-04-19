@@ -187,6 +187,17 @@ Unclear to me how to see and interact w/ all the LSP stuff. How do I see errors?
 
 - use `:noa w` to write without autocommands, which disableds automatic lsp formatting, I think
 
+## nfnl
+
+If you bork stuff and need to recompile everything, use this:
+
+```bash
+cd .config/nvim
+nvim --headless "+lua require('nfnl.api')['compile-all-files']('.')" "+qa"
+```
+
+Or inside vim: `:NfnlCompileAllFiles .`
+
 ## TODO
 
 - Figure out how to disable treesitter expressions for folding for large files

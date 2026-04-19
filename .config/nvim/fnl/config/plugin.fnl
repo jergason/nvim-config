@@ -16,11 +16,8 @@
               :lazy false}
              {1 :nvim-lualine/lualine.nvim
               :config #(require :config.plugin.lualine)}
-             {1 :akinsho/bufferline.nvim
-              :config #(require :config.plugin.bufferline)}
-             ; show key mappings
-             {1 :folke/which-key.nvim
-              :config #(require :config.plugin.which-key)}
+             {1 :nvim-mini/mini.nvim
+              :config #(require :config.plugin.mini)}
              ; parsing system
              {1 :nvim-treesitter/nvim-treesitter-context
               :build ":TSUpdate"
@@ -33,7 +30,6 @@
              ; picker backends (telescope replacement)
              {1 :ibhagwan/fzf-lua
               :dependencies [:kyazdani42/nvim-web-devicons]}
-             :nvim-mini/mini.nvim
              :folke/snacks.nvim
              {1 :dmtrKovalenko/fff.nvim
               :build #(let [download (require :fff.download)]
@@ -59,11 +55,8 @@
                              :PaterJason/cmp-conjure]
               :config #(require :config.plugin.cmp)}
              ; tim pope vim pope
-             :tpope/vim-eunuch
              :tpope/vim-jdaddy
              :tpope/vim-repeat
-             :tpope/vim-surround
-             :tpope/vim-vinegar
              ; ================
              ; Language Support
              ; ================

@@ -1,4 +1,3 @@
-(local util (require :config.util))
 (local picker (require :config.picker))
 
 ;generic mapping leaders configuration
@@ -25,7 +24,10 @@
                          {:desc "Yank whole buffer" :noremap true})
 
 ;remove trailing whitespace
-(util.nnoremap :ws "%s/\\s\\+$//e")
+(vim.keymap.set :n :<leader>ws
+                (fn []
+                  ((. (require :mini.trailspace) :trim)))
+                {:desc "Trim trailing whitespace"})
 ; I always hit this on the kinesis, just disable it
 (vim.api.nvim_set_keymap :n :<F1> :<Nop> {})
 

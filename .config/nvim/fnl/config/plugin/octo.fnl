@@ -1,11 +1,7 @@
 (local octo (require :octo))
 (local util (require :config.util))
-(local picker (require :config.picker))
 
-(fn octo-picker-provider []
-  (if (= (picker.current-backend) "snacks")
-      "snacks"
-      "fzf-lua"))
+(fn octo-picker-provider [] "default")
 
 (octo.setup {:picker (octo-picker-provider)})
 
