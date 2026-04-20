@@ -9,15 +9,16 @@
              ; Theme/Look/Feel/Feels
              ; =======================
              ;{1 :cocopon/iceberg.vim :lazy false}
-             {1 :folke/tokyonight.nvim :lazy false}
+             {1 :folke/tokyonight.nvim
+              :lazy false
+              :config #(vim.cmd "colorscheme tokyonight")}
              ;{1 :catppuccin/nvim :name :catppuccin :lazy false}
-             {1 :projekt0n/github-nvim-theme
-              :config #(require :config.plugin.theme)
-              :lazy false}
+             ; {1 :projekt0n/github-nvim-theme
+             ;  :config #(require :config.plugin.theme)
+             ;  :lazy false}
              {1 :nvim-lualine/lualine.nvim
               :config #(require :config.plugin.lualine)}
-             {1 :nvim-mini/mini.nvim
-              :config #(require :config.plugin.mini)}
+             {1 :nvim-mini/mini.nvim :config #(require :config.plugin.mini)}
              ; parsing system
              {1 :nvim-treesitter/nvim-treesitter-context
               :build ":TSUpdate"
@@ -28,9 +29,6 @@
                              {1 :nvim-treesitter/nvim-treesitter-textobjects
                               :branch :main}]}
              ; picker backends (telescope replacement)
-             {1 :ibhagwan/fzf-lua
-              :dependencies [:kyazdani42/nvim-web-devicons]}
-             :folke/snacks.nvim
              {1 :dmtrKovalenko/fff.nvim
               :build #(let [download (require :fff.download)]
                         (download.download_or_build_binary))
@@ -45,7 +43,7 @@
                              :creativenull/efmls-configs-nvim
                              :j-hui/fidget.nvim]
               :config #(require :config.plugin.lsp.init)}
-             {1 :folke/trouble.nvim :config #(require :config.plugin.trouble)}
+             ; {1 :folke/trouble.nvim :config #(require :config.plugin.trouble)}
              ; autocomplete
              {1 :hrsh7th/nvim-cmp
               :dependencies [:hrsh7th/cmp-buffer
@@ -73,9 +71,9 @@
              ; -----------
              ; javascript/web
              ; -----------
-             :pangloss/vim-javascript
-             {1 :gennaro-tedesco/nvim-jqx
-              :config #(require :config.plugin.jqx)}
+             ; :pangloss/vim-javascript
+             ; {1 :gennaro-tedesco/nvim-jqx
+             ;  :config #(require :config.plugin.jqx)}
              ; ----------------
              ; infra/ops stuff!
              ; ----------------
@@ -84,7 +82,7 @@
              ; lua stdlib docs in help
              :milisims/nvim-luaref
              ; . . . something?
-             :folke/lua-dev.nvim
+             ; :folke/lua-dev.nvim
              ; markdown
              :MeanderingProgrammer/render-markdown.nvim
              ; depends on node and yarn being installed already
@@ -111,9 +109,9 @@
              ; =========
              ; AI Magic
              ; =========
-             {1 :greggh/claude-code.nvim
-              :dependencies [:nvim-lua/plenary.nvim]
-              :opts {:keymaps {:toggle {:normal :<leader>cl}}}}
+             ; {1 :greggh/claude-code.nvim
+             ;  :dependencies [:nvim-lua/plenary.nvim]
+             ;  :opts {:keymaps {:toggle {:normal :<leader>cl}}}}
              {1 :github/copilot.vim :config #(require :config.plugin.copilot)}
              ; ============
              ; Other Config

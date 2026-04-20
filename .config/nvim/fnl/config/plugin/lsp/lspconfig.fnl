@@ -29,12 +29,12 @@
    :on_attach (fn [client bufnr]
                 (if (and (= client.name :eslint) (project-uses-oxlint? bufnr))
                     (vim.lsp.stop_client client.id true)
-                     (do
-                       (vim.diagnostic.config {:severity_sort true
-                                               :virtual_text false}
-                                              (vim.lsp.diagnostic.get_namespace client.id))
+                    (do
+                      (vim.diagnostic.config {:severity_sort true
+                                              :virtual_text false}
+                                             (vim.lsp.diagnostic.get_namespace client.id))
                       (let [filetype (vim.api.nvim_get_option_value :filetype
-                                                                     {:buf bufnr})]
+                                                                    {:buf bufnr})]
                         ; fennel has its own hybrid doc/definition mappings in ftplugin
                         (if (not= filetype :fennel)
                             (do
@@ -64,13 +64,10 @@
                       (vim.keymap.set :n :<leader>dk vim.diagnostic.goto_prev
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
+                                      {:buffer bufnr}) ; picker backend
+                      (vim.keymap.set :n :<leader>ld picker.diagnostics
                                       {:buffer bufnr})
-                      ; picker backend
-                      (vim.keymap.set :n :<leader>ld
-                                      picker.diagnostics
-                                      {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>lr
-                                      picker.references
+                      (vim.keymap.set :n :<leader>lr picker.references
                                       {:buffer bufnr}))))})
 
 (fn lsp-format [bufnr]
@@ -83,13 +80,9 @@
   (let [path (vim.lsp.log.get_filename)
         mods (or opts.mods "")]
     (if (or (= nil path) (= path ""))
-        (vim.notify "No LSP log file is available"
-                    vim.log.levels.ERROR)
-        (vim.cmd (.. mods
-                      (if (= mods "")
-                          "edit "
-                          " edit ")
-                      (vim.fn.fnameescape path))))))
+        (vim.notify "No LSP log file is available" vim.log.levels.ERROR)
+        (vim.cmd (.. mods (if (= mods "") "edit " " edit ")
+                     (vim.fn.fnameescape path))))))
 
 (fn open-lsp-info []
   (vim.cmd "checkhealth vim.lsp"))
@@ -194,6 +187,53 @@
         (if base-root-dir
             (base-root-dir bufnr on-dir)))))
 
+(fn find-fennel-ls-project-config [path]
+  (if (and path (not= path ""))
+      (. (vim.fs.find [:flsproject.fnl]
+                      {: path :upward true :type :file :limit 1}) 1)
+      nil))
+
+(fn fennel-ls-root-dir [bufnr on-dir]
+  (let [fname (vim.api.nvim_buf_get_name bufnr)
+        config-path (find-fennel-ls-project-config fname)
+        git-root (vim.fs.root bufnr [:.git])
+        fallback-root (if (not= fname "")
+                          (vim.fs.dirname fname)
+                          (vim.fn.getcwd))]
+    (on-dir (or (and config-path (vim.fs.dirname config-path)) git-root
+                fallback-root))))
+
+(fn ensure-fennel-ls-fallback-config [root]
+  (let [cache-dir (vim.fs.joinpath (vim.fn.stdpath :cache) :fennel-ls
+                                   (vim.fn.sha256 root))
+        config-path (vim.fs.joinpath cache-dir :flsproject.fnl)
+        fennel-path (table.concat [(.. root :/?.fnl)
+                                   (.. root :/?/init.fnl)
+                                   (.. root :/src/?.fnl)
+                                   (.. root :/src/?/init.fnl)]
+                                  ";")
+        macro-path (table.concat [(.. root :/?.fnl)
+                                  (.. root :/?/init-macros.fnl)
+                                  (.. root :/?/init.fnl)
+                                  (.. root :/src/?.fnl)
+                                  (.. root :/src/?/init-macros.fnl)
+                                  (.. root :/src/?/init.fnl)]
+                                 ";")
+        lines [(.. "{:fennel-path " (vim.fn.json_encode fennel-path))
+               (.. " :macro-path " (vim.fn.json_encode macro-path))
+               " :extra-globals \"vim\"}"]]
+    (vim.fn.mkdir cache-dir :p)
+    (vim.fn.writefile lines config-path)
+    cache-dir))
+
+(fn start-fennel-ls [dispatchers config]
+  (let [root-dir config.root_dir
+        cwd (if (and root-dir (not (find-fennel-ls-project-config root-dir)))
+                (ensure-fennel-ls-fallback-config root-dir)
+                root-dir)]
+    (set config.cmd_cwd cwd)
+    (vim.lsp.rpc.start [:fennel-ls] dispatchers {: cwd})))
+
 (fn _setup []
   (let [setup-args (make-setup-args)
         ts-base-root-dir (or (vim.tbl_get vim.lsp.config :tsgo :root_dir)
@@ -218,33 +258,28 @@
                                          {:root_dir tsgo-root-dir}))
     (vim.lsp.config :fennel_ls
                     (vim.tbl_deep_extend :force setup-args
-                                         {:settings {:fennel {:diagnostics {:globals [:vim]}}}}))
+                                         {:cmd start-fennel-ls
+                                          :root_dir fennel-ls-root-dir}))
     (vim.lsp.config :eslint {:root_dir eslint-root-dir})
     (vim.lsp.config :oxlint
                     (vim.tbl_deep_extend :force setup-args
                                          {:cmd [:oxlint :--lsp]
                                           :root_dir oxlint-root-dir})))
   (vim.lsp.enable [:bashls
-                    :clangd
-                    :eslint
-                    :fennel_ls
-                    :gopls
-                    :lua_ls
+                   :clangd
+                   :eslint
+                   :fennel_ls
+                   :gopls
+                   :lua_ls
                    :terraformls
                    :tsgo
                    :vtsls
                    :yamlls
                    :oxlint])
-  (vim.api.nvim_create_user_command :LspLog
-                                    open-lsp-log
-                                    {:desc "Open LSP log"
-                                     :nargs 0
-                                     :bar true})
-  (vim.api.nvim_create_user_command :LspInfo
-                                    open-lsp-info
-                                    {:desc "Show LSP info"
-                                     :nargs 0
-                                     :bar true})
+  (vim.api.nvim_create_user_command :LspLog open-lsp-log
+                                    {:desc "Open LSP log" :nargs 0 :bar true})
+  (vim.api.nvim_create_user_command :LspInfo open-lsp-info
+                                    {:desc "Show LSP info" :nargs 0 :bar true})
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
   (vim.keymap.set :v :<leader>lf #(lsp-format 0))
   ;; replace neovim's built-in VimLeavePre handler. the built-in one sends

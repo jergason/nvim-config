@@ -1,6 +1,8 @@
+(var extra nil)
+(var pick nil)
+
 (local backend-order [:fff :mini.pick])
 (local default-backend :fff)
-(local fallback-backend :mini.pick)
 
 (local backend-ready {})
 (var is-setup false)
@@ -19,6 +21,15 @@
                      :pyproject.toml
                      :requirements.txt])
 
+(local ignored-search-globs
+       {:drplt [:local/** :config/user.json :!**/node_modules/**]})
+
+(fn ensure-mini-modules []
+  (if (= nil extra)
+      (set extra (require :mini.extra)))
+  (if (= nil pick)
+      (set pick (require :mini.pick))))
+
 (fn fallback-cwd []
   (let [name (vim.api.nvim_buf_get_name 0)]
     (if (not= name "")
@@ -33,6 +44,22 @@
             root
             (fallback-cwd)))))
 
+(fn resolve-git-root [cwd]
+  (or (vim.fs.root (or cwd (vim.api.nvim_get_current_buf)) [:.git])
+      (resolve-cwd cwd)))
+
+(fn ignored-search-config [cwd]
+  (let [root (resolve-git-root cwd)
+        project-name (if root
+                         (vim.fn.fnamemodify root ":t")
+                         nil)
+        globs (if project-name
+                  (. ignored-search-globs project-name)
+                  nil)]
+    (if globs
+        {:cwd root : globs}
+        nil)))
+
 (fn backend-valid? [backend]
   (vim.tbl_contains backend-order backend))
 
@@ -43,8 +70,7 @@
         default-backend)))
 
 (fn mini-send-to-quickfix []
-  (let [pick (require :mini.pick)
-        matches (pick.get_picker_matches)]
+  (let [matches (pick.get_picker_matches)]
     (if (or (= nil matches) (= nil matches.all))
         nil
         (let [items (if (and matches.marked (> (length matches.marked) 0))
@@ -53,25 +79,12 @@
           (pick.default_choose_marked items {:list_type :quickfix})
           true))))
 
-(fn setup-fzf-lua []
-  (let [fzf (require :fzf-lua)
-        fzf-actions (require :fzf-lua.actions)]
-    (fzf.setup {:defaults {:copen "botright copen"}
-                :files {:rg_opts "--color=never --files"}
-                :grep {:rg_opts "--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e"}
-                :actions {:files {1 true :ctrl-q fzf-actions.file_sel_to_qf}}})))
-
 (fn setup-mini []
-  (let [pick (require :mini.pick)
-        extra (require :mini.extra)]
-    (pick.setup {:window {:prompt_prefix " "}
-                 :mappings {:send_to_quickfix {:char :<C-q>
-                                               :func mini-send-to-quickfix}}})
-    (extra.setup {})))
-
-(fn setup-snacks []
-  (let [snacks (require :snacks)]
-    (snacks.setup {:picker {:enabled true}})))
+  (ensure-mini-modules)
+  (pick.setup {:window {:prompt_prefix " "}
+               :mappings {:send_to_quickfix {:char :<C-q>
+                                             :func mini-send-to-quickfix}}})
+  (extra.setup {}))
 
 (fn setup-fff []
   (let [result [(pcall require :fff)]
@@ -80,10 +93,7 @@
     (if (not ok)
         (error err))))
 
-(local backend-setups {:fzf-lua setup-fzf-lua
-                       :mini.pick setup-mini
-                       :snacks setup-snacks
-                       :fff setup-fff})
+(local backend-setups {:mini.pick setup-mini :fff setup-fff})
 
 (fn ensure-backend [backend]
   (if (not (. backend-ready backend))
@@ -118,12 +128,24 @@
    :--fixed-strings
    query])
 
+(fn ignored-files-command [globs]
+  (let [command [:rg :--files :--hidden :--no-ignore]]
+    (each [_ glob (ipairs (or globs []))]
+      (table.insert command :--glob)
+      (table.insert command glob))
+    command))
+
+(fn mini-files-name [globs]
+  (if (> (length globs) 0)
+      (.. "Files (" (table.concat globs ", ") ")")
+      :Files))
+
 (fn mini-grep-name [globs]
   (if (> (length globs) 0)
       (.. "Grep live (rg | " (table.concat globs ", ") ")")
       "Grep live (rg)"))
 
-(fn mini-grep-command [pattern globs]
+(fn mini-grep-command [pattern globs opts]
   (let [command [:rg
                  :--column
                  :--line-number
@@ -133,6 +155,8 @@
                  :--color=never
                  :--hidden
                  :--smart-case]]
+    (if (. (or opts {}) :no-ignore)
+        (table.insert command :--no-ignore))
     (each [_ glob (ipairs (or globs []))]
       (table.insert command :--glob)
       (table.insert command glob))
@@ -141,7 +165,6 @@
     command))
 
 (fn mini-files [cwd]
-  (local pick (require :mini.pick))
   (local set-items-opts {:do_match false :querytick (pick.get_querytick)})
   (local spawn-opts {: cwd})
   (var sys {:kill (fn [] nil)})
@@ -166,9 +189,21 @@
                         :items []
                         :match source-match}}))
 
-(fn mini-grep-live [cwd globs]
-  (local pick (require :mini.pick))
+(fn mini-files-ignored [cwd globs]
+  (let [task (vim.system (ignored-files-command globs) {: cwd :text true})
+        result (task:wait)
+        code (. result :code)]
+    (if (> code 1)
+        (vim.notify (or (. result :stderr) "Failed to list ignored files.")
+                    vim.log.levels.ERROR)
+        (pick.start {:source {:name (mini-files-name globs)
+                              : cwd
+                              :items (vim.split (or (. result :stdout) "") "\n"
+                                                {:trimempty true})}}))))
+
+(fn mini-grep-live [cwd globs opts]
   (local globs (vim.deepcopy (or globs [])))
+  (local opts (or opts {}))
   (local set-items-opts {:do_match false :querytick (pick.get_querytick)})
   (local spawn-opts {: cwd})
   (var sys {:kill (fn [] nil)})
@@ -186,7 +221,8 @@
                      (set sys
                           (pick.set_picker_items_from_cli (mini-grep-command (table.concat query
                                                                                            "")
-                                                                             globs)
+                                                                             globs
+                                                                             opts)
                                                           {:set_items_opts set-items-opts
                                                            :spawn_opts spawn-opts})))))))
   (local add-glob
@@ -205,22 +241,15 @@
                :mappings {:add_glob {:char :<C-o> :func add-glob}}}))
 
 (fn mini-grep-word [cwd]
-  (let [pick (require :mini.pick)]
-    (pick.builtin.cli {:command (mini-grep-command (vim.fn.expand :<cword>) [])}
-                      {:source {:name "Grep word (rg)" : cwd}})))
+  (pick.builtin.cli {:command (mini-grep-command (vim.fn.expand :<cword>) [])}
+                    {:source {:name "Grep word (rg)" : cwd}}))
 
 (fn find-files [opts]
   (let [opts (or opts {})
         cwd (. opts :cwd)
         mini-cwd (resolve-cwd cwd)]
-    (run-with-backend {:fzf-lua (fn []
-                                  (local fzf (require :fzf-lua))
-                                  (fzf.files {: cwd}))
-                       :mini.pick (fn []
+    (run-with-backend {:mini.pick (fn []
                                     (mini-files mini-cwd))
-                       :snacks (fn []
-                                 (local snacks (require :snacks))
-                                 (snacks.picker.files {: cwd :hidden true}))
                        :fff (fn []
                               (local fff (require :fff))
                               (if cwd
@@ -231,30 +260,34 @@
   (let [opts (or opts {})
         cwd (. opts :cwd)
         mini-cwd (resolve-cwd cwd)]
-    (run-with-backend {:fzf-lua (fn []
-                                  (local fzf (require :fzf-lua))
-                                  (fzf.live_grep {: cwd}))
-                       :mini.pick (fn []
+    (run-with-backend {:mini.pick (fn []
                                     (mini-grep-live mini-cwd []))
-                       :snacks (fn []
-                                 (local snacks (require :snacks))
-                                 (snacks.picker.grep {: cwd}))
                        :fff (fn []
                               (local fff (require :fff))
                               (if cwd
                                   (fff.live_grep {: cwd})
                                   (fff.live_grep)))})))
 
+(fn grep-ignored []
+  (let [config (ignored-search-config nil)]
+    (if (= nil config)
+        (vim.notify "No ignored search globs configured for this project."
+                    vim.log.levels.WARN)
+        (mini-grep-live (. config :cwd)
+                        (. config :globs)
+                        {:no-ignore true}))))
+
+(fn find-ignored []
+  (let [config (ignored-search-config nil)]
+    (if (= nil config)
+        (vim.notify "No ignored search globs configured for this project."
+                    vim.log.levels.WARN)
+        (mini-files-ignored (. config :cwd) (. config :globs)))))
+
 (fn grep-word []
   (let [mini-cwd (resolve-cwd nil)]
-    (run-with-backend {:fzf-lua (fn []
-                                  (local fzf (require :fzf-lua))
-                                  (fzf.grep_cword))
-                       :mini.pick (fn []
+    (run-with-backend {:mini.pick (fn []
                                     (mini-grep-word mini-cwd))
-                       :snacks (fn []
-                                 (local snacks (require :snacks))
-                                 (snacks.picker.grep_word))
                        :fff (fn []
                               (local fff (require :fff))
                               (local query (vim.fn.expand :<cword>))
@@ -263,109 +296,29 @@
                                   (fff.live_grep {: query})))})))
 
 (fn buffers []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.buffers))
-                     :mini.pick (fn []
-                                  (local pick (require :mini.pick))
-                                  (pick.builtin.buffers))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.buffers))
-                     :fff (fn []
-                            (local pick (require :mini.pick))
-                            (pick.builtin.buffers))}))
+  (pick.builtin.buffers))
 
 (fn help-tags []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.helptags))
-                     :mini.pick (fn []
-                                  (local pick (require :mini.pick))
-                                  (pick.builtin.help))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.help))
-                     :fff (fn []
-                            (local pick (require :mini.pick))
-                            (pick.builtin.help))}))
+  (pick.builtin.help))
 
 (fn diagnostics []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.diagnostics_workspace))
-                     :mini.pick (fn []
-                                  (local extra (require :mini.extra))
-                                  (extra.pickers.diagnostic))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.diagnostics))
-                     :fff (fn [] ; fff doesn't support diagnostics so fall back to mini.extra
-                            (local extra (require :mini.extra))
-                            (extra.pickers.diagnostic))}))
+  (extra.pickers.diagnostic))
 
 (fn commands []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.commands))
-                     :mini.pick (fn []
-                                  (local extra (require :mini.extra))
-                                  (extra.pickers.commands))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.commands))
-                     :fff (fn []
-                            (local extra (require :mini.extra))
-                            (extra.pickers.commands))}))
+  (extra.pickers.commands))
 
 (fn history []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.history))
-                     :mini.pick (fn []
-                                  (local extra (require :mini.extra))
-                                  (extra.pickers.history {:scope ":"}))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.command_history))
-                     :fff (fn []
-                            (local extra (require :mini.extra))
-                            (extra.pickers.history {:scope ":"}))}))
+  (extra.pickers.history {:scope ":"}))
 
 (fn buffer-fuzzy-find []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.blines))
-                     :mini.pick (fn []
-                                  (local extra (require :mini.extra))
-                                  (extra.pickers.buf_lines {:scope :current}))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.lines))
-                     :fff (fn []
-                            (local extra (require :mini.extra))
-                            (extra.pickers.buf_lines {:scope :current}))}))
+  (extra.pickers.buf_lines {:scope :current}))
 
 (fn references []
-  (run-with-backend {:fzf-lua (fn []
-                                (local fzf (require :fzf-lua))
-                                (fzf.lsp_references))
-                     :mini.pick (fn []
-                                  (local extra (require :mini.extra))
-                                  (extra.pickers.lsp {:scope :references}))
-                     :snacks (fn []
-                               (local snacks (require :snacks))
-                               (snacks.picker.lsp_references))
-                     :fff (fn []
-                            (local extra (require :mini.extra))
-                            (extra.pickers.lsp {:scope :references}))}))
+  (extra.pickers.lsp {:scope :references}))
 
 (fn grep-in-glob []
   (let [mini-cwd (resolve-cwd nil)]
-    (run-with-backend {:fzf-lua (fn []
-                                  (local fzf (require :fzf-lua))
-                                  (fzf.live_grep_glob))
-                       :mini.pick (fn []
+    (run-with-backend {:mini.pick (fn []
                                     (vim.ui.input {:prompt "Enter a glob: "
                                                    :default "*"}
                                                   (fn [glob]
@@ -373,13 +326,6 @@
                                                              (not= glob ""))
                                                         (mini-grep-live mini-cwd
                                                                         [glob])))))
-                       :snacks (fn []
-                                 (vim.ui.input {:prompt "Enter a glob: "
-                                                :default "*"}
-                                               (fn [glob]
-                                                 (if (and glob (not= glob ""))
-                                                     (let [snacks (require :snacks)]
-                                                       (snacks.picker.grep {: glob}))))))
                        :fff (fn []
                               (vim.ui.input {:prompt "Enter a glob: "
                                              :default "*"}
@@ -445,9 +391,13 @@
 (fn set-keymaps []
   (vim.keymap.set :n :<leader>ff find-files {:desc "Find files"})
   (vim.keymap.set :n :<leader>fg grep {:desc "Live grep"})
+  (vim.keymap.set :n :<leader>fF find-ignored
+                  {:desc "Find ignored allowlist files"})
   (vim.keymap.set :n :<leader>fb buffers {:desc "Find open buffers"})
   (vim.keymap.set :n :<leader>fh help-tags {:desc "Help tags"})
   (vim.keymap.set :n :<leader>fw grep-word {:desc "Find word under cursor"})
+  (vim.keymap.set :n :<leader>fI grep-ignored
+                  {:desc "Live grep ignored allowlist"})
   (vim.keymap.set :n :<leader>fd diagnostics {:desc "Project diagnostics"})
   (vim.keymap.set :n :<leader>fc commands {:desc :Commands})
   (vim.keymap.set :n :<leader>th history {:desc "Command history"})
@@ -476,6 +426,8 @@
                                      :complete (fn [_ _ _]
                                                  backend-order)})
   (vim.api.nvim_create_user_command :PickerBackendCycle cycle-backend {})
+  (vim.api.nvim_create_user_command :PickerFindIgnored find-ignored {})
+  (vim.api.nvim_create_user_command :PickerGrepIgnored grep-ignored {})
   (vim.api.nvim_create_user_command :QfReplace quickfix-replace {}))
 
 (fn setup []
@@ -483,6 +435,7 @@
       (do
         (if (not (backend-valid? vim.g.picker_backend))
             (set vim.g.picker_backend default-backend))
+        (ensure-backend :mini.pick)
         (set-keymaps)
         (set-commands)
         (set is-setup true))))
@@ -491,7 +444,9 @@
  : diagnostics
  : references
  : find-files
+ : find-ignored
  : grep
+ : grep-ignored
  : grep-word
  : grep-in-glob
  : quickfix-replace

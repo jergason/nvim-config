@@ -16,8 +16,23 @@
                      (clue.gen_clues.windows)
                      (clue.gen_clues.z)]})
 
-(files.setup {:options {:use_as_default_explorer true}})
-(vim.keymap.set :n "-" #(files.open) {:desc "Open file picker"})
+(files.setup)
+(vim.api.nvim_create_autocmd :User
+                             {:pattern :MiniFilesBufferCreate
+                              :callback (fn [args]
+                                          (let [buf-id (. (. args :data)
+                                                          :buf_id)]
+                                            (vim.keymap.set :n :<CR>
+                                                            #(files.go_in {:close_on_file true})
+                                                            {:buffer buf-id
+                                                             :desc "Go in entry plus"})
+                                            (vim.keymap.set :n :<Esc>
+                                                            files.close
+                                                            {:buffer buf-id
+                                                             :desc :Close})))})
+
+(vim.keymap.set :n "-" #(files.open (vim.api.nvim_buf_get_name 0))
+                {:desc "Open file picker at current file's dir"})
 
 (set vim.ui.select pick.ui_select)
 (surround.setup)
