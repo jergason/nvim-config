@@ -4,6 +4,7 @@
     "external_directory": {
       // clankers read here all the time when debugging
       "~/.local/share/nvim/**": "allow",
+      "~/.local/state/nvim/**": "allow",
       // let us read neovim data stuff in case we're debugging
       "~/neovim/**": "allow",
     },
