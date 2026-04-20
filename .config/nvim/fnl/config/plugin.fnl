@@ -99,9 +99,6 @@
              {1 :jergason/symbols-outline.nvim
               :config #(require :config.plugin.symbols-outline)}
              :HiPhish/rainbow-delimiters.nvim
-             ; easily toggle terminal
-             {1 :akinsho/toggleterm.nvim
-              :config #(require :config.plugin.toggleterm)}
              ; clean up old buffers so lsp doesn't explode
              {1 :axkirillov/hbac.nvim :config true}
              ; =========
