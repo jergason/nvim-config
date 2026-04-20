@@ -1,10 +1,13 @@
 (local clue (require :mini.clue))
 (local files (require :mini.files))
+(local icons (require :mini.icons))
 (local pick (require :mini.pick))
+(local statusline (require :mini.statusline))
 (local surround (require :mini.surround))
 (local tabline (require :mini.tabline))
 (local trailspace (require :mini.trailspace))
 
+(icons.setup)
 (clue.setup {:triggers [{:mode [:n :x] :keys :<Leader>}
                         {:mode :n :keys "["}
                         {:mode :n :keys "]"}
@@ -35,6 +38,8 @@
                 {:desc "Open file picker at current file's dir"})
 
 (set vim.ui.select pick.ui_select)
+(statusline.setup)
+
 (surround.setup)
 (tabline.setup)
 (trailspace.setup)

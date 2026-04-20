@@ -16,8 +16,6 @@
              ; {1 :projekt0n/github-nvim-theme
              ;  :config #(require :config.plugin.theme)
              ;  :lazy false}
-             {1 :nvim-lualine/lualine.nvim
-              :config #(require :config.plugin.lualine)}
              {1 :nvim-mini/mini.nvim :config #(require :config.plugin.mini)}
              ; parsing system
              {1 :nvim-treesitter/nvim-treesitter-context
