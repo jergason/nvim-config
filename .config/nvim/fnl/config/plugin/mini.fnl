@@ -38,7 +38,29 @@
                 {:desc "Open file picker at current file's dir"})
 
 (set vim.ui.select pick.ui_select)
-(statusline.setup)
+
+(fn active-statusline []
+  (let [(mode mode-hl) (statusline.section_mode {:trunc_width 120})
+        filename (if (= vim.bo.buftype :terminal) "%t" "%f%m%r")
+        git (statusline.section_git {:trunc_width 80})
+        diff (statusline.section_diff {:trunc_width 75})
+        diagnostics (statusline.section_diagnostics {:trunc_width 75})
+        lsp (statusline.section_lsp {:trunc_width 75})
+        fileinfo (statusline.section_fileinfo {:trunc_width 120})
+        location (statusline.section_location {:trunc_width 75})
+        search (statusline.section_searchcount {:trunc_width 75})]
+    (statusline.combine_groups [{:hl mode-hl :strings [mode]}
+                                {:hl :MiniStatuslineFilename
+                                 :strings [filename]}
+                                "%<"
+                                {:hl :MiniStatuslineDevinfo
+                                 :strings [git diff diagnostics lsp]}
+                                "%="
+                                {:hl :MiniStatuslineFileinfo
+                                 :strings [fileinfo]}
+                                {:hl mode-hl :strings [search location]}])))
+
+(statusline.setup {:content {:active active-statusline}})
 
 (surround.setup)
 (tabline.setup)
