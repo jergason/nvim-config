@@ -2,7 +2,6 @@
 (local ctx (require :treesitter-context))
 (local pairs (require :tree-pairs))
 (local ts-swap (require :nvim-treesitter-textobjects.swap))
-
 ; install required parsers
 (local ts-parsers [:bash
                    :c
@@ -72,8 +71,7 @@
 (fn ts-highlight-active? [buf]
   (let [active (vim.tbl_get vim :treesitter :highlighter :active)]
     (if active
-        (. active buf)
-        false)))
+        (. active buf) false)))
 
 (fn ts-parser-active? [buf]
   (let [result [(pcall vim.treesitter.get_parser buf nil {:error false})]
@@ -82,22 +80,18 @@
     (and ok (not= parser nil))))
 
 (fn ts-healthy? [buf]
-  (and (ts-highlight-active? buf)
-       (ts-parser-active? buf)))
+  (and (ts-highlight-active? buf) (ts-parser-active? buf)))
 
 (fn maybe-start-treesitter [buf]
-  (let [buftype (vim.api.nvim_get_option_value :buftype {:buf buf})
-        filetype (vim.api.nvim_get_option_value :filetype {:buf buf})]
-    (when (and (= buftype "")
-               (not= filetype "")
-               (not (ts-disable-large-file nil buf))
-               (not (ts-healthy? buf)))
+  (let [buftype (vim.api.nvim_get_option_value :buftype {: buf})
+        filetype (vim.api.nvim_get_option_value :filetype {: buf})]
+    (when (and (= buftype "") (not= filetype "")
+               (not (ts-disable-large-file nil buf)) (not (ts-healthy? buf)))
       (let [result [(pcall vim.treesitter.start buf)]
             ok (. result 1)
-            syntax (vim.api.nvim_get_option_value :syntax {:buf buf})]
-        (when (and (not ok)
-                   (= syntax ""))
-          (vim.api.nvim_set_option_value :syntax filetype {:buf buf}))))))
+            syntax (vim.api.nvim_get_option_value :syntax {: buf})]
+        (when (and (not ok) (= syntax ""))
+          (vim.api.nvim_set_option_value :syntax filetype {: buf}))))))
 
 (vim.api.nvim_create_autocmd [:FileType :BufReadPost :BufEnter]
                              {:pattern "*"
@@ -110,14 +104,15 @@
                                     (let [buf (if (= opts.args "")
                                                   (vim.api.nvim_get_current_buf)
                                                   (tonumber opts.args))
-                                          filetype (vim.api.nvim_get_option_value :filetype {:buf buf})
-                                          syntax (vim.api.nvim_get_option_value :syntax {:buf buf})]
-                                      (vim.notify
-                                       (vim.inspect {:buf buf
-                                                     :filetype filetype
-                                                     :syntax syntax
-                                                     :highlighter (ts-highlight-active? buf)
-                                                     :parser (ts-parser-active? buf)}))))
+                                          filetype (vim.api.nvim_get_option_value :filetype
+                                                                                  {: buf})
+                                          syntax (vim.api.nvim_get_option_value :syntax
+                                                                                {: buf})]
+                                      (vim.notify (vim.inspect {: buf
+                                                                : filetype
+                                                                : syntax
+                                                                :highlighter (ts-highlight-active? buf)
+                                                                :parser (ts-parser-active? buf)}))))
                                   {:nargs "?"})
 
 (vim.keymap.set :n :<leader>a
