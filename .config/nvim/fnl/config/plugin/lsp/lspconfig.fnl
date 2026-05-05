@@ -22,9 +22,33 @@
         (on-dir (vim.fs.dirname config-file)))))
 
 ; server features
+(fn make-capabilities []
+  (let [capabilities (cmplsp.default_capabilities
+                       (vim.lsp.protocol.make_client_capabilities))]
+    (when capabilities.workspace
+      (tset capabilities.workspace :didChangeWatchedFiles nil))
+    capabilities))
+
+(local default-register-capability-handler
+  (. vim.lsp.handlers "client/registerCapability"))
+
+(fn register-capability-without-watchfiles [err result ctx config]
+  (let [registrations (and result result.registrations)]
+    (when registrations
+      (set result.registrations
+           (vim.tbl_filter
+             (fn [registration]
+               (not= registration.method "workspace/didChangeWatchedFiles"))
+             registrations))))
+  (when default-register-capability-handler
+    (default-register-capability-handler err result ctx config)))
+
+(tset vim.lsp.handlers "client/registerCapability"
+      register-capability-without-watchfiles)
+
 (fn make-setup-args []
   "return a map of on_attach, capabilities, flags to pass to `vim.lsp.config` calls"
-  {:capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))
+  {:capabilities (make-capabilities)
    :flags {:exit_timeout 500}
    :on_attach (fn [client bufnr]
                 (if (and (= client.name :eslint) (project-uses-oxlint? bufnr))
@@ -59,9 +83,11 @@
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lf vim.lsp.buf.format
                                       {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>dj vim.diagnostic.goto_next
+                      (vim.keymap.set :n :<leader>dj
+                                      #(vim.diagnostic.jump {:count 1})
                                       {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>dk vim.diagnostic.goto_prev
+                      (vim.keymap.set :n :<leader>dk
+                                      #(vim.diagnostic.jump {:count -1})
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
                                       {:buffer bufnr}) ; picker backend

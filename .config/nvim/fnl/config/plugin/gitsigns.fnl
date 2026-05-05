@@ -1,9 +1,15 @@
 (local gitsigns (require :gitsigns))
 
 (local prefix :<leader>gs)
+(local attach-group :JamisonGitsignsAttach)
 
 ; make it easy to change the prefix later
 (fn make-mapping [str] (.. prefix str))
+
+(fn normal-file-buffer? [buf]
+  (let [name (vim.api.nvim_buf_get_name buf)
+        buftype (vim.api.nvim_get_option_value :buftype {: buf})]
+    (and (= buftype "") (not= name "") (= (vim.fn.filereadable name) 1))))
 
 (fn set-keymaps [bufnum]
   (vim.keymap.set :n (make-mapping :q) (fn [] (gitsigns.setqflist 0))
@@ -32,4 +38,18 @@
                    :noremap true
                    :desc "Gitsigns: Toggle Current Line Blame"}))
 
-(gitsigns.setup {:on_attach set-keymaps})
+(gitsigns.setup {:auto_attach false :on_attach set-keymaps})
+
+(vim.api.nvim_create_augroup attach-group {:clear true})
+
+(vim.api.nvim_create_autocmd [:BufRead :BufNewFile :BufWritePost :BufFilePost]
+                             {:group attach-group
+                              :desc "Attach gitsigns to real file buffers"
+                              :callback (fn [args]
+                                          (when (normal-file-buffer? args.buf)
+                                            (gitsigns.attach {:bufnr args.buf
+                                                              :trigger args.event})))} )
+
+(each [_ buf (ipairs (vim.api.nvim_list_bufs))]
+  (when (and (vim.api.nvim_buf_is_loaded buf) (normal-file-buffer? buf))
+    (gitsigns.attach {:bufnr buf :trigger :setup})))
