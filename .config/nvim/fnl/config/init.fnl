@@ -28,6 +28,7 @@
                 (fn []
                   ((. (require :mini.trailspace) :trim)))
                 {:desc "Trim trailing whitespace"})
+
 ; I always hit this on the kinesis, just disable it
 (vim.api.nvim_set_keymap :n :<F1> :<Nop> {})
 
@@ -85,8 +86,6 @@
                :shiftwidth 2
                :softtabstop 2
                :expandtab true
-               ; begone "HIT ENTER" prompt
-               :messagesopt "hit-enter,history:500"
                ; folding
                ; set default, override in ftplugin
                :foldmethod :manual
@@ -99,6 +98,11 @@
                :foldopen "block,hor,jump,mark,percent,quickfix,search,tag,undo"}]
   (each [option value (pairs options)]
     (tset vim.o option value)))
+
+; let's try out ui2!
+(let [ui2 (require :vim._core.ui2)
+      enable (. ui2 :enable)]
+  (enable {:msg {:targets :cmd :cmd {:height 1}}}))
 
 (local custom-ftplugins [:fennel
                          :gitconfig
@@ -113,11 +117,12 @@
                              {:pattern custom-ftplugins
                               :desc "Load custom Fennel ftplugins"
                               :callback (fn [args]
-                                          (let [module (.. "ftplugin." args.match)]
+                                          (let [module (.. :ftplugin.
+                                                           args.match)]
                                             (tset package.loaded module nil)
                                             (require module)))})
 
-;;import plugins, kick off plugin config
+;import plugins, kick off plugin config
 (require :config.plugin)
 (picker.setup)
 
