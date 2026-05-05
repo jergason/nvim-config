@@ -1,5 +1,6 @@
 (local clue (require :mini.clue))
 (local files (require :mini.files))
+(local hipatterns (require :mini.hipatterns))
 (local icons (require :mini.icons))
 (local pick (require :mini.pick))
 (local statusline (require :mini.statusline))
@@ -19,7 +20,10 @@
                      (clue.gen_clues.windows)
                      (clue.gen_clues.z)]})
 
-(files.setup)
+(files.setup {:windows {:preview true}})
+
+; mini.files keymappings only allow one key, let's keep the old ones around for now
+; maybe later we can move all this over if we decide this is how we want it for real!
 (vim.api.nvim_create_autocmd :User
                              {:pattern :MiniFilesBufferCreate
                               :callback (fn [args]
@@ -32,7 +36,30 @@
                                             (vim.keymap.set :n :<Esc>
                                                             files.close
                                                             {:buffer buf-id
-                                                             :desc :Close})))})
+                                                             :desc :Close})
+                                            (vim.keymap.set :n "-" files.go_out
+                                                            {:buffer buf-id
+                                                             :desc "Go out one level"})
+                                            (vim.keymap.set :n :gy
+                                                            (fn []
+                                                              (let [entry (files.get_fs_entry)]
+                                                                (if entry
+                                                                    (do
+                                                                      (vim.fn.setreg vim.v.register
+                                                                                     entry.path)
+                                                                      (vim.notify (.. "Yanked "
+                                                                                      entry.path)))
+                                                                    (vim.notify "Cursor is not on valid entry"))))
+                                                            {:buffer buf-id
+                                                             :desc "Yank path"})
+                                            (vim.keymap.set :n :gx
+                                                            (fn []
+                                                              (let [entry (files.get_fs_entry)]
+                                                                (if entry
+                                                                    (vim.ui.open entry.path)
+                                                                    (vim.notify "Cursor is not on valid entry"))))
+                                                            {:buffer buf-id
+                                                             :desc "OS open"})))})
 
 (vim.keymap.set :n "-" #(files.open (vim.api.nvim_buf_get_name 0))
                 {:desc "Open file picker at current file's dir"})
@@ -61,6 +88,9 @@
                                 {:hl mode-hl :strings [search location]}])))
 
 (statusline.setup {:content {:active active-statusline}})
+
+; highlight hex color codes
+(hipatterns.setup {:highlighters {:hex_color (hipatterns.gen_highlighter.hex_color)}})
 
 (surround.setup)
 (tabline.setup)
