@@ -23,27 +23,26 @@
 
 ; server features
 (fn make-capabilities []
-  (let [capabilities (cmplsp.default_capabilities
-                       (vim.lsp.protocol.make_client_capabilities))]
+  (let [capabilities (cmplsp.default_capabilities (vim.lsp.protocol.make_client_capabilities))]
     (when capabilities.workspace
       (tset capabilities.workspace :didChangeWatchedFiles nil))
     capabilities))
 
 (local default-register-capability-handler
-  (. vim.lsp.handlers "client/registerCapability"))
+       (. vim.lsp.handlers :client/registerCapability))
 
 (fn register-capability-without-watchfiles [err result ctx config]
   (let [registrations (and result result.registrations)]
     (when registrations
       (set result.registrations
-           (vim.tbl_filter
-             (fn [registration]
-               (not= registration.method "workspace/didChangeWatchedFiles"))
-             registrations))))
+           (vim.tbl_filter (fn [registration]
+                             (not= registration.method
+                                   :workspace/didChangeWatchedFiles))
+                           registrations))))
   (when default-register-capability-handler
     (default-register-capability-handler err result ctx config)))
 
-(tset vim.lsp.handlers "client/registerCapability"
+(tset vim.lsp.handlers :client/registerCapability
       register-capability-without-watchfiles)
 
 (fn make-setup-args []
@@ -55,7 +54,7 @@
                     (vim.lsp.stop_client client.id true)
                     (do
                       (vim.diagnostic.config {:severity_sort true
-                                              :virtual_text false}
+                                              :virtual_text true}
                                              (vim.lsp.diagnostic.get_namespace client.id))
                       (let [filetype (vim.api.nvim_get_option_value :filetype
                                                                     {:buf bufnr})]
@@ -83,20 +82,32 @@
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lf vim.lsp.buf.format
                                       {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>dj
-                                      #(vim.diagnostic.jump {:count 1})
-                                      {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>dk
-                                      #(vim.diagnostic.jump {:count -1})
-                                      {:buffer bufnr})
+                      (let [show-jumped-diagnostic (fn [diagnostic jump-bufnr]
+                                                     (when diagnostic
+                                                       (vim.diagnostic.open_float {:bufnr jump-bufnr
+                                                                                   :scope :line
+                                                                                   :pos [diagnostic.lnum
+                                                                                         diagnostic.col]
+                                                                                   :border :rounded
+                                                                                   :source :if_many
+                                                                                   :focusable false})))]
+                        (vim.keymap.set :n :<leader>dj
+                                        #(vim.diagnostic.jump {:count 1
+                                                               :on_jump show-jumped-diagnostic})
+                                        {:buffer bufnr})
+                        (vim.keymap.set :n :<leader>dk
+                                        #(vim.diagnostic.jump {:count -1
+                                                               :on_jump show-jumped-diagnostic})
+                                        {:buffer bufnr}))
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
-                                      {:buffer bufnr}) ; picker backend
+                                      {:buffer bufnr})
+                      ;; picker support
                       (vim.keymap.set :n :<leader>ld picker.diagnostics
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lr picker.references
                                       {:buffer bufnr}))))})
 
-(fn lsp-format [bufnr]
+(fn lsp-format [_bufnr]
   (vim.lsp.buf.format {:filter (fn [client]
                                  (or (= client.name :efm)
                                      (= client.name :efm_prettier)
