@@ -107,7 +107,6 @@
              ; {1 :greggh/claude-code.nvim
              ;  :dependencies [:nvim-lua/plenary.nvim]
              ;  :opts {:keymaps {:toggle {:normal :<leader>cl}}}}
-             {1 :github/copilot.vim :config #(require :config.plugin.copilot)}
              ; ============
              ; Other Config
              ; ============
