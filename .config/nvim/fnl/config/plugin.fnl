@@ -47,8 +47,7 @@
               :dependencies [:hrsh7th/cmp-buffer
                              :hrsh7th/cmp-nvim-lsp
                              :hrsh7th/cmp-path
-                             :hrsh7th/cmp-nvim-lua
-                             :PaterJason/cmp-conjure]
+                             :hrsh7th/cmp-nvim-lua]
               :config #(require :config.plugin.cmp)}
              ; tim pope vim pope
              :tpope/vim-jdaddy
@@ -60,7 +59,6 @@
              ; ------------------
              ; clojure/lisp stuff
              ; ------------------
-             {1 :Olical/conjure :config #(require :config.plugin.conjure)}
              {1 :guns/vim-sexp :config #(require :config.plugin.sexp)}
              ; "tpope/vim-sexp-mappings-for-regular-people"
              ; {1 "clojure-vim/vim-jack-in"

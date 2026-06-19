@@ -1,10 +1,10 @@
 (local cmp (require :cmp))
 
 (local cmp-src-menu-items
-  {:buffer "[Buf]" :conjure "[Conj]" :nvim_lsp "[LSP]"})
+  {:buffer "[Buf]" :nvim_lsp "[LSP]"})
 
 (local cmp-srcs
-  [{:name :nvim_lsp} {:name :conjure} {:name :buffer}])
+  [{:name :nvim_lsp} {:name :buffer}])
 
 ; stolen from github.com/LunarVim/Neovim-from-scratch
 (local kind-icons
