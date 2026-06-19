@@ -108,7 +108,7 @@
                                          :filetypes (vim.tbl_keys base-languages)
                                          :settings {:rootMarkers [:.git/]
                                                     :languages base-languages
-                                                    :logLevel 10}
+                                                    :logLevel 1}
                                          :init_options {:documentFormatting true
                                                         :documentRangeFormatting true}}))
   (vim.lsp.config :efm_prettier
@@ -118,7 +118,7 @@
                                          :filetypes (vim.tbl_keys prettier-languages)
                                          :settings {:rootMarkers [:.git/]
                                                     :languages prettier-languages
-                                                    :logLevel 10}
+                                                    :logLevel 1}
                                          :init_options {:documentFormatting true
                                                         :documentRangeFormatting true}}))
   (vim.lsp.config :efm_oxfmt
@@ -128,7 +128,7 @@
                                          :filetypes (vim.tbl_keys oxfmt-languages)
                                          :settings {:rootMarkers [:.git/]
                                                     :languages oxfmt-languages
-                                                    :logLevel 10}
+                                                    :logLevel 1}
                                          :init_options {:documentFormatting true
                                                         :documentRangeFormatting true}}))
   (vim.lsp.enable [:efm :efm_prettier :efm_oxfmt]))

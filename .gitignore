@@ -1,6 +1,7 @@
 .config/nvim/**/*.lua
 !.config/nvim/init.lua
 .DS_Store
+nvim.log
 .claude/settings.local.json
 .config/github-copilot
 .config/nvim/lazy-lock.json

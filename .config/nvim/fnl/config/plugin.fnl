@@ -30,7 +30,7 @@
              {1 :dmtrKovalenko/fff.nvim
               :build #(let [download (require :fff.download)]
                         (download.download_or_build_binary))
-              :opts {:debug {:enabled true :show_scores true}}
+              :opts {:debug {:enabled false :show_scores false}}
               :lazy false}
              ; lsp
              {1 :williamboman/mason.nvim
