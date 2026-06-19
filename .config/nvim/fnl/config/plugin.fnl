@@ -96,7 +96,8 @@
              ; with some changes pulled in from https://github.com/vaengir/symbols-outline.nvim
              {1 :jergason/symbols-outline.nvim
               :config #(require :config.plugin.symbols-outline)}
-             :HiPhish/rainbow-delimiters.nvim
+             {1 :HiPhish/rainbow-delimiters.nvim
+              :config #(require :config.plugin.rainbow-delimiters)}
              ; clean up old buffers so lsp doesn't explode
              {1 :axkirillov/hbac.nvim :config true}
              ; =========
