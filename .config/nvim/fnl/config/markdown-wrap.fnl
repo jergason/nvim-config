@@ -181,17 +181,21 @@
 (fn notify-no-target []
   (vim.notify "No markdown prose paragraph under cursor" vim.log.levels.INFO))
 
-(fn paragraph-lines [buf node]
-  (let [(start-row _ end-row _) (node:range)]
-    [(vim.api.nvim_buf_get_lines buf start-row (+ end-row 1) false)
-     start-row
-     end-row]))
+(fn paragraph-line-range [node]
+  (let [(start-row _ end-row end-col) (node:range)] ; Tree-sitter ranges are end-exclusive. Column zero means the node ended on ; the previous line; otherwise include the line containing the endpoint.
+    [start-row (if (= end-col 0) end-row (+ end-row 1))]))
 
-(fn replace-paragraph [buf start-row end-row new-lines]
-  (vim.api.nvim_buf_set_lines buf start-row (+ end-row 1) false new-lines))
+(fn paragraph-lines [buf node]
+  (let [[start-row end-row-exclusive] (paragraph-line-range node)]
+    [(vim.api.nvim_buf_get_lines buf start-row end-row-exclusive false)
+     start-row
+     end-row-exclusive]))
+
+(fn replace-paragraph [buf start-row end-row-exclusive new-lines]
+  (vim.api.nvim_buf_set_lines buf start-row end-row-exclusive false new-lines))
 
 (fn wrap-node [buf node]
-  (let [[lines start-row end-row] (paragraph-lines buf node)
+  (let [[lines start-row end-row-exclusive] (paragraph-lines buf node)
         first-prefix (prose-prefix (. lines 1))
         rest-prefix (if (> (length lines) 1)
                         (prose-prefix (. lines 2))
@@ -201,13 +205,13 @@
         width vim.bo.textwidth
         wrapped (wrap-tokens tokens first-prefix rest-prefix width)]
     (when (> (length wrapped) 0)
-      (replace-paragraph buf start-row end-row wrapped))))
+      (replace-paragraph buf start-row end-row-exclusive wrapped))))
 
 (fn unwrap-node [buf node]
-  (let [[lines start-row end-row] (paragraph-lines buf node)
+  (let [[lines start-row end-row-exclusive] (paragraph-lines buf node)
         first-prefix (prose-prefix (. lines 1))
         text (flatten-lines lines)]
-    (replace-paragraph buf start-row end-row [(.. first-prefix text)])))
+    (replace-paragraph buf start-row end-row-exclusive [(.. first-prefix text)])))
 
 (fn with-target [callback]
   (let [buf (vim.api.nvim_get_current_buf)

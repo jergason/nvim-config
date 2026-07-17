@@ -113,14 +113,16 @@
                          :qf
                          :typescript])
 
+(fn load-custom-ftplugin [args]
+  (let [module (.. :ftplugin. args.match)]
+    (tset package.loaded module nil)
+    (require module)) ; Neovim deletes an autocmd when its Lua callback returns truthy. `require` ; returns true for modules without an explicit return, so always return nil.
+  nil)
+
 (vim.api.nvim_create_autocmd :FileType
                              {:pattern custom-ftplugins
                               :desc "Load custom Fennel ftplugins"
-                              :callback (fn [args]
-                                          (let [module (.. :ftplugin.
-                                                           args.match)]
-                                            (tset package.loaded module nil)
-                                            (require module)))})
+                              :callback load-custom-ftplugin})
 
 ;import plugins, kick off plugin config
 (require :config.plugin)
