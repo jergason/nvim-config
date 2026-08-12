@@ -8,14 +8,9 @@
              ; =======================
              ; Theme/Look/Feel/Feels
              ; =======================
-             ;{1 :cocopon/iceberg.vim :lazy false}
              {1 :folke/tokyonight.nvim
               :lazy false
               :config #(vim.cmd "colorscheme tokyonight")}
-             ;{1 :catppuccin/nvim :name :catppuccin :lazy false}
-             ; {1 :projekt0n/github-nvim-theme
-             ;  :config #(require :config.plugin.theme)
-             ;  :lazy false}
              {1 :nvim-mini/mini.nvim :config #(require :config.plugin.mini)}
              ; parsing system
              {1 :nvim-treesitter/nvim-treesitter-context
@@ -55,21 +50,13 @@
              ; ================
              ; Language Support
              ; ================
-             ;
              ; ------------------
              ; clojure/lisp stuff
              ; ------------------
              {1 :guns/vim-sexp :config #(require :config.plugin.sexp)}
-             ; "tpope/vim-sexp-mappings-for-regular-people"
-             ; {1 "clojure-vim/vim-jack-in"
-             ;  :dependencies ["radenling/vim-dispatch-neovim"
-             ;                 "tpope/vim-dispatch"]}
              ; -----------
              ; javascript/web
              ; -----------
-             ; :pangloss/vim-javascript
-             ; {1 :gennaro-tedesco/nvim-jqx
-             ;  :config #(require :config.plugin.jqx)}
              ; ----------------
              ; infra/ops stuff!
              ; ----------------
@@ -100,28 +87,12 @@
               :config #(require :config.plugin.rainbow-delimiters)}
              ; clean up old buffers so lsp doesn't explode
              {1 :axkirillov/hbac.nvim :config true}
-             ; =========
-             ; AI Magic
-             ; =========
-             ; {1 :greggh/claude-code.nvim
-             ;  :dependencies [:nvim-lua/plenary.nvim]
-             ;  :opts {:keymaps {:toggle {:normal :<leader>cl}}}}
              ; ============
              ; Other Config
              ; ============
              ; too noisy, can't get it to respect my settings to start off
-             ; {1 :Isrothy/neominimap.nvim
-             ;  :config #(require :config.plugin.neominimap)}
              {1 :tyru/open-browser.vim
               :config #(require :config.plugin.open-browser)}
-             ; {1 "mbbill/undotree" :config #(require :config.plugin.undotree)}
-             ; "skywind3000/asyncrun.vim"
-             ; {1 "microsoft/vscode-js-debug"
-             ;  :lazy true
-             ;  :build "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"}
-             ; {1 "mxsdev/nvim-dap-vscode-js"
-             ;  :config #(require :config.plugin.dap)
-             ;  :dependencies ["mfussenegger/nvim-dap" "nvim-neotest/nvim-nio" "rcarriga/nvim-dap-ui"]}
              ; ===========================
              ; Git and Version Control
              ; ===========================
@@ -134,7 +105,8 @@
              {1 :lewis6991/gitsigns.nvim
               :config #(require :config.plugin.gitsigns)}
              :tpope/vim-rhubarb
-             {1 :pwntester/octo.nvim
-              :dependencies [:nvim-lua/plenary.nvim
-                             :kyazdani42/nvim-web-devicons]
-              :config #(require :config.plugin.octo)}])
+             ; {1 :pwntester/octo.nvim
+             ;  :dependencies [:nvim-lua/plenary.nvim
+             ;                 :kyazdani42/nvim-web-devicons]
+             ;  :config #(require :config.plugin.octo)}
+             ])

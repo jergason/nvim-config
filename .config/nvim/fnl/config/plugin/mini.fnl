@@ -89,8 +89,41 @@
 
 (statusline.setup {:content {:active active-statusline}})
 
-; highlight hex color codes
-(hipatterns.setup {:highlighters {:hex_color (hipatterns.gen_highlighter.hex_color)}})
+; Blend rgba() colors against the editor background before displaying them.
+(fn color-channel [color offset]
+  (% (math.floor (/ color (^ 256 offset))) 256))
+
+(fn blend-channel [foreground background alpha]
+  (math.floor (+ (* foreground alpha) (* background (- 1 alpha)) 0.5)))
+
+(fn rgba-color-group [_ rgba]
+  (let [(red green blue alpha) (string.match rgba
+                                               "^rgba%(%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*,%s*([%d%.]+)%s*%)$")
+        red (tonumber red)
+        green (tonumber green)
+        blue (tonumber blue)
+        alpha (tonumber alpha)]
+    (when (and red green blue alpha
+               (<= 0 red 255)
+               (<= 0 green 255)
+               (<= 0 blue 255)
+               (<= 0 alpha 1))
+      (let [normal-bg (. (vim.api.nvim_get_hl 0 {:name :Normal}) :bg)
+            bg-red (if normal-bg (color-channel normal-bg 2) red)
+            bg-green (if normal-bg (color-channel normal-bg 1) green)
+            bg-blue (if normal-bg (color-channel normal-bg 0) blue)
+            hex (string.format "#%02x%02x%02x"
+                               (blend-channel red bg-red alpha)
+                               (blend-channel green bg-green alpha)
+                               (blend-channel blue bg-blue alpha))]
+        (hipatterns.compute_hex_color_group hex :bg)))))
+
+; Highlight #rrggbb and rgba(red, green, blue, alpha) color codes.
+(hipatterns.setup
+ {:highlighters
+  {:hex_color (hipatterns.gen_highlighter.hex_color)
+   :rgba_color {:pattern "rgba%(%s*%d+%s*,%s*%d+%s*,%s*%d+%s*,%s*[%d%.]+%s*%)"
+                :group rgba-color-group}}})
 
 (surround.setup)
 (tabline.setup)
