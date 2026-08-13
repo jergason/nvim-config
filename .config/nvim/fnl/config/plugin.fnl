@@ -90,9 +90,16 @@
              ; ============
              ; Other Config
              ; ============
-             ; too noisy, can't get it to respect my settings to start off
              {1 :tyru/open-browser.vim
               :config #(require :config.plugin.open-browser)}
+             ; super secret droplet codebase plugin
+             {1 :drplt/droplet-nav-helper-editor-extension
+              :dir (vim.fn.expand "~/code/droplet-nav-helper-editor-extension")
+              :build "pnpm install && pnpm run build"
+              :config (fn [plugin]
+                        (vim.opt.rtp:append (.. plugin.dir "/nvim"))
+                        (let [droplet-nav (require :droplet-nav)]
+                          (droplet-nav.setup)))}
              ; ===========================
              ; Git and Version Control
              ; ===========================

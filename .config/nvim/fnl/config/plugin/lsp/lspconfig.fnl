@@ -45,6 +45,84 @@
 (tset vim.lsp.handlers :client/registerCapability
       register-capability-without-watchfiles)
 
+(local definition-method :textDocument/definition)
+
+(when (= nil vim.g.lsp_definition_debug)
+  (set vim.g.lsp_definition_debug true))
+
+(fn definition-debug-enabled? []
+  (= true vim.g.lsp_definition_debug))
+
+(fn add-definition-provenance [client item]
+  (tset item :text (.. "[" client.name "] " (or item.text "")))
+  (tset item :user_data {:lsp_client_id client.id
+                         :lsp_client_name client.name
+                         :lsp_location item.user_data})
+  item)
+
+(fn definition-with-provenance []
+  (let [bufnr (vim.api.nvim_get_current_buf)
+        win (vim.api.nvim_get_current_win)
+        clients (vim.lsp.get_clients {:bufnr bufnr :method definition-method})]
+    (if (= 0 (length clients))
+        (vim.notify "No LSP clients support go to definition"
+                    vim.log.levels.WARN)
+        (vim.lsp.buf_request_all
+          bufnr
+          definition-method
+          (fn [client]
+            (vim.lsp.util.make_position_params win client.offset_encoding))
+          (fn [results]
+            (let [items []]
+              (each [client-id response (pairs results)]
+                (let [client (vim.lsp.get_client_by_id client-id)
+                      result (and response response.result)
+                      locations (if (vim.islist result)
+                                    result
+                                    (if result [result] []))]
+                  (when client
+                    (each [_ item (ipairs (vim.lsp.util.locations_to_items
+                                           locations
+                                           client.offset_encoding))]
+                      (table.insert items
+                                    (add-definition-provenance client item))))))
+              (if (= 0 (length items))
+                  (vim.notify "No definitions found" vim.log.levels.INFO)
+                  (do
+                    (vim.fn.setqflist [] " " {:title "LSP definitions with provenance"
+                                               :items items})
+                    (vim.cmd "botright copen")))))))))
+
+(fn go-to-definition []
+  (if (definition-debug-enabled?)
+      (definition-with-provenance)
+      (vim.lsp.buf.definition)))
+
+(fn set-definition-debug [opts]
+  (let [action (if (= opts.args "") :toggle opts.args)
+        current (definition-debug-enabled?)
+        enabled (if (= action :on)
+                    true
+                    (= action :off)
+                    false
+                    (= action :toggle)
+                    (not current)
+                    (= action :status)
+                    current
+                    nil)]
+    (if (= nil enabled)
+        (vim.notify (.. "Unknown LspDefinitionDebug mode: " action)
+                    vim.log.levels.ERROR)
+        (do
+          (set vim.g.lsp_definition_debug enabled)
+          (vim.notify (.. "LSP definition provenance debug "
+                          (if enabled :enabled :disabled)))))))
+
+(fn complete-definition-debug [arg-lead]
+  (vim.tbl_filter (fn [candidate]
+                    (vim.startswith candidate arg-lead))
+                  [:on :off :toggle :status]))
+
 (fn make-setup-args []
   "return a map of on_attach, capabilities, flags to pass to `vim.lsp.config` calls"
   {:capabilities (make-capabilities)
@@ -68,7 +146,7 @@
                                                :desc "LSP: Hover"
                                                :noremap true
                                                :silent true})
-                              (vim.keymap.set :n :gd vim.lsp.buf.definition
+                              (vim.keymap.set :n :gd go-to-definition
                                               {:desc "Go to definition"
                                                :buffer bufnr}))))
                       (vim.keymap.set :n :<leader>gh
@@ -317,6 +395,11 @@
                                     {:desc "Open LSP log" :nargs 0 :bar true})
   (vim.api.nvim_create_user_command :LspInfo open-lsp-info
                                     {:desc "Show LSP info" :nargs 0 :bar true})
+  (vim.api.nvim_create_user_command :LspDefinitionDebug set-definition-debug
+                                    {:desc "Toggle LSP definition provenance in quickfix"
+                                     :nargs "?"
+                                     :complete complete-definition-debug
+                                     :force true})
   (vim.keymap.set :n :<leader>lf #(lsp-format 0))
   (vim.keymap.set :v :<leader>lf #(lsp-format 0))
   ;; replace neovim's built-in VimLeavePre handler. the built-in one sends
