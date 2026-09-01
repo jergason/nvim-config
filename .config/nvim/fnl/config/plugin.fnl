@@ -18,7 +18,6 @@
               :lazy false
               :config #(require :config.plugin.treesitter)
               :dependencies [{1 :nvim-treesitter/nvim-treesitter :branch :main}
-                             :yorickpeterse/nvim-tree-pairs
                              {1 :nvim-treesitter/nvim-treesitter-textobjects
                               :branch :main}]}
              ; picker backends (telescope replacement)
@@ -97,7 +96,7 @@
               :dir (vim.fn.expand "~/code/droplet-nav-helper-editor-extension")
               :build "pnpm install && pnpm run build"
               :config (fn [plugin]
-                        (vim.opt.rtp:append (.. plugin.dir "/nvim"))
+                        (vim.opt.rtp:append (.. plugin.dir :/nvim))
                         (let [droplet-nav (require :droplet-nav)]
                           (droplet-nav.setup)))}
              ; ===========================

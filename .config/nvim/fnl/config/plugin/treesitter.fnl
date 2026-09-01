@@ -1,6 +1,5 @@
 (local treesitter (require :nvim-treesitter))
 (local ctx (require :treesitter-context))
-(local pairs (require :tree-pairs))
 (local ts-swap (require :nvim-treesitter-textobjects.swap))
 ; install required parsers
 (local ts-parsers [:bash
@@ -126,5 +125,3 @@
                     (ts-swap.swap_previous "@parameter.inner"))))
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
-
-(pairs.setup)
