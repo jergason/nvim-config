@@ -351,13 +351,13 @@
 
 (fn _setup []
   (let [setup-args (make-setup-args)
-        ts-base-root-dir (or (vim.tbl_get vim.lsp.config :tsgo :root_dir)
-                             (vim.tbl_get vim.lsp.config :vtsls :root_dir)
-                             default-ts-root-dir)
+        native-ts-config (. vim.lsp.config :tsc)
+        vtsls-base-root-dir (or (vim.tbl_get vim.lsp.config :vtsls :root_dir)
+                                default-ts-root-dir)
         eslint-base-root-dir (vim.tbl_get vim.lsp.config :eslint :root_dir)
         eslint-root-dir (conditional-eslint-root-dir eslint-base-root-dir)
-        tsgo-root-dir (conditional-root-dir ts-base-root-dir true)
-        vtsls-root-dir (conditional-root-dir ts-base-root-dir false)]
+        tsc-root-dir (conditional-root-dir native-ts-config.root_dir true)
+        vtsls-root-dir (conditional-root-dir vtsls-base-root-dir false)]
     (vim.lsp.config "*" setup-args)
     (vim.lsp.config :lua_ls
                     (vim.tbl_deep_extend :force setup-args
@@ -368,9 +368,12 @@
                     (vim.tbl_deep_extend :force setup-args
                                          {:root_dir vtsls-root-dir
                                           :settings {:typescript {:tsserver {:maxTsServerMemory 8192}}}}))
-    (vim.lsp.config :tsgo
+    ; tsc's root_dir and cmd share a binary cache, so keep both functions from
+    ; the same resolved config when wrapping root_dir.
+    (vim.lsp.config :tsc
                     (vim.tbl_deep_extend :force setup-args
-                                         {:root_dir tsgo-root-dir}))
+                                         {:cmd native-ts-config.cmd
+                                          :root_dir tsc-root-dir}))
     (vim.lsp.config :fennel_ls
                     (vim.tbl_deep_extend :force setup-args
                                          {:cmd start-fennel-ls
@@ -387,7 +390,7 @@
                    :gopls
                    :lua_ls
                    :terraformls
-                   :tsgo
+                   :tsc
                    :vtsls
                    :yamlls
                    :oxlint])
