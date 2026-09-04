@@ -1,4 +1,5 @@
 (local picker (require :config.picker))
+(local diagnostic (require :config.diagnostic))
 
 ;generic mapping leaders configuration
 (vim.api.nvim_set_keymap :n :<space> :<nop> {:noremap true})
@@ -108,6 +109,7 @@
                          :gitconfig
                          :javascript
                          :markdown
+                         :mermaid
                          :neogitstatus
                          :outline
                          :qf
@@ -127,6 +129,7 @@
 ;import plugins, kick off plugin config
 (require :config.plugin)
 (picker.setup)
+(diagnostic.setup)
 
 ; post-plugin setup stuff
 (fn start-local-server []

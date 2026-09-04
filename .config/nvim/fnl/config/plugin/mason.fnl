@@ -10,6 +10,7 @@
                    ;; TOOD: do I need to manage this outside of Mason since it might depend on installed versions of golang?
                    :gopls
                    :lua-language-server
+                   "mmdc@11.17.0"
                    :ocaml-lsp
                    :oxfmt
                    :oxlint

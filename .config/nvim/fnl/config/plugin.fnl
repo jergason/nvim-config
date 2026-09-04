@@ -67,6 +67,11 @@
              ; :folke/lua-dev.nvim
              ; markdown
              :MeanderingProgrammer/render-markdown.nvim
+             {1 :jergason/mermaid.nvim
+              :branch "fix/format-and-lint-diagnostics"
+              :ft :mermaid
+              :dependencies [:nvim-treesitter/nvim-treesitter]
+              :config #(require :config.plugin.mermaid)}
              ; depends on node and yarn being installed already
              {1 :iamcco/markdown-preview.nvim
               :build "cd app && npm install && git restore ."

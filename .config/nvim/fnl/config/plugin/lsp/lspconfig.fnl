@@ -154,34 +154,11 @@
                                       {:buffer bufnr})
                       (vim.keymap.set :n :<leader>rn vim.lsp.buf.rename
                                       {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>le vim.diagnostic.open_float
-                                      {:buffer bufnr})
-                      (vim.keymap.set :n :<leader>lq vim.diagnostic.setqflist
-                                      {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lf vim.lsp.buf.format
                                       {:buffer bufnr})
-                      (let [show-jumped-diagnostic (fn [diagnostic jump-bufnr]
-                                                     (when diagnostic
-                                                       (vim.diagnostic.open_float {:bufnr jump-bufnr
-                                                                                   :scope :line
-                                                                                   :pos [diagnostic.lnum
-                                                                                         diagnostic.col]
-                                                                                   :border :rounded
-                                                                                   :source :if_many
-                                                                                   :focusable false})))]
-                        (vim.keymap.set :n :<leader>dj
-                                        #(vim.diagnostic.jump {:count 1
-                                                               :on_jump show-jumped-diagnostic})
-                                        {:buffer bufnr})
-                        (vim.keymap.set :n :<leader>dk
-                                        #(vim.diagnostic.jump {:count -1
-                                                               :on_jump show-jumped-diagnostic})
-                                        {:buffer bufnr}))
                       (vim.keymap.set :n :<leader>ca vim.lsp.buf.code_action
                                       {:buffer bufnr})
                       ;; picker support
-                      (vim.keymap.set :n :<leader>ld picker.diagnostics
-                                      {:buffer bufnr})
                       (vim.keymap.set :n :<leader>lr picker.references
                                       {:buffer bufnr}))))})
 
