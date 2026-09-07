@@ -4,7 +4,8 @@
 ; :1 is the plugin URL that gets expanded to github
 ; lazy.nvim loads plugins lazily by default
 
-(lazy.setup [{1 :Olical/nfnl :ft :fennel}
+(lazy.setup [{1 :Olical/nfnl :ft :fennel
+              :config #(require :config.plugin.nfnl)}
              ; =======================
              ; Theme/Look/Feel/Feels
              ; =======================

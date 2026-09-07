@@ -63,7 +63,7 @@
 ; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/
 ; https://www.vim.org/scripts/script.php?script_id=1506
 
-(fn ts-disable-large-file [lang buffer] ; (print (vim.print "Disabling treesitter for large files, is large file is"))
+(fn ts-disable-large-file [buffer] ; (print (vim.print "Disabling treesitter for large files, is large file is"))
   ; (print (vim.print (vim.inspect (vim.api.nvim_buf_line_count buffer))))
   (> (vim.api.nvim_buf_line_count buffer) 30000))
 
@@ -85,7 +85,7 @@
   (let [buftype (vim.api.nvim_get_option_value :buftype {: buf})
         filetype (vim.api.nvim_get_option_value :filetype {: buf})]
     (when (and (= buftype "") (not= filetype "")
-               (not (ts-disable-large-file nil buf)) (not (ts-healthy? buf)))
+               (not (ts-disable-large-file buf)) (not (ts-healthy? buf)))
       (let [result [(pcall vim.treesitter.start buf)]
             ok (. result 1)
             syntax (vim.api.nvim_get_option_value :syntax {: buf})]
@@ -116,12 +116,12 @@
 
 (vim.keymap.set :n :<leader>a
                 (fn []
-                  (when (not (ts-disable-large-file nil 0))
+                  (when (not (ts-disable-large-file 0))
                     (ts-swap.swap_next "@parameter.inner"))))
 
 (vim.keymap.set :n :<leader>A
                 (fn []
-                  (when (not (ts-disable-large-file nil 0))
+                  (when (not (ts-disable-large-file 0))
                     (ts-swap.swap_previous "@parameter.inner"))))
 
 (ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
