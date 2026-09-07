@@ -1,8 +1,7 @@
+(local buffer-size (require :config.buffer-size))
+
 (fn js-setup []
-  ;; sticky context headers
-  ;; use treesitter for folding
-  ;(print "RUNNING FTPLUGIN FOR JS-ISH LANGUAGES")
-  (when (< (vim.api.nvim_buf_line_count 0) 30000) ; (print "GOT A SMALL FILE, SETTING STUFF UP")
+  (when (not (buffer-size.large? 0))
     (vim.cmd ":TSContext enable")
     (set vim.opt_local.foldmethod :expr)
     (set vim.opt_local.foldexpr "v:lua.vim.treesitter.foldexpr()")))

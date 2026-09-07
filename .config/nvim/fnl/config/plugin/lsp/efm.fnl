@@ -1,4 +1,3 @@
-(local luacheck (require :efmls-configs.linters.luacheck))
 (local shellcheck (require :efmls-configs.linters.shellcheck))
 (local fnlfmt (require :efmls-configs.formatters.fnlfmt))
 (local gofmt (require :efmls-configs.formatters.gofmt))
@@ -76,7 +75,6 @@
 (local base-languages
   {:fennel [fnlfmt]
    :go [gofmt]
-   :lua [luacheck]
    ; TODO: how to replicate the "injected" thing from conform?
    :terraform [terraform_fmt]
    :sh [shellcheck]})

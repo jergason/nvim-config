@@ -338,9 +338,12 @@
     (vim.lsp.config "*" setup-args)
     (vim.lsp.config :lua_ls
                     (vim.tbl_deep_extend :force setup-args
-                                         {:runtime {:version :LuaJIT}
-                                          :diagnostics {:globals [:vim]}
-                                          :telemetry {:enable false}}))
+                                         {:settings {:Lua {:runtime {:version :LuaJIT}
+                                                           :diagnostics {:globals [:vim]}
+                                                           :telemetry {:enable false}}}}))
+    (vim.lsp.config :terraformls
+                    {:init_options {:indexing {:ignoreDirectoryNames [:node_modules]
+                                               :ignorePaths [".claude/worktrees"]}}})
     (vim.lsp.config :vtsls
                     (vim.tbl_deep_extend :force setup-args
                                          {:root_dir vtsls-root-dir

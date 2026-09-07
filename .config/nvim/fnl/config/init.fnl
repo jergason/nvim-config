@@ -87,6 +87,7 @@
                :shiftwidth 2
                :softtabstop 2
                :expandtab true
+               :undofile true
                ; folding
                ; set default, override in ftplugin
                :foldmethod :manual
@@ -105,24 +106,26 @@
       enable (. ui2 :enable)]
   (enable {:msg {:targets :cmd :cmd {:height 1}}}))
 
-(local custom-ftplugins [:fennel
-                         :gitconfig
-                         :javascript
-                         :markdown
-                         :mermaid
-                         :neogitstatus
-                         :outline
-                         :qf
-                         :typescript])
+(local custom-ftplugins {:fennel :fennel
+                         :gitconfig :gitconfig
+                         :javascript :javascript
+                         :javascriptreact :javascript
+                         :markdown :markdown
+                         :mermaid :mermaid
+                         :NeogitStatus :neogitstatus
+                         :Outline :outline
+                         :qf :qf
+                         :typescript :typescript
+                         :typescriptreact :typescript})
 
 (fn load-custom-ftplugin [args]
-  (let [module (.. :ftplugin. args.match)]
+  (let [module (.. :ftplugin. (. custom-ftplugins args.match))]
     (tset package.loaded module nil)
     (require module)) ; Neovim deletes an autocmd when its Lua callback returns truthy. `require` ; returns true for modules without an explicit return, so always return nil.
   nil)
 
 (vim.api.nvim_create_autocmd :FileType
-                             {:pattern custom-ftplugins
+                             {:pattern (vim.tbl_keys custom-ftplugins)
                               :desc "Load custom Fennel ftplugins"
                               :callback load-custom-ftplugin})
 

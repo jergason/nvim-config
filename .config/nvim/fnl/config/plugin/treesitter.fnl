@@ -1,6 +1,7 @@
 (local treesitter (require :nvim-treesitter))
 (local ctx (require :treesitter-context))
 (local ts-swap (require :nvim-treesitter-textobjects.swap))
+(local buffer-size (require :config.buffer-size))
 ; install required parsers
 (local ts-parsers [:bash
                    :c
@@ -57,16 +58,6 @@
                                       (task:wait 300000)))
                                   {})
 
-; large file stuff to look at
-; https://www.reddit.com/r/neovim/comments/12n5lvl/how_do_you_deal_with_large_files/
-; https://github.com/nvim-treesitter/nvim-treesitter/pull/3570/files
-; https://www.reddit.com/r/neovim/comments/xskdwc/how_to_disable_lsp_and_treesitter_for_huge_file/
-; https://www.vim.org/scripts/script.php?script_id=1506
-
-(fn ts-disable-large-file [buffer] ; (print (vim.print "Disabling treesitter for large files, is large file is"))
-  ; (print (vim.print (vim.inspect (vim.api.nvim_buf_line_count buffer))))
-  (> (vim.api.nvim_buf_line_count buffer) 30000))
-
 (fn ts-highlight-active? [buf]
   (let [active (vim.tbl_get vim :treesitter :highlighter :active)]
     (if active
@@ -85,7 +76,7 @@
   (let [buftype (vim.api.nvim_get_option_value :buftype {: buf})
         filetype (vim.api.nvim_get_option_value :filetype {: buf})]
     (when (and (= buftype "") (not= filetype "")
-               (not (ts-disable-large-file buf)) (not (ts-healthy? buf)))
+               (not (buffer-size.large? buf)) (not (ts-healthy? buf)))
       (let [result [(pcall vim.treesitter.start buf)]
             ok (. result 1)
             syntax (vim.api.nvim_get_option_value :syntax {: buf})]
@@ -116,12 +107,13 @@
 
 (vim.keymap.set :n :<leader>a
                 (fn []
-                  (when (not (ts-disable-large-file 0))
+                  (when (not (buffer-size.large? 0))
                     (ts-swap.swap_next "@parameter.inner"))))
 
 (vim.keymap.set :n :<leader>A
                 (fn []
-                  (when (not (ts-disable-large-file 0))
+                  (when (not (buffer-size.large? 0))
                     (ts-swap.swap_previous "@parameter.inner"))))
 
-(ctx.setup {:separator "-" :max_lines 5 :min_window_height 20})
+(ctx.setup {:separator "-" :max_lines 5 :min_window_height 20
+            :on_attach #(not (buffer-size.large? $1))})

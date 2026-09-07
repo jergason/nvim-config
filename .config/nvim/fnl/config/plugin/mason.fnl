@@ -11,14 +11,10 @@
                    :gopls
                    :lua-language-server
                    "mmdc@11.17.0"
-                   :ocaml-lsp
                    :oxfmt
                    :oxlint
-                   :pyright
                    :prettier
-                   :rust_analyzer
                    :terraform-ls
-                   ; :typescript-language-server
                    :vtsls
                    :yaml-language-server])
 
