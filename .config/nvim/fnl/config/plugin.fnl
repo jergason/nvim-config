@@ -111,7 +111,8 @@
               :config #(require :config.plugin.neogit)
               :dependencies [:nvim-lua/plenary.nvim
                              ; used for diffing
-                             :sindrets/diffview.nvim]}
+                             {1 :sindrets/diffview.nvim
+                              :config #(require :config.plugin.diffview)}]}
              {1 :tpope/vim-fugitive :config #(require :config.plugin.fugitive)}
              {1 :lewis6991/gitsigns.nvim
               :config #(require :config.plugin.gitsigns)}
