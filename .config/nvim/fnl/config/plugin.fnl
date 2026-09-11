@@ -4,14 +4,19 @@
 ; :1 is the plugin URL that gets expanded to github
 ; lazy.nvim loads plugins lazily by default
 
-(lazy.setup [{1 :Olical/nfnl :ft :fennel
+(lazy.setup [{1 :Olical/nfnl
+              :ft :fennel
               :config #(require :config.plugin.nfnl)}
              ; =======================
              ; Theme/Look/Feel/Feels
              ; =======================
              {1 :folke/tokyonight.nvim
               :lazy false
+              ; use tokyonight by default
               :config #(vim.cmd "colorscheme tokyonight")}
+             {1 :catppuccin/nvim :name :catppuccin :lazy true}
+             {1 :rebelot/kanagawa.nvim :lazy true}
+             {1 :ellisonleao/gruvbox.nvim :lazy true}
              {1 :nvim-mini/mini.nvim :config #(require :config.plugin.mini)}
              ; parsing system
              {1 :nvim-treesitter/nvim-treesitter-context
@@ -69,7 +74,7 @@
              ; markdown
              :MeanderingProgrammer/render-markdown.nvim
              {1 :jergason/mermaid.nvim
-              :branch "fix/format-and-lint-diagnostics"
+              :branch :fix/format-and-lint-diagnostics
               :ft :mermaid
               :dependencies [:nvim-treesitter/nvim-treesitter]
               :config #(require :config.plugin.mermaid)}
